@@ -452,7 +452,7 @@ function confirmDelete(vote) {
   document.getElementById('del-confirm').onclick = async () => {
     modal.innerHTML = '';
     try {
-      await deleteVoteWithBallots(vote.id);
+      await deleteVoteWithSubcollections(vote.id);
       showMessage('삭제되었습니다.', 'success');
       selectedVoteId = null;
       showEmptyPanel();
@@ -463,15 +463,20 @@ function confirmDelete(vote) {
   };
 }
 
-async function deleteVoteWithBallots(voteId) {
-  const ballotsCol = collection(db, 'votes', voteId, 'ballots');
+async function deleteSubcollection(path) {
+  const col = collection(db, ...path);
   while (true) {
-    const snap = await getDocs(query(ballotsCol, limit(400)));
+    const snap = await getDocs(query(col, limit(400)));
     if (snap.empty) break;
     const batch = writeBatch(db);
     snap.docs.forEach(d => batch.delete(d.ref));
     await batch.commit();
     if (snap.size < 400) break;
   }
+}
+
+async function deleteVoteWithSubcollections(voteId) {
+  await deleteSubcollection(['votes', voteId, 'ballots']);
+  await deleteSubcollection(['votes', voteId, 'voters']);
   await deleteDoc(doc(db, 'votes', voteId));
 }

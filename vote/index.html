@@ -8,14 +8,33 @@
 </head>
 <body>
   <header>
-    <h1>진행 중인 투표</h1>
+    <h1>투표</h1>
     <a class="nav-link" href="./manage.html">관리자</a>
   </header>
 
   <main>
     <div id="message-area"></div>
-    <div id="vote-list" class="vote-list"></div>
-    <div id="empty-state" class="empty-state hidden">현재 진행 중인 투표가 없습니다.</div>
+
+    <section id="entry-section" class="hidden">
+      <div class="panel" style="max-width: 420px; margin: 40px auto;">
+        <h2 style="margin-top:0;">인증번호 입력</h2>
+        <p class="text-muted">참여 가능한 투표를 보려면 등록된 인증번호(전화번호)를 입력하세요.</p>
+        <div class="form-group">
+          <input type="text" id="entry-phone" inputmode="numeric" placeholder="예: 010-1234-5678" autocomplete="off">
+        </div>
+        <div id="entry-error" class="message error hidden"></div>
+        <button id="entry-submit" class="btn-primary" style="width:100%;">계속</button>
+      </div>
+    </section>
+
+    <section id="list-section" class="hidden">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <span class="text-muted">인증번호: <code id="phone-display"></code></span>
+        <button id="reset-phone" class="btn-secondary btn-sm">다시 입력</button>
+      </div>
+      <div id="vote-list" class="vote-list"></div>
+      <div id="empty-state" class="empty-state hidden">참여 가능한 투표가 없습니다.</div>
+    </section>
   </main>
 
   <div id="modal-root"></div>

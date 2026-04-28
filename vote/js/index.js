@@ -1,29 +1,115 @@
 import { db } from './firebase-config.js';
 import {
   collection, query, where, onSnapshot, doc, getDoc, setDoc,
-  serverTimestamp, Timestamp,
+  writeBatch, serverTimestamp, Timestamp,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-import { hashPhone, formatRemaining, formatDateTime, voteStatus } from './util.js';
+import { hashPhone, normalizePhone, formatRemaining, voteStatus } from './util.js';
 
+const SESSION_HASH = 'vote.phoneHash';
+const SESSION_RAW = 'vote.phoneRaw';
+
+const entrySection = document.getElementById('entry-section');
+const listSection = document.getElementById('list-section');
 const listEl = document.getElementById('vote-list');
 const emptyEl = document.getElementById('empty-state');
-const modalRoot = document.getElementById('modal-root');
 const messageArea = document.getElementById('message-area');
+const modalRoot = document.getElementById('modal-root');
+const phoneDisplay = document.getElementById('phone-display');
 
-let activeVotes = [];
+let phoneHash = sessionStorage.getItem(SESSION_HASH);
+let phoneRaw = sessionStorage.getItem(SESSION_RAW);
+let votes = [];
+let votedSet = new Set();
+let unsubscribe = null;
 
 function showMessage(text, type = 'info', timeout = 3000) {
   messageArea.innerHTML = `<div class="message ${type}">${text}</div>`;
   if (timeout) setTimeout(() => { messageArea.innerHTML = ''; }, timeout);
 }
 
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[c]));
+}
+
+function maskPhone(raw) {
+  if (!raw) return '';
+  if (raw.length <= 4) return raw;
+  return raw.slice(0, raw.length - 4).replace(/\d/g, '*') + raw.slice(-4);
+}
+
+function closeModal() { modalRoot.innerHTML = ''; }
+
+function showEntry() {
+  entrySection.classList.remove('hidden');
+  listSection.classList.add('hidden');
+  const input = document.getElementById('entry-phone');
+  input.value = '';
+  document.getElementById('entry-error').classList.add('hidden');
+  setTimeout(() => input.focus(), 0);
+}
+
+function showList() {
+  entrySection.classList.add('hidden');
+  listSection.classList.remove('hidden');
+  phoneDisplay.textContent = maskPhone(phoneRaw ?? '');
+}
+
+document.getElementById('entry-submit').onclick = handleEntry;
+document.getElementById('entry-phone').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleEntry();
+});
+document.getElementById('reset-phone').onclick = clearPhone;
+
+async function handleEntry() {
+  const errorEl = document.getElementById('entry-error');
+  errorEl.classList.add('hidden');
+  const raw = document.getElementById('entry-phone').value.trim();
+  if (!raw) {
+    errorEl.textContent = '인증번호를 입력하세요.';
+    errorEl.classList.remove('hidden');
+    return;
+  }
+  const hash = await hashPhone(raw);
+  if (!hash) {
+    errorEl.textContent = '유효한 번호를 입력하세요.';
+    errorEl.classList.remove('hidden');
+    return;
+  }
+  phoneHash = hash;
+  phoneRaw = normalizePhone(raw);
+  sessionStorage.setItem(SESSION_HASH, phoneHash);
+  sessionStorage.setItem(SESSION_RAW, phoneRaw);
+  showList();
+  await loadVotes();
+}
+
+function clearPhone() {
+  if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+  phoneHash = null;
+  phoneRaw = null;
+  votes = [];
+  votedSet = new Set();
+  sessionStorage.removeItem(SESSION_HASH);
+  sessionStorage.removeItem(SESSION_RAW);
+  listEl.innerHTML = '';
+  emptyEl.classList.add('hidden');
+  showEntry();
+}
+
 function renderList() {
+  if (!phoneHash) return;
   const now = new Date();
-  const visible = activeVotes.filter(v => voteStatus(v, now) === 'active');
+  const visible = votes.filter(v =>
+    voteStatus(v, now) === 'active' && !votedSet.has(v.id)
+  );
 
   if (visible.length === 0) {
     listEl.innerHTML = '';
     emptyEl.classList.remove('hidden');
+    emptyEl.textContent =
+      '참여 가능한 투표가 없습니다. 등록되지 않은 번호이거나 모두 투표를 완료했을 수 있습니다.';
     return;
   }
   emptyEl.classList.add('hidden');
@@ -45,83 +131,16 @@ function renderList() {
   }).join('');
 
   listEl.querySelectorAll('.vote-card').forEach(card => {
-    card.addEventListener('click', () => openAuthModal(card.dataset.voteId));
+    const v = visible.find(x => x.id === card.dataset.voteId);
+    card.addEventListener('click', () => openVoteModal(v));
   });
-}
-
-function escapeHtml(str) {
-  return String(str ?? '').replace(/[&<>"']/g, c => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-  }[c]));
-}
-
-function closeModal() { modalRoot.innerHTML = ''; }
-
-function openAuthModal(voteId) {
-  const vote = activeVotes.find(v => v.id === voteId);
-  if (!vote) return;
-
-  modalRoot.innerHTML = `
-    <div class="modal-backdrop">
-      <div class="modal">
-        <h2>${escapeHtml(vote.title)}</h2>
-        <p class="text-muted">투표하려면 등록된 인증번호(전화번호)를 입력하세요.</p>
-        <div class="form-group">
-          <label>인증번호</label>
-          <input type="text" id="phone-input" inputmode="numeric" placeholder="예: 010-1234-5678" autocomplete="off">
-        </div>
-        <div id="auth-error" class="message error hidden"></div>
-        <div class="button-row">
-          <button class="btn-secondary" id="auth-cancel">취소</button>
-          <button class="btn-primary" id="auth-submit">계속</button>
-        </div>
-      </div>
-    </div>
-  `;
-  const input = document.getElementById('phone-input');
-  const errorEl = document.getElementById('auth-error');
-  input.focus();
-
-  document.getElementById('auth-cancel').onclick = closeModal;
-  document.getElementById('auth-submit').onclick = handleAuth;
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });
-
-  async function handleAuth() {
-    errorEl.classList.add('hidden');
-    const raw = input.value.trim();
-    if (!raw) {
-      showAuthError('인증번호를 입력하세요.');
-      return;
-    }
-    const phoneHash = await hashPhone(raw);
-    if (!phoneHash) {
-      showAuthError('유효한 번호를 입력하세요.');
-      return;
-    }
-    if (!(vote.allowedPhoneHashes ?? []).includes(phoneHash)) {
-      showAuthError('등록되지 않은 인증번호입니다.');
-      return;
-    }
-    const ballotRef = doc(db, 'votes', vote.id, 'ballots', phoneHash);
-    const existing = await getDoc(ballotRef);
-    if (existing.exists()) {
-      openCompletedModal(vote);
-      return;
-    }
-    openVoteModal(vote, phoneHash);
-  }
-  function showAuthError(text) {
-    errorEl.textContent = text;
-    errorEl.classList.remove('hidden');
-  }
 }
 
 function openCompletedModal(vote) {
   modalRoot.innerHTML = `
     <div class="modal-backdrop">
       <div class="modal">
-        <h2>${escapeHtml(vote.title)}</h2>
-        <div class="message success">이미 투표를 완료하셨습니다.</div>
+        <div class="message success">${escapeHtml(vote.title)} 투표를 완료했습니다.</div>
         <div class="button-row">
           <button class="btn-primary" id="completed-close">닫기</button>
         </div>
@@ -131,7 +150,7 @@ function openCompletedModal(vote) {
   document.getElementById('completed-close').onclick = closeModal;
 }
 
-function openVoteModal(vote, phoneHash) {
+function openVoteModal(vote) {
   const maxChoices = vote.maxChoices ?? 1;
   const isMulti = maxChoices > 1;
   const inputType = isMulti ? 'checkbox' : 'radio';
@@ -184,14 +203,20 @@ function openVoteModal(vote, phoneHash) {
       return;
     }
     const choices = selected.map(el => Number(el.value)).sort((a, b) => a - b);
-    const ballotRef = doc(db, 'votes', vote.id, 'ballots', phoneHash);
     try {
-      await setDoc(ballotRef, {
+      const batch = writeBatch(db);
+      batch.set(doc(db, 'votes', vote.id, 'ballots', phoneHash), {
         choices,
         submittedAt: serverTimestamp(),
       });
+      batch.set(doc(db, 'votes', vote.id, 'voters', phoneHash), {
+        at: serverTimestamp(),
+      });
+      await batch.commit();
+      votedSet.add(vote.id);
       openCompletedModal(vote);
-      showMessage('투표가 완료되었습니다.', 'success');
+      showMessage(`${escapeHtml(vote.title)} 투표를 완료했습니다.`, 'success');
+      renderList();
     } catch (err) {
       console.error(err);
       showVoteError('투표 제출에 실패했습니다. (이미 투표했거나 종료됨)');
@@ -204,19 +229,41 @@ function openVoteModal(vote, phoneHash) {
   }
 }
 
-const now = Timestamp.fromDate(new Date());
-const q = query(
-  collection(db, 'votes'),
-  where('isPublic', '==', true),
-  where('endAt', '>', now),
-);
+async function loadVotes() {
+  if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+  if (!phoneHash) return;
 
-onSnapshot(q, snap => {
-  activeVotes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  renderList();
-}, err => {
-  console.error(err);
-  showMessage('투표 목록을 불러오지 못했습니다. Firebase 설정을 확인하세요.', 'error', 0);
-});
+  const now = Timestamp.fromDate(new Date());
+  const q = query(
+    collection(db, 'votes'),
+    where('allowedPhoneHashes', 'array-contains', phoneHash),
+    where('isPublic', '==', true),
+    where('endAt', '>', now),
+  );
+
+  unsubscribe = onSnapshot(q, async snap => {
+    votes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const checks = await Promise.all(votes.map(async v => {
+      try {
+        const voterDoc = await getDoc(doc(db, 'votes', v.id, 'voters', phoneHash));
+        return [v.id, voterDoc.exists()];
+      } catch {
+        return [v.id, false];
+      }
+    }));
+    votedSet = new Set(checks.filter(([, e]) => e).map(([id]) => id));
+    renderList();
+  }, err => {
+    console.error(err);
+    showMessage('투표 목록을 불러오지 못했습니다. Firebase 설정을 확인하세요.', 'error', 0);
+  });
+}
+
+if (phoneHash) {
+  showList();
+  loadVotes();
+} else {
+  showEntry();
+}
 
 setInterval(renderList, 30000);
