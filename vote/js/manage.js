@@ -350,6 +350,7 @@ function renderDetail(vote) {
       </div>
       <div class="button-row">
         <button class="btn-secondary btn-sm" id="edit-btn">수정</button>
+        ${status === 'active' ? '<button class="btn-secondary btn-sm" id="end-now-btn">즉시 종료</button>' : ''}
         <button class="btn-danger btn-sm" id="delete-btn">삭제</button>
       </div>
     </div>
@@ -361,6 +362,9 @@ function renderDetail(vote) {
 
   document.getElementById('edit-btn').onclick = () => renderForm(vote);
   document.getElementById('delete-btn').onclick = () => confirmDelete(vote);
+  if (status === 'active') {
+    document.getElementById('end-now-btn').onclick = () => confirmEndNow(vote);
+  }
 
   resultsUnsubscribe = onSnapshot(
     collection(db, 'votes', vote.id, 'ballots'),
@@ -432,6 +436,33 @@ function renderResults(vote, ballots) {
   }
 
   area.innerHTML = html;
+}
+
+function confirmEndNow(vote) {
+  const modal = document.getElementById('modal-root');
+  modal.innerHTML = `
+    <div class="modal-backdrop">
+      <div class="modal">
+        <h2>투표 즉시 종료</h2>
+        <p>"${escapeHtml(vote.title)}" 투표를 지금 종료합니다. 종료 후에는 신규 투표를 받을 수 없습니다.</p>
+        <div class="button-row">
+          <button class="btn-secondary" id="end-cancel">취소</button>
+          <button class="btn-danger" id="end-confirm">종료</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('end-cancel').onclick = () => modal.innerHTML = '';
+  document.getElementById('end-confirm').onclick = async () => {
+    modal.innerHTML = '';
+    try {
+      await updateDoc(doc(db, 'votes', vote.id), { endAt: Timestamp.now() });
+      showMessage('투표가 종료되었습니다.', 'success');
+    } catch (err) {
+      console.error(err);
+      showMessage('종료 실패: ' + err.message, 'error', 0);
+    }
+  };
 }
 
 function confirmDelete(vote) {
