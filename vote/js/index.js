@@ -205,7 +205,11 @@ function openVoteModal(vote, phoneHash) {
 }
 
 const now = Timestamp.fromDate(new Date());
-const q = query(collection(db, 'votes'), where('endAt', '>', now));
+const q = query(
+  collection(db, 'votes'),
+  where('isPublic', '==', true),
+  where('endAt', '>', now),
+);
 
 onSnapshot(q, snap => {
   activeVotes = snap.docs.map(d => ({ id: d.id, ...d.data() }));

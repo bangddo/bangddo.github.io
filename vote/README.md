@@ -11,6 +11,7 @@ GitHub Pages + Firebase Firestore 로 동작하는 정적 투표 시스템.
 - 유권자는 자신의 전화번호를 입력 → 해시 일치 + 미투표 + 투표 기간 내 일 때만 표 작성
 - 투표 기록(`ballots/{phoneHash}`)은 **관리자만 읽기 가능**, 일반 사용자는 자기 ballot 만들기만 가능
 - `isAnonymous=true` 투표도 phoneHash가 ballot 문서 ID에 남지만, Firestore Rules로 비관리자의 read를 차단하므로 외부에 노출되지 않습니다
+- **공개 여부**(`isPublic`): 체크 해제 시 유권자 화면(`index.html`)에서 보이지 않고 투표 제출도 차단됨. 관리자만 read/edit 가능 (초안/예약용)
 
 ## 세팅
 
@@ -40,8 +41,10 @@ GitHub Pages + Firebase Firestore 로 동작하는 정적 투표 시스템.
 npm install -g firebase-tools
 firebase login
 firebase init firestore   # 기존 firestore.rules 사용 선택
-firebase deploy --only firestore:rules
+firebase deploy --only firestore:rules,firestore:indexes
 ```
+
+> `firestore.indexes.json` 에 `(isPublic, endAt)` 복합 인덱스가 정의되어 있습니다. 콘솔로만 작업하는 경우, 처음 `index.html` 열었을 때 콘솔에 뜨는 `The query requires an index. You can create it here: ...` 링크를 클릭하면 자동 생성됩니다.
 
 ### 4. 관리자 계정 생성 + 권한 부여
 

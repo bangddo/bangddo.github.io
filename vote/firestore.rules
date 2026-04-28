@@ -8,7 +8,8 @@ service cloud.firestore {
     }
 
     match /votes/{voteId} {
-      allow read: if true;
+      // 공개 투표는 누구나 read, 비공개는 관리자만 read
+      allow read: if isAdmin() || resource.data.isPublic == true;
       allow create, update, delete: if isAdmin();
 
       match /ballots/{phoneHash} {
@@ -16,12 +17,14 @@ service cloud.firestore {
         allow read: if isAdmin();
 
         // 일반 사용자는 자기 ballot 만들기 가능 — 단, 다음 조건 모두 충족할 때:
-        // 1) 같은 phoneHash 가 아직 없음 (1인 1표)
-        // 2) phoneHash 가 vote.allowedPhoneHashes 에 포함됨
-        // 3) 현재 시간이 startAt ~ endAt 사이
-        // 4) choices 가 유효한 인덱스 배열, 길이 1 ~ maxChoices
+        // 1) 부모 투표가 공개 상태
+        // 2) 같은 phoneHash 가 아직 없음 (1인 1표)
+        // 3) phoneHash 가 vote.allowedPhoneHashes 에 포함됨
+        // 4) 현재 시간이 startAt ~ endAt 사이
+        // 5) choices 가 유효한 인덱스 배열, 길이 1 ~ maxChoices
         allow create: if
-          !exists(/databases/$(database)/documents/votes/$(voteId)/ballots/$(phoneHash))
+          get(/databases/$(database)/documents/votes/$(voteId)).data.isPublic == true
+          && !exists(/databases/$(database)/documents/votes/$(voteId)/ballots/$(phoneHash))
           && phoneHash in get(/databases/$(database)/documents/votes/$(voteId)).data.allowedPhoneHashes
           && request.time >= get(/databases/$(database)/documents/votes/$(voteId)).data.startAt
           && request.time <= get(/databases/$(database)/documents/votes/$(voteId)).data.endAt

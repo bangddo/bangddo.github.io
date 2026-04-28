@@ -128,7 +128,7 @@ function renderSidebar() {
     return `
       <div class="vote-card ${selectedVoteId === v.id ? 'selected' : ''}" data-id="${v.id}">
         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-          <strong style="font-size:14px;">${escapeHtml(v.title)}</strong>
+          <strong style="font-size:14px;">${escapeHtml(v.title)}${v.isPublic === false ? ' <span class="text-muted" style="font-weight:normal;">(비공개)</span>' : ''}</strong>
           <span class="badge ${status}">${statusLabel(status)}</span>
         </div>
       </div>
@@ -197,6 +197,12 @@ function renderForm(vote) {
       </div>
     </div>
     <div class="form-group">
+      <div class="checkbox-row">
+        <input type="checkbox" id="f-public" ${!isEdit || vote.isPublic !== false ? 'checked' : ''}>
+        <label for="f-public">공개 (체크 해제 시 유권자 화면에 노출되지 않음)</label>
+      </div>
+    </div>
+    <div class="form-group">
       <label>투표 대상자 인증번호 (전화번호, 줄/콤마 구분)</label>
       <textarea id="f-phones" placeholder="010-1234-5678&#10;010-9876-5432" rows="6"></textarea>
       ${isEdit ? `<div class="text-muted mt-2">기존 ${vote.allowedPhoneHashes?.length ?? 0}개 등록됨. 새로 입력하면 전체 교체됩니다. 비워두면 유지됩니다.</div>` : ''}
@@ -262,6 +268,7 @@ function renderForm(vote) {
     const phonesText = document.getElementById('f-phones').value;
     const maxChoices = Number(document.getElementById('f-max').value) || 1;
     const isAnonymous = document.getElementById('f-anon').checked;
+    const isPublic = document.getElementById('f-public').checked;
 
     if (!title) return showError('제목을 입력하세요.');
     if (cleanedItems.length < 2) return showError('항목을 2개 이상 입력하세요.');
@@ -283,6 +290,7 @@ function renderForm(vote) {
           title,
           items: cleanedItems,
           allowedPhoneHashes: phoneHashes,
+          isPublic,
         };
         await updateDoc(doc(db, 'votes', vote.id), update);
         showMessage('수정되었습니다.', 'success');
@@ -298,6 +306,7 @@ function renderForm(vote) {
           startAt: Timestamp.fromDate(startAt),
           endAt: Timestamp.fromDate(endAt),
           isAnonymous,
+          isPublic,
           maxChoices,
           allowedPhoneHashes: phoneHashes,
           createdAt: serverTimestamp(),
@@ -332,6 +341,7 @@ function renderDetail(vote) {
         <h2 style="margin-bottom: 4px;">${escapeHtml(vote.title)}</h2>
         <div class="text-muted">
           <span class="badge ${status}">${statusLabel(status)}</span>
+          ${vote.isPublic === false ? '<span class="badge ended">비공개</span>' : ''}
           ${formatDateTime(vote.startAt.toDate())} ~ ${formatDateTime(vote.endAt.toDate())} ·
           ${vote.isAnonymous ? '익명' : '기명'} ·
           ${(vote.maxChoices ?? 1) > 1 ? `복수 선택(최대 ${vote.maxChoices}개)` : '단일 선택'} ·
