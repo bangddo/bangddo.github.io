@@ -1,6 +1,7 @@
 import { db, auth } from './firebase-config.js';
 import {
-  signInWithEmailAndPassword, signOut, onAuthStateChanged,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  signOut, onAuthStateChanged,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
   collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc,
@@ -8,10 +9,12 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import {
   hashPhoneList, formatDateTime, toLocalInputValue, fromLocalInputValue,
-  voteStatus, statusLabel,
+  voteStatus, statusLabel, generateInviteCode,
 } from './util.js';
 
 const loginSection = document.getElementById('login-section');
+const signupSection = document.getElementById('signup-section');
+const pendingSection = document.getElementById('pending-section');
 const manageSection = document.getElementById('manage-section');
 const userInfo = document.getElementById('user-info');
 const logoutBtn = document.getElementById('logout-btn');
@@ -24,6 +27,8 @@ let votes = [];
 let selectedVoteId = null;
 let votesUnsubscribe = null;
 let resultsUnsubscribe = null;
+let adminWatchUnsubscribe = null;
+let inviteFromUrl = null;
 
 function showMessage(text, type = 'info', timeout = 3000) {
   messageArea.innerHTML = `<div class="message ${type}">${escapeHtml(text)}</div>`;
@@ -36,57 +41,166 @@ function escapeHtml(str) {
   }[c]));
 }
 
-document.getElementById('login-submit').onclick = async () => {
+document.getElementById('login-submit').onclick = handleLogin;
+document.getElementById('login-password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleLogin();
+});
+document.getElementById('signup-submit').onclick = handleSignup;
+document.getElementById('signup-password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleSignup();
+});
+document.getElementById('pending-cancel').onclick = handlePendingCancel;
+
+logoutBtn.onclick = () => signOut(auth);
+
+async function handleLogin() {
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
   const errorEl = document.getElementById('login-error');
   errorEl.classList.add('hidden');
   try {
-    const cred = await signInWithEmailAndPassword(auth, email, password);
-    const token = await cred.user.getIdTokenResult(true);
-    if (!token.claims.admin) {
-      await signOut(auth);
-      errorEl.textContent = '관리자 권한이 없는 계정입니다.';
-      errorEl.classList.remove('hidden');
-    }
+    await signInWithEmailAndPassword(auth, email, password);
+    // onAuthStateChanged 가 admins 검사 + 화면 전환 처리
   } catch (err) {
     console.error(err);
     errorEl.textContent = '로그인 실패: ' + (err.code ?? err.message);
     errorEl.classList.remove('hidden');
   }
-};
+}
 
-document.getElementById('login-password').addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('login-submit').click();
-});
+async function handleSignup() {
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const errorEl = document.getElementById('signup-error');
+  errorEl.classList.add('hidden');
 
-logoutBtn.onclick = () => signOut(auth);
+  if (!inviteFromUrl) {
+    showSignupError('초대 코드가 유효하지 않습니다.');
+    return;
+  }
+  if (!email) return showSignupError('이메일을 입력하세요.');
+  if (!password || password.length < 6) return showSignupError('비밀번호는 6자리 이상이어야 합니다.');
+
+  let cred;
+  try {
+    cred = await createUserWithEmailAndPassword(auth, email, password);
+  } catch (err) {
+    console.error(err);
+    showSignupError('가입 실패: ' + (err.code ?? err.message));
+    return;
+  }
+
+  // invite 코드를 사용 표시 + 가입 요청 작성 (batched)
+  try {
+    const batch = writeBatch(db);
+    batch.update(doc(db, 'inviteCodes', inviteFromUrl), {
+      usedBy: cred.user.uid,
+      usedAt: serverTimestamp(),
+    });
+    batch.set(doc(db, 'adminRequests', cred.user.uid), {
+      email,
+      inviteCode: inviteFromUrl,
+      requestedAt: serverTimestamp(),
+    });
+    await batch.commit();
+    // URL 정리
+    history.replaceState({}, '', location.pathname);
+    inviteFromUrl = null;
+  } catch (err) {
+    console.error(err);
+    // 가입은 됐지만 요청 작성 실패 — 사용자가 재시도하거나 관리자에게 문의
+    showSignupError('가입 요청 작성 실패: ' + (err.code ?? err.message) + '. 관리자에게 문의하세요.');
+  }
+
+  function showSignupError(text) {
+    errorEl.textContent = text;
+    errorEl.classList.remove('hidden');
+  }
+}
+
+async function handlePendingCancel() {
+  const user = auth.currentUser;
+  if (!user) return;
+  const ok = confirm('가입 요청을 취소하고 계정을 삭제하시겠습니까?');
+  if (!ok) return;
+  try {
+    await deleteDoc(doc(db, 'adminRequests', user.uid));
+    await user.delete();
+  } catch (err) {
+    console.error(err);
+    showMessage('취소 실패: ' + err.message, 'error', 0);
+  }
+}
 
 onAuthStateChanged(auth, async user => {
+  cleanupAdminWatch();
   if (!user) {
-    showLogin();
+    if (inviteFromUrl) showSignup();
+    else showLogin();
     return;
   }
-  const token = await user.getIdTokenResult();
-  if (!token.claims.admin) {
-    showMessage('관리자 권한이 필요합니다.', 'error');
-    await signOut(auth);
+  // admin 여부 확인
+  const adminSnap = await getDoc(doc(db, 'admins', user.uid));
+  if (adminSnap.exists()) {
+    showManage(user);
     return;
   }
-  showManage(user);
+  // adminRequest 있으면 승인 대기 화면 + 실시간 admins 구독
+  const reqSnap = await getDoc(doc(db, 'adminRequests', user.uid));
+  if (reqSnap.exists()) {
+    showPending(user);
+    return;
+  }
+  // 권한도 요청도 없음
+  showMessage('관리자 권한이 필요합니다. 초대 코드를 받아 가입하세요.', 'error', 5000);
+  await signOut(auth);
 });
 
-function showLogin() {
-  loginSection.classList.remove('hidden');
+function cleanupAdminWatch() {
+  if (adminWatchUnsubscribe) { adminWatchUnsubscribe(); adminWatchUnsubscribe = null; }
+}
+
+function hideAllSections() {
+  loginSection.classList.add('hidden');
+  signupSection.classList.add('hidden');
+  pendingSection.classList.add('hidden');
   manageSection.classList.add('hidden');
+}
+
+function showLogin() {
+  hideAllSections();
+  loginSection.classList.remove('hidden');
   userInfo.classList.add('hidden');
   logoutBtn.classList.add('hidden');
   if (votesUnsubscribe) { votesUnsubscribe(); votesUnsubscribe = null; }
   if (resultsUnsubscribe) { resultsUnsubscribe(); resultsUnsubscribe = null; }
 }
 
+function showSignup() {
+  hideAllSections();
+  signupSection.classList.remove('hidden');
+  document.getElementById('signup-code-display').textContent = inviteFromUrl ?? '';
+  userInfo.classList.add('hidden');
+  logoutBtn.classList.add('hidden');
+}
+
+function showPending(user) {
+  hideAllSections();
+  pendingSection.classList.remove('hidden');
+  document.getElementById('pending-email').textContent = user.email;
+  userInfo.classList.add('hidden');
+  logoutBtn.classList.remove('hidden');
+  // admins/{uid} 생성을 실시간 구독 → 승인되면 화면 전환
+  adminWatchUnsubscribe = onSnapshot(doc(db, 'admins', user.uid), snap => {
+    if (snap.exists()) {
+      cleanupAdminWatch();
+      showManage(user);
+    }
+  });
+}
+
 function showManage(user) {
-  loginSection.classList.add('hidden');
+  hideAllSections();
   manageSection.classList.remove('hidden');
   userInfo.classList.remove('hidden');
   logoutBtn.classList.remove('hidden');
@@ -151,6 +265,12 @@ document.getElementById('new-vote-btn').onclick = () => {
   selectedVoteId = null;
   renderSidebar();
   renderForm(null);
+};
+
+document.getElementById('open-admin-panel').onclick = () => {
+  selectedVoteId = null;
+  renderSidebar();
+  renderAdminPanel();
 };
 
 function renderForm(vote) {
@@ -510,4 +630,317 @@ async function deleteVoteWithSubcollections(voteId) {
   await deleteSubcollection(['votes', voteId, 'ballots']);
   await deleteSubcollection(['votes', voteId, 'voters']);
   await deleteDoc(doc(db, 'votes', voteId));
+}
+
+// ========== 관리자 관리 패널 ==========
+
+const INVITE_TTL_DAYS = 7;
+let adminPanelUnsubscribes = [];
+
+function unsubscribeAdminPanel() {
+  adminPanelUnsubscribes.forEach(u => u());
+  adminPanelUnsubscribes = [];
+}
+
+function renderAdminPanel() {
+  unsubscribeAdminPanel();
+  if (resultsUnsubscribe) { resultsUnsubscribe(); resultsUnsubscribe = null; }
+
+  panelContent.innerHTML = `
+    <h2>관리자 관리</h2>
+
+    <section class="mb-4">
+      <h3 style="font-size:14px; margin: 0 0 8px;">초대 코드 발급</h3>
+      <p class="text-muted mb-2">새 관리자를 초대할 코드를 생성합니다. 발급 후 ${INVITE_TTL_DAYS}일간 유효.</p>
+      <button id="gen-invite-btn" class="btn-primary btn-sm">+ 초대 코드 생성</button>
+      <div id="last-invite" class="hidden mt-2"></div>
+    </section>
+
+    <section class="mb-4">
+      <h3 style="font-size:14px; margin: 16px 0 8px;">활성 초대 코드</h3>
+      <div id="invite-list"><p class="text-muted">불러오는 중...</p></div>
+    </section>
+
+    <section class="mb-4">
+      <h3 style="font-size:14px; margin: 16px 0 8px;">가입 요청</h3>
+      <div id="request-list"><p class="text-muted">불러오는 중...</p></div>
+    </section>
+
+    <section>
+      <h3 style="font-size:14px; margin: 16px 0 8px;">현재 관리자</h3>
+      <div id="admin-list"><p class="text-muted">불러오는 중...</p></div>
+    </section>
+  `;
+
+  document.getElementById('gen-invite-btn').onclick = generateInvite;
+  subscribeAdminPanelData();
+}
+
+async function generateInvite() {
+  const me = auth.currentUser;
+  if (!me) return;
+  const btn = document.getElementById('gen-invite-btn');
+  btn.disabled = true;
+  try {
+    const code = generateInviteCode(8);
+    const expiresAt = Timestamp.fromDate(
+      new Date(Date.now() + INVITE_TTL_DAYS * 24 * 60 * 60 * 1000)
+    );
+    await setDoc(doc(db, 'inviteCodes', code), {
+      createdBy: me.uid,
+      createdAt: serverTimestamp(),
+      expiresAt,
+      usedBy: null,
+      usedAt: null,
+    });
+    const url = `${location.origin}${location.pathname}?invite=${code}`;
+    let copied = false;
+    try {
+      await navigator.clipboard.writeText(url);
+      copied = true;
+    } catch {}
+    const last = document.getElementById('last-invite');
+    last.classList.remove('hidden');
+    last.innerHTML = `
+      <div class="message success">
+        초대 URL ${copied ? '<strong>(클립보드에 복사됨)</strong>' : ''}<br>
+        <code style="word-break:break-all; display:inline-block; margin-top:4px;">${escapeHtml(url)}</code>
+      </div>
+    `;
+  } catch (err) {
+    console.error(err);
+    showMessage('생성 실패: ' + err.message, 'error', 0);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function subscribeAdminPanelData() {
+  const me = auth.currentUser;
+
+  // 활성 초대 코드 (미사용)
+  const inviteQ = query(collection(db, 'inviteCodes'), orderBy('createdAt', 'desc'));
+  adminPanelUnsubscribes.push(onSnapshot(inviteQ, snap => {
+    const codes = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .filter(c => !c.usedBy);
+    const listEl = document.getElementById('invite-list');
+    if (!listEl) return;
+    if (codes.length === 0) {
+      listEl.innerHTML = '<p class="text-muted">활성 초대 코드가 없습니다.</p>';
+      return;
+    }
+    const now = new Date();
+    listEl.innerHTML = `
+      <table style="width:100%; font-size:13px; border-collapse:collapse;">
+        <thead><tr style="border-bottom:1px solid var(--border);">
+          <th style="text-align:left; padding:6px;">코드</th>
+          <th style="text-align:left; padding:6px;">만료</th>
+          <th style="text-align:right; padding:6px;"></th>
+        </tr></thead>
+        <tbody>
+          ${codes.map(c => {
+            const exp = c.expiresAt?.toDate?.();
+            const expired = exp && exp < now;
+            return `
+              <tr style="border-bottom:1px solid var(--border); ${expired ? 'opacity:0.5;' : ''}">
+                <td style="padding:6px; font-family:monospace;">${escapeHtml(c.id)}</td>
+                <td style="padding:6px;" class="text-muted">${exp ? formatDateTime(exp) : '-'}${expired ? ' <span class="badge ended">만료</span>' : ''}</td>
+                <td style="padding:6px; text-align:right;">
+                  <button class="btn-secondary btn-sm" data-revoke="${c.id}">폐기</button>
+                </td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    `;
+    listEl.querySelectorAll('button[data-revoke]').forEach(btn => {
+      btn.onclick = () => revokeInvite(btn.dataset.revoke);
+    });
+  }, err => {
+    console.error(err);
+    const el = document.getElementById('invite-list');
+    if (el) el.innerHTML = `<div class="message error">로드 실패: ${escapeHtml(err.message)}</div>`;
+  }));
+
+  // 가입 요청
+  const reqQ = query(collection(db, 'adminRequests'), orderBy('requestedAt', 'asc'));
+  adminPanelUnsubscribes.push(onSnapshot(reqQ, snap => {
+    const reqs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const listEl = document.getElementById('request-list');
+    if (!listEl) return;
+    if (reqs.length === 0) {
+      listEl.innerHTML = '<p class="text-muted">대기 중인 요청이 없습니다.</p>';
+      return;
+    }
+    listEl.innerHTML = `
+      <table style="width:100%; font-size:13px; border-collapse:collapse;">
+        <thead><tr style="border-bottom:1px solid var(--border);">
+          <th style="text-align:left; padding:6px;">이메일</th>
+          <th style="text-align:left; padding:6px;">요청시각</th>
+          <th style="text-align:right; padding:6px;"></th>
+        </tr></thead>
+        <tbody>
+          ${reqs.map(r => `
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:6px;">${escapeHtml(r.email ?? '-')}</td>
+              <td style="padding:6px;" class="text-muted">${r.requestedAt ? formatDateTime(r.requestedAt.toDate()) : '-'}</td>
+              <td style="padding:6px; text-align:right;">
+                <button class="btn-primary btn-sm" data-approve="${r.id}" data-email="${escapeHtml(r.email ?? '')}">승인</button>
+                <button class="btn-secondary btn-sm" data-reject="${r.id}">거부</button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+    listEl.querySelectorAll('button[data-approve]').forEach(btn => {
+      btn.onclick = () => approveRequest(btn.dataset.approve, btn.dataset.email);
+    });
+    listEl.querySelectorAll('button[data-reject]').forEach(btn => {
+      btn.onclick = () => rejectRequest(btn.dataset.reject);
+    });
+  }, err => {
+    console.error(err);
+    const el = document.getElementById('request-list');
+    if (el) el.innerHTML = `<div class="message error">로드 실패: ${escapeHtml(err.message)}</div>`;
+  }));
+
+  // 현재 관리자 목록
+  const adminQ = query(collection(db, 'admins'), orderBy('grantedAt', 'asc'));
+  adminPanelUnsubscribes.push(onSnapshot(adminQ, snap => {
+    const admins = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const listEl = document.getElementById('admin-list');
+    if (!listEl) return;
+    if (admins.length === 0) {
+      listEl.innerHTML = '<p class="text-muted">등록된 관리자가 없습니다.</p>';
+      return;
+    }
+    listEl.innerHTML = `
+      <table style="width:100%; font-size:13px; border-collapse:collapse;">
+        <thead><tr style="border-bottom:1px solid var(--border);">
+          <th style="text-align:left; padding:6px;">이메일</th>
+          <th style="text-align:left; padding:6px;">부여시각</th>
+          <th style="text-align:right; padding:6px;"></th>
+        </tr></thead>
+        <tbody>
+          ${admins.map(a => {
+            const isMe = a.id === me?.uid;
+            return `
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:6px;">${escapeHtml(a.email ?? a.id.substring(0, 8))}${isMe ? ' <span class="text-muted">(나)</span>' : ''}</td>
+                <td style="padding:6px;" class="text-muted">${a.grantedAt ? formatDateTime(a.grantedAt.toDate()) : '-'}</td>
+                <td style="padding:6px; text-align:right;">
+                  <button class="btn-secondary btn-sm" data-revoke-admin="${a.id}" ${isMe ? 'disabled' : ''}>회수</button>
+                </td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    `;
+    listEl.querySelectorAll('button[data-revoke-admin]').forEach(btn => {
+      btn.onclick = () => revokeAdmin(btn.dataset.revokeAdmin);
+    });
+  }, err => {
+    console.error(err);
+    const el = document.getElementById('admin-list');
+    if (el) el.innerHTML = `<div class="message error">로드 실패: ${escapeHtml(err.message)}</div>`;
+  }));
+}
+
+async function revokeInvite(code) {
+  if (!confirm(`초대 코드 "${code}" 를 폐기하시겠습니까?`)) return;
+  try {
+    await deleteDoc(doc(db, 'inviteCodes', code));
+    showMessage('폐기되었습니다.', 'success');
+  } catch (err) {
+    console.error(err);
+    showMessage('폐기 실패: ' + err.message, 'error', 0);
+  }
+}
+
+async function approveRequest(uid, email) {
+  const me = auth.currentUser;
+  if (!me) return;
+  try {
+    const batch = writeBatch(db);
+    batch.set(doc(db, 'admins', uid), {
+      email,
+      grantedBy: me.uid,
+      grantedAt: serverTimestamp(),
+    });
+    batch.delete(doc(db, 'adminRequests', uid));
+    await batch.commit();
+    showMessage(`${email} 승인 완료.`, 'success');
+  } catch (err) {
+    console.error(err);
+    showMessage('승인 실패: ' + err.message, 'error', 0);
+  }
+}
+
+async function rejectRequest(uid) {
+  if (!confirm('가입 요청을 거부하시겠습니까?')) return;
+  try {
+    await deleteDoc(doc(db, 'adminRequests', uid));
+    showMessage('거부되었습니다.', 'success');
+  } catch (err) {
+    console.error(err);
+    showMessage('거부 실패: ' + err.message, 'error', 0);
+  }
+}
+
+async function revokeAdmin(uid) {
+  if (uid === auth.currentUser?.uid) {
+    showMessage('자기 자신의 권한은 회수할 수 없습니다.', 'error');
+    return;
+  }
+  if (!confirm('해당 관리자의 권한을 회수하시겠습니까?')) return;
+  try {
+    await deleteDoc(doc(db, 'admins', uid));
+    showMessage('회수되었습니다.', 'success');
+  } catch (err) {
+    console.error(err);
+    showMessage('회수 실패: ' + err.message, 'error', 0);
+  }
+}
+
+// ========== Invite URL 처리 ==========
+
+(function checkInviteParam() {
+  const params = new URLSearchParams(location.search);
+  const code = params.get('invite');
+  if (!code) return;
+  inviteFromUrl = code;
+  // 코드 유효성 검증 후 가입 화면 노출 (onAuthStateChanged 가 비로그인 + invite 인 경우 showSignup 호출)
+  validateInviteAndShow(code);
+})();
+
+async function validateInviteAndShow(code) {
+  try {
+    const snap = await getDoc(doc(db, 'inviteCodes', code));
+    if (!snap.exists()) {
+      inviteFromUrl = null;
+      showMessage('유효하지 않은 초대 코드입니다.', 'error', 0);
+      return;
+    }
+    const data = snap.data();
+    if (data.usedBy) {
+      inviteFromUrl = null;
+      showMessage('이미 사용된 초대 코드입니다.', 'error', 0);
+      return;
+    }
+    const exp = data.expiresAt?.toDate?.();
+    if (exp && exp < new Date()) {
+      inviteFromUrl = null;
+      showMessage('만료된 초대 코드입니다.', 'error', 0);
+      return;
+    }
+    // 비로그인 상태면 가입 화면 즉시 노출 (로그인 상태면 onAuthStateChanged 가 처리)
+    if (!auth.currentUser) showSignup();
+  } catch (err) {
+    console.error(err);
+    inviteFromUrl = null;
+    showMessage('초대 코드 검증 실패: ' + err.message, 'error', 0);
+  }
 }

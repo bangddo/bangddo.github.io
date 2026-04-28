@@ -46,39 +46,34 @@ firebase deploy --only firestore:rules,firestore:indexes
 
 > `firestore.indexes.json` 에 `(isPublic, endAt)` 복합 인덱스가 정의되어 있습니다. 콘솔로만 작업하는 경우, 처음 `index.html` 열었을 때 콘솔에 뜨는 `The query requires an index. You can create it here: ...` 링크를 클릭하면 자동 생성됩니다.
 
-### 4. 관리자 계정 생성 + 권한 부여
+### 4. 첫 관리자 부트스트랩 (1회만 수동, 이후는 UI에서 초대로 추가)
 
-1. **Firebase 콘솔 > Authentication > Users** 에서 "사용자 추가" → 이메일/비밀번호 입력해서 관리자 계정 생성
-2. 관리자 권한(custom claim `admin: true`)은 콘솔 UI에 없어서 한 번만 스크립트로 부여해야 합니다:
+관리자 권한은 Firestore `admins/{uid}` 문서로 관리됩니다. **첫 관리자**만 콘솔에서 수동 작성하고, 이후 신규 관리자는 manage.html UI에서 초대 코드로 가입을 받을 수 있습니다.
 
-   ```bash
-   # 프로젝트 루트에서
-   npm install firebase-admin
-   ```
+1. **Firebase 콘솔 > Authentication > Users** 에서 "사용자 추가" → 이메일/비밀번호 입력해서 첫 관리자 계정 생성
+2. 생성된 사용자의 **UID 복사** (Authentication > Users 목록에 표시됨)
+3. **Firestore Database > Data** 탭에서 컬렉션 시작:
+   - 컬렉션 ID: `admins`
+   - 문서 ID: 위에서 복사한 UID
+   - 필드:
+     - `email` (string) — 해당 관리자 이메일
+     - `grantedAt` (timestamp) — 현재 시각
+4. 저장 → `manage.html` 접속 → 로그인하면 정상 동작
 
-   `set-admin.js` 파일을 임시로 만들고:
+> **주의**: 1~3 단계를 마친 **후에** `firestore.rules` 를 배포하세요. 룰을 먼저 배포하면 admins 컬렉션이 비어 있어 모든 관리자 동작이 거부되는 lockout 상태가 됩니다.
 
-   ```js
-   const admin = require('firebase-admin');
-   const serviceAccount = require('./service-account.json'); // 콘솔에서 다운로드
-   admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+### 4-1. 신규 관리자 추가 (UI 사용)
 
-   const email = process.argv[2];
-   admin.auth().getUserByEmail(email)
-     .then(user => admin.auth().setCustomUserClaims(user.uid, { admin: true }))
-     .then(() => { console.log('admin 권한 부여 완료'); process.exit(0); })
-     .catch(err => { console.error(err); process.exit(1); });
-   ```
+첫 관리자 진입 후에는 manage.html 에서 다음 흐름으로 추가 관리자를 가입시킬 수 있습니다:
 
-   서비스 계정 키 다운로드: **프로젝트 설정 > 서비스 계정 > 새 비공개 키 생성** → `service-account.json` 으로 저장
+1. 관리자가 좌측 사이드바의 **관리자/초대 코드 열기** 클릭
+2. **+ 초대 코드 생성** → 8자리 코드와 URL 이 클립보드에 자동 복사됨
+3. 가입 희망자에게 URL 전달 (`https://.../manage.html?invite=XXXXXXXX`)
+4. 가입 희망자가 URL 진입 → 이메일/비밀번호 입력해서 가입 신청
+5. 관리자 화면 **가입 요청** 섹션에 실시간으로 표시됨 → **승인** 클릭
+6. 가입 희망자 화면이 자동으로 관리자 메인으로 전환됨
 
-   ```bash
-   node set-admin.js admin@example.com
-   ```
-
-   완료 후 `service-account.json` 과 `set-admin.js` 는 삭제하거나 `.gitignore` 에 추가.
-
-3. 관리자가 `manage.html` 에 처음 로그인할 때 토큰이 갱신되며 권한이 적용됩니다 (필요 시 한 번 로그아웃 후 재로그인).
+초대 코드는 7일 후 만료, 1회만 사용 가능. **권한 회수**는 동일 화면 **현재 관리자** 섹션에서 가능 (자기 자신 회수는 차단).
 
 ### 5. GitHub Pages 배포
 

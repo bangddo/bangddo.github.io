@@ -2,6 +2,17 @@ export function normalizePhone(raw) {
   return String(raw ?? '').replace(/\D/g, '');
 }
 
+const INVITE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+export function generateInviteCode(length = 8) {
+  const bytes = new Uint8Array(length);
+  crypto.getRandomValues(bytes);
+  let out = '';
+  for (let i = 0; i < length; i++) {
+    out += INVITE_ALPHABET[bytes[i] % INVITE_ALPHABET.length];
+  }
+  return out;
+}
+
 export async function sha256Hex(text) {
   const buf = new TextEncoder().encode(text);
   const digest = await crypto.subtle.digest('SHA-256', buf);
