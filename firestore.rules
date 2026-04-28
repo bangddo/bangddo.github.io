@@ -1,0 +1,39 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
+    match /votes/{voteId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+
+      match /ballots/{phoneHash} {
+        // 관리자만 ballot 조회 (결과 집계)
+        allow read: if isAdmin();
+
+        // 일반 사용자는 자기 ballot 만들기 가능 — 단, 다음 조건 모두 충족할 때:
+        // 1) 같은 phoneHash 가 아직 없음 (1인 1표)
+        // 2) phoneHash 가 vote.allowedPhoneHashes 에 포함됨
+        // 3) 현재 시간이 startAt ~ endAt 사이
+        // 4) choices 가 유효한 인덱스 배열, 길이 1 ~ maxChoices
+        allow create: if
+          !exists(/databases/$(database)/documents/votes/$(voteId)/ballots/$(phoneHash))
+          && phoneHash in get(/databases/$(database)/documents/votes/$(voteId)).data.allowedPhoneHashes
+          && request.time >= get(/databases/$(database)/documents/votes/$(voteId)).data.startAt
+          && request.time <= get(/databases/$(database)/documents/votes/$(voteId)).data.endAt
+          && request.resource.data.keys().hasOnly(['choices', 'submittedAt'])
+          && request.resource.data.choices is list
+          && request.resource.data.choices.size() >= 1
+          && request.resource.data.choices.size() <= get(/databases/$(database)/documents/votes/$(voteId)).data.maxChoices;
+
+        // 한 번 작성한 표는 수정/삭제 불가 (관리자가 vote 삭제 시에만 함께 정리)
+        allow update: if false;
+        allow delete: if isAdmin();
+      }
+    }
+  }
+}
