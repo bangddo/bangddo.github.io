@@ -57,6 +57,18 @@
       </div>
     </section>
 
+    <section id="rejected-section" class="panel hidden" style="max-width: 480px; margin: 40px auto;">
+      <h2>가입이 거부되었습니다</h2>
+      <p class="text-muted">계정: <code id="rejected-email"></code></p>
+      <div class="form-group">
+        <label>거부 사유</label>
+        <div id="rejected-reason" class="message error" style="white-space:pre-wrap;"></div>
+      </div>
+      <div class="button-row">
+        <button id="rejected-confirm" class="btn-primary">확인</button>
+      </div>
+    </section>
+
     <section id="manage-section" class="manage-layout hidden">
       <div class="sidebar">
         <div class="button-row mb-4">

@@ -33,11 +33,16 @@ service cloud.firestore {
           ['createdBy', 'createdAt', 'expiresAt', 'usedBy', 'usedAt']);
 
       // 가입자가 본인 사용 표시 (usedBy/usedAt 만 변경)
-      allow update: if request.auth != null
-        && resource.data.usedBy == null
-        && request.time < resource.data.expiresAt
-        && request.resource.data.diff(resource.data).changedKeys().hasOnly(['usedBy', 'usedAt'])
-        && request.resource.data.usedBy == request.auth.uid;
+      // 또는 관리자가 만료 처리 (expiresAt 만 변경)
+      allow update: if request.auth != null && (
+        (resource.data.usedBy == null
+          && request.time < resource.data.expiresAt
+          && request.resource.data.diff(resource.data).changedKeys().hasOnly(['usedBy', 'usedAt'])
+          && request.resource.data.usedBy == request.auth.uid)
+        ||
+        (isAdmin()
+          && request.resource.data.diff(resource.data).changedKeys().hasOnly(['expiresAt']))
+      );
 
       allow delete: if isAdmin();
     }
@@ -57,7 +62,13 @@ service cloud.firestore {
 
       // 거부(본인 또는 관리자가 삭제), 승인은 별도 (admins 생성 + 이 문서 삭제)
       allow delete: if isAdmin() || (request.auth != null && request.auth.uid == uid);
-      allow update: if false;
+
+      // 관리자가 거부 사유 기록 (status/rejectedReason/rejectedAt/rejectedBy 만 추가)
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).changedKeys().hasOnly(
+          ['status', 'rejectedReason', 'rejectedAt', 'rejectedBy'])
+        && request.resource.data.status == 'rejected'
+        && request.resource.data.rejectedBy == request.auth.uid;
     }
 
     match /votes/{voteId} {

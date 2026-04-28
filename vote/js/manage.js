@@ -15,6 +15,7 @@ import {
 const loginSection = document.getElementById('login-section');
 const signupSection = document.getElementById('signup-section');
 const pendingSection = document.getElementById('pending-section');
+const rejectedSection = document.getElementById('rejected-section');
 const manageSection = document.getElementById('manage-section');
 const userInfo = document.getElementById('user-info');
 const logoutBtn = document.getElementById('logout-btn');
@@ -50,6 +51,7 @@ document.getElementById('signup-password').addEventListener('keydown', e => {
   if (e.key === 'Enter') handleSignup();
 });
 document.getElementById('pending-cancel').onclick = handlePendingCancel;
+document.getElementById('rejected-confirm').onclick = handleRejectedConfirm;
 
 logoutBtn.onclick = () => signOut(auth);
 
@@ -143,6 +145,18 @@ async function handlePendingCancel() {
   }
 }
 
+async function handleRejectedConfirm() {
+  const user = auth.currentUser;
+  if (!user) return;
+  try {
+    await deleteDoc(doc(db, 'adminRequests', user.uid));
+  } catch (err) {
+    console.error(err);
+    // 삭제 실패해도 로그아웃은 진행
+  }
+  await signOut(auth);
+}
+
 onAuthStateChanged(auth, async user => {
   cleanupAdminWatch();
   if (!user) {
@@ -156,10 +170,12 @@ onAuthStateChanged(auth, async user => {
     showManage(user);
     return;
   }
-  // adminRequest 있으면 승인 대기 화면 + 실시간 admins 구독
+  // adminRequest 있으면 상태에 따라 거부/대기 화면
   const reqSnap = await getDoc(doc(db, 'adminRequests', user.uid));
   if (reqSnap.exists()) {
-    showPending(user);
+    const data = reqSnap.data();
+    if (data.status === 'rejected') showRejected(user, data);
+    else showPending(user);
     return;
   }
   // 권한도 요청도 없음
@@ -175,6 +191,7 @@ function hideAllSections() {
   loginSection.classList.add('hidden');
   signupSection.classList.add('hidden');
   pendingSection.classList.add('hidden');
+  rejectedSection.classList.add('hidden');
   manageSection.classList.add('hidden');
 }
 
@@ -201,13 +218,31 @@ function showPending(user) {
   document.getElementById('pending-email').textContent = user.email;
   userInfo.classList.add('hidden');
   logoutBtn.classList.remove('hidden');
-  // admins/{uid} 생성을 실시간 구독 → 승인되면 화면 전환
-  adminWatchUnsubscribe = onSnapshot(doc(db, 'admins', user.uid), snap => {
+  // 승인(admins 생성) 또는 거부(adminRequests.status=rejected) 실시간 감지
+  const unsubAdmins = onSnapshot(doc(db, 'admins', user.uid), snap => {
     if (snap.exists()) {
       cleanupAdminWatch();
       showManage(user);
     }
   });
+  const unsubReq = onSnapshot(doc(db, 'adminRequests', user.uid), snap => {
+    if (!snap.exists()) return;
+    const data = snap.data();
+    if (data.status === 'rejected') {
+      cleanupAdminWatch();
+      showRejected(user, data);
+    }
+  });
+  adminWatchUnsubscribe = () => { unsubAdmins(); unsubReq(); };
+}
+
+function showRejected(user, data) {
+  hideAllSections();
+  rejectedSection.classList.remove('hidden');
+  document.getElementById('rejected-email').textContent = user.email;
+  document.getElementById('rejected-reason').textContent = data.rejectedReason ?? '(사유 없음)';
+  userInfo.classList.add('hidden');
+  logoutBtn.classList.add('hidden');
 }
 
 function showManage(user) {
@@ -891,9 +926,35 @@ async function approveRequest(uid, email) {
 }
 
 async function rejectRequest(uid) {
-  if (!confirm('가입 요청을 거부하시겠습니까?')) return;
+  const me = auth.currentUser;
+  if (!me) return;
+  const reason = prompt('거부 사유를 입력하세요. (사용자에게 표시됩니다)');
+  if (reason === null) return;
+  const trimmed = reason.trim();
+  if (!trimmed) {
+    showMessage('거부 사유를 입력해야 합니다.', 'error');
+    return;
+  }
   try {
-    await deleteDoc(doc(db, 'adminRequests', uid));
+    const reqSnap = await getDoc(doc(db, 'adminRequests', uid));
+    if (!reqSnap.exists()) {
+      showMessage('이미 처리된 요청입니다.', 'error');
+      return;
+    }
+    const inviteCode = reqSnap.data().inviteCode;
+    const batch = writeBatch(db);
+    batch.update(doc(db, 'adminRequests', uid), {
+      status: 'rejected',
+      rejectedReason: trimmed,
+      rejectedAt: serverTimestamp(),
+      rejectedBy: me.uid,
+    });
+    if (inviteCode) {
+      batch.update(doc(db, 'inviteCodes', inviteCode), {
+        expiresAt: Timestamp.fromMillis(0),
+      });
+    }
+    await batch.commit();
     showMessage('거부되었습니다.', 'success');
   } catch (err) {
     console.error(err);
