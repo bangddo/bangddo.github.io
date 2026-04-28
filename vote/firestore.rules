@@ -47,10 +47,12 @@ service cloud.firestore {
       allow get: if request.auth != null && (request.auth.uid == uid || isAdmin());
       allow list: if isAdmin();
 
-      // 본인이 자기 요청 작성 — 사용한 invite 코드의 usedBy 가 본인이어야 함
+      // 본인이 자기 요청 작성 — invite 코드가 실재해야 함
+      // (usedBy 검사는 batched write 안에서 평가가 같은 batch 의 update 를 못 보기 때문에 제거.
+      //  invite 의 1회성 보장은 inviteCodes update 룰의 `usedBy == null` 조건이 담당)
       allow create: if request.auth != null
         && request.auth.uid == uid
-        && get(/databases/$(database)/documents/inviteCodes/$(request.resource.data.inviteCode)).data.usedBy == request.auth.uid
+        && exists(/databases/$(database)/documents/inviteCodes/$(request.resource.data.inviteCode))
         && request.resource.data.keys().hasOnly(['email', 'inviteCode', 'requestedAt']);
 
       // 거부(본인 또는 관리자가 삭제), 승인은 별도 (admins 생성 + 이 문서 삭제)

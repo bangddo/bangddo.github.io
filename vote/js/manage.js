@@ -85,9 +85,20 @@ async function handleSignup() {
   try {
     cred = await createUserWithEmailAndPassword(auth, email, password);
   } catch (err) {
-    console.error(err);
-    showSignupError('가입 실패: ' + (err.code ?? err.message));
-    return;
+    if (err.code === 'auth/email-already-in-use') {
+      // 이전 가입 시도가 실패해서 Auth 계정만 남았을 가능성 — 같은 비밀번호로 로그인 시도
+      try {
+        cred = await signInWithEmailAndPassword(auth, email, password);
+      } catch (signinErr) {
+        console.error(signinErr);
+        showSignupError('이미 가입된 이메일입니다. 같은 비밀번호로 자동 복구 시도가 실패했습니다. 비밀번호가 다르면 Firebase 콘솔(Authentication > Users)에서 해당 계정 삭제 후 재가입하세요.');
+        return;
+      }
+    } else {
+      console.error(err);
+      showSignupError('가입 실패: ' + (err.code ?? err.message));
+      return;
+    }
   }
 
   // invite 코드를 사용 표시 + 가입 요청 작성 (batched)
