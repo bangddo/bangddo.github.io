@@ -922,8 +922,6 @@ async function revokeAdmin(uid) {
   const params = new URLSearchParams(location.search);
   const code = params.get('invite');
   if (!code) return;
-  inviteFromUrl = code;
-  // 코드 유효성 검증 후 가입 화면 노출 (onAuthStateChanged 가 비로그인 + invite 인 경우 showSignup 호출)
   validateInviteAndShow(code);
 })();
 
@@ -931,27 +929,23 @@ async function validateInviteAndShow(code) {
   try {
     const snap = await getDoc(doc(db, 'inviteCodes', code));
     if (!snap.exists()) {
-      inviteFromUrl = null;
       showMessage('유효하지 않은 초대 코드입니다.', 'error', 0);
       return;
     }
     const data = snap.data();
     if (data.usedBy) {
-      inviteFromUrl = null;
       showMessage('이미 사용된 초대 코드입니다.', 'error', 0);
       return;
     }
     const exp = data.expiresAt?.toDate?.();
     if (exp && exp < new Date()) {
-      inviteFromUrl = null;
       showMessage('만료된 초대 코드입니다.', 'error', 0);
       return;
     }
-    // 비로그인 상태면 가입 화면 즉시 노출 (로그인 상태면 onAuthStateChanged 가 처리)
+    inviteFromUrl = code;
     if (!auth.currentUser) showSignup();
   } catch (err) {
     console.error(err);
-    inviteFromUrl = null;
     showMessage('초대 코드 검증 실패: ' + err.message, 'error', 0);
   }
 }
