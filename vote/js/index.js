@@ -1,12 +1,16 @@
 import { db } from './firebase-config.js';
 import {
-  collection, query, where, onSnapshot, doc, getDoc, setDoc,
-  writeBatch, serverTimestamp, Timestamp,
+  collection, query, where, onSnapshot, doc, getDoc, getDocs,
+  writeBatch, serverTimestamp,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import { hashPhone, normalizePhone, formatRemaining, voteStatus } from './util.js';
 
 const SESSION_HASH = 'vote.phoneHash';
 const SESSION_RAW = 'vote.phoneRaw';
+const FAILURE_KEY = 'vote.entry.failures';
+const LOCKOUT_KEY = 'vote.entry.lockoutUntil';
+// 5회 누적부터 잠금 시작, 이후 1회마다 시간 증가 (분)
+const LOCKOUT_TIERS_MIN = [1, 5, 15, 60];
 
 const entrySection = document.getElementById('entry-section');
 const listSection = document.getElementById('list-section');
@@ -21,6 +25,66 @@ let phoneRaw = sessionStorage.getItem(SESSION_RAW);
 let votes = [];
 let votedSet = new Set();
 let unsubscribe = null;
+let lockoutTimer = null;
+let entryInFlight = false;
+
+function getLockoutRemainingMs() {
+  const until = Number(localStorage.getItem(LOCKOUT_KEY) || 0);
+  return Math.max(0, until - Date.now());
+}
+
+function recordFailure() {
+  const failures = Number(localStorage.getItem(FAILURE_KEY) || 0) + 1;
+  localStorage.setItem(FAILURE_KEY, String(failures));
+  if (failures >= 5) {
+    const tierIdx = Math.min(failures - 5, LOCKOUT_TIERS_MIN.length - 1);
+    const minutes = LOCKOUT_TIERS_MIN[tierIdx];
+    localStorage.setItem(LOCKOUT_KEY, String(Date.now() + minutes * 60_000));
+  }
+}
+
+function clearFailures() {
+  localStorage.removeItem(FAILURE_KEY);
+  localStorage.removeItem(LOCKOUT_KEY);
+  stopLockoutTimer();
+}
+
+function stopLockoutTimer() {
+  if (lockoutTimer) { clearInterval(lockoutTimer); lockoutTimer = null; }
+}
+
+function applyLockoutUI() {
+  const submitBtn = document.getElementById('entry-submit');
+  const errorEl = document.getElementById('entry-error');
+  const inputEl = document.getElementById('entry-phone');
+  const remaining = getLockoutRemainingMs();
+  if (remaining <= 0) {
+    submitBtn.disabled = false;
+    inputEl.disabled = false;
+    stopLockoutTimer();
+    return false;
+  }
+  submitBtn.disabled = true;
+  inputEl.disabled = true;
+  const mins = Math.ceil(remaining / 60_000);
+  errorEl.textContent = `너무 많이 잘못 입력하셨습니다. 약 ${mins}분 후 다시 시도해주세요.`;
+  errorEl.classList.remove('hidden');
+  if (!lockoutTimer) {
+    lockoutTimer = setInterval(() => {
+      const r = getLockoutRemainingMs();
+      if (r <= 0) {
+        stopLockoutTimer();
+        submitBtn.disabled = false;
+        inputEl.disabled = false;
+        errorEl.classList.add('hidden');
+      } else {
+        const m = Math.ceil(r / 60_000);
+        errorEl.textContent = `너무 많이 잘못 입력하셨습니다. 약 ${m}분 후 다시 시도해주세요.`;
+      }
+    }, 1000);
+  }
+  return true;
+}
 
 function showMessage(text, type = 'info', timeout = 3000) {
   messageArea.innerHTML = `<div class="message ${type}">${text}</div>`;
@@ -47,6 +111,7 @@ function showEntry() {
   const input = document.getElementById('entry-phone');
   input.value = '';
   document.getElementById('entry-error').classList.add('hidden');
+  applyLockoutUI();
   setTimeout(() => input.focus(), 0);
 }
 
@@ -63,8 +128,13 @@ document.getElementById('entry-phone').addEventListener('keydown', e => {
 document.getElementById('reset-phone').onclick = clearPhone;
 
 async function handleEntry() {
+  if (entryInFlight) return;
   const errorEl = document.getElementById('entry-error');
+  const submitBtn = document.getElementById('entry-submit');
   errorEl.classList.add('hidden');
+
+  if (applyLockoutUI()) return;
+
   const raw = document.getElementById('entry-phone').value.trim();
   if (!raw) {
     errorEl.textContent = '인증번호를 입력하세요.';
@@ -77,12 +147,38 @@ async function handleEntry() {
     errorEl.classList.remove('hidden');
     return;
   }
-  phoneHash = hash;
-  phoneRaw = normalizePhone(raw);
-  sessionStorage.setItem(SESSION_HASH, phoneHash);
-  sessionStorage.setItem(SESSION_RAW, phoneRaw);
-  showList();
-  await loadVotes();
+
+  entryInFlight = true;
+  submitBtn.disabled = true;
+  try {
+    const checkQ = query(
+      collection(db, 'votes'),
+      where('allowedPhoneHashes', 'array-contains', hash),
+      where('isPublic', '==', true),
+    );
+    const snap = await getDocs(checkQ);
+    if (snap.empty) {
+      recordFailure();
+      if (applyLockoutUI()) return;
+      errorEl.textContent = '등록되지 않은 인증번호입니다. 다시 확인해주세요.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    clearFailures();
+    phoneHash = hash;
+    phoneRaw = normalizePhone(raw);
+    sessionStorage.setItem(SESSION_HASH, phoneHash);
+    sessionStorage.setItem(SESSION_RAW, phoneRaw);
+    showList();
+    await loadVotes();
+  } catch (err) {
+    console.error(err);
+    errorEl.textContent = '인증번호 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+    errorEl.classList.remove('hidden');
+  } finally {
+    entryInFlight = false;
+    if (getLockoutRemainingMs() <= 0) submitBtn.disabled = false;
+  }
 }
 
 function clearPhone() {
@@ -101,15 +197,23 @@ function clearPhone() {
 function renderList() {
   if (!phoneHash) return;
   const now = new Date();
-  const visible = votes.filter(v =>
-    voteStatus(v, now) === 'active' && !votedSet.has(v.id)
-  );
+  const active   = votes.filter(v => voteStatus(v, now) === 'active');
+  const upcoming = votes.filter(v => voteStatus(v, now) === 'upcoming');
+  const ended    = votes.filter(v => voteStatus(v, now) === 'ended');
+  const visible  = active.filter(v => !votedSet.has(v.id));
 
   if (visible.length === 0) {
     listEl.innerHTML = '';
     emptyEl.classList.remove('hidden');
-    emptyEl.textContent =
-      '참여 가능한 투표가 없습니다. 등록되지 않은 번호이거나 모두 투표를 완료했을 수 있습니다.';
+    if (active.length > 0) {
+      emptyEl.textContent = '참여 가능한 모든 투표에 이미 참여하셨습니다.';
+    } else if (ended.length > 0 && upcoming.length === 0) {
+      emptyEl.textContent = '참여 가능한 투표가 모두 종료되었습니다.';
+    } else if (upcoming.length > 0 && ended.length === 0) {
+      emptyEl.textContent = '예정된 투표가 있습니다. 시작 시간 이후 다시 확인해주세요.';
+    } else {
+      emptyEl.textContent = '현재 진행 중인 투표가 없습니다.';
+    }
     return;
   }
   emptyEl.classList.add('hidden');
@@ -233,12 +337,10 @@ async function loadVotes() {
   if (unsubscribe) { unsubscribe(); unsubscribe = null; }
   if (!phoneHash) return;
 
-  const now = Timestamp.fromDate(new Date());
   const q = query(
     collection(db, 'votes'),
     where('allowedPhoneHashes', 'array-contains', phoneHash),
     where('isPublic', '==', true),
-    where('endAt', '>', now),
   );
 
   unsubscribe = onSnapshot(q, async snap => {
