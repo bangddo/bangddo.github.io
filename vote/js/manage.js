@@ -291,6 +291,9 @@ function renderSidebar() {
           <strong style="font-size:14px;">${escapeHtml(v.title)}${v.isPublic === false ? ' <span class="text-muted" style="font-weight:normal;">(비공개)</span>' : ''}</strong>
           <span class="badge ${status}">${statusLabel(status)}</span>
         </div>
+        <div class="text-muted" style="font-size:12px; margin-top:4px;">
+          ${escapeHtml(v.createdByEmail ?? '(등록자 정보 없음)')}
+        </div>
       </div>
     `;
   }).join('');
@@ -337,7 +340,7 @@ function renderForm(vote) {
       <label>투표 항목</label>
       <div id="items-container"></div>
       <button class="btn-secondary btn-sm mt-2" id="add-item-btn">+ 항목 추가</button>
-      <div id="items-locked-msg" class="text-muted hidden mt-2">이미 투표가 진행되어 항목 수정이 잠겼습니다.</div>
+      <div id="items-locked-msg" class="text-muted hidden mt-2">이미 투표가 진행되어 제목과 항목 수정이 잠겼습니다.</div>
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -477,6 +480,7 @@ function renderForm(vote) {
   if (isEdit) {
     checkBallotsExist(vote.id).then(hasBallots => {
       if (hasBallots) {
+        document.getElementById('f-title').disabled = true;
         document.querySelectorAll('#items-container input').forEach(i => i.disabled = true);
         document.getElementById('add-item-btn').disabled = true;
         document.querySelectorAll('#items-container button[data-remove]').forEach(b => b.disabled = true);
@@ -585,6 +589,7 @@ function renderForm(vote) {
           isPublic,
         });
       } else {
+        const me = auth.currentUser;
         batch.set(voteRef, {
           title,
           items: cleanedItems,
@@ -595,6 +600,8 @@ function renderForm(vote) {
           maxChoices,
           allowedPhoneHashes: finalHashes,
           createdAt: serverTimestamp(),
+          createdBy: me.uid,
+          createdByEmail: me.email,
         });
       }
 
@@ -645,7 +652,8 @@ function renderDetail(vote) {
           ${formatDateTime(vote.startAt.toDate())} ~ ${formatDateTime(vote.endAt.toDate())} ·
           ${vote.isAnonymous ? '익명' : '기명'} ·
           ${(vote.maxChoices ?? 1) > 1 ? `복수 선택(최대 ${vote.maxChoices}개)` : '단일 선택'} ·
-          대상 ${vote.allowedPhoneHashes?.length ?? 0}명
+          대상 ${vote.allowedPhoneHashes?.length ?? 0}명 ·
+          등록 ${escapeHtml(vote.createdByEmail ?? '정보 없음')}
         </div>
       </div>
       <div class="button-row">
