@@ -369,8 +369,8 @@ function renderForm(vote) {
       </div>
     </div>
     <div class="form-group">
-      <label>투표 대상자 인증번호 (전화번호, 줄/콤마 구분)</label>
-      <textarea id="f-phones" placeholder="010-1234-5678&#10;010-9876-5432" rows="6"></textarea>
+      <label>투표 대상자 인증번호 (줄/콤마 구분)</label>
+      <textarea id="f-phones" placeholder="인증번호1&#10;인증번호2" rows="6"></textarea>
       ${isEdit ? `<div class="text-muted mt-2">기존 ${vote.allowedPhoneHashes?.length ?? 0}개 등록됨. 새로 입력하면 전체 교체됩니다. 비워두면 유지됩니다.</div>` : ''}
     </div>
     <div id="form-error" class="message error hidden"></div>
@@ -444,11 +444,11 @@ function renderForm(vote) {
     let phoneHashes;
     if (phonesText.trim()) {
       phoneHashes = await hashPhoneList(phonesText);
-      if (phoneHashes.length === 0) return showError('유효한 전화번호가 없습니다.');
+      if (phoneHashes.length === 0) return showError('유효한 인증번호가 없습니다.');
     } else if (isEdit) {
       phoneHashes = vote.allowedPhoneHashes ?? [];
     } else {
-      return showError('투표 대상자 전화번호를 입력하세요.');
+      return showError('투표 대상자 인증번호를 입력하세요.');
     }
 
     try {
@@ -598,7 +598,7 @@ function renderResults(vote, ballots) {
           `).join('')}
         </tbody>
       </table>
-      <div class="text-muted mt-2">투표자는 전화번호 해시의 앞 8자리만 표시됩니다.</div>
+      <div class="text-muted mt-2">투표자는 인증번호 해시의 앞 8자리만 표시됩니다.</div>
     `;
   }
 
