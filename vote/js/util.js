@@ -36,6 +36,19 @@ export async function hashPhoneList(text) {
   return Promise.all(unique.map(sha256Hex));
 }
 
+export function attachDigitFilter(el, { allowSeparators = false } = {}) {
+  const re = allowSeparators ? /[^0-9\n,;]/g : /\D/g;
+  el.addEventListener('input', () => {
+    const before = el.value;
+    const caret = el.selectionStart ?? before.length;
+    const after = before.replace(re, '');
+    if (after === before) return;
+    const newCaret = before.slice(0, caret).replace(re, '').length;
+    el.value = after;
+    try { el.setSelectionRange(newCaret, newCaret); } catch {}
+  });
+}
+
 export function pad2(n) {
   return String(n).padStart(2, '0');
 }

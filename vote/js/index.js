@@ -3,7 +3,7 @@ import {
   collection, query, where, onSnapshot, doc, getDoc, getDocs,
   writeBatch, serverTimestamp,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-import { hashPhone, normalizePhone, formatRemaining, voteStatus } from './util.js';
+import { hashPhone, normalizePhone, formatRemaining, voteStatus, attachDigitFilter } from './util.js';
 
 const SESSION_HASH = 'vote.phoneHash';
 const SESSION_RAW = 'vote.phoneRaw';
@@ -125,6 +125,7 @@ document.getElementById('entry-submit').onclick = handleEntry;
 document.getElementById('entry-phone').addEventListener('keydown', e => {
   if (e.key === 'Enter') handleEntry();
 });
+attachDigitFilter(document.getElementById('entry-phone'));
 document.getElementById('reset-phone').onclick = clearPhone;
 
 async function handleEntry() {

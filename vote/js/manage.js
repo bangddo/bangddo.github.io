@@ -9,7 +9,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import {
   hashPhoneList, formatDateTime, toLocalInputValue, fromLocalInputValue,
-  voteStatus, statusLabel, generateInviteCode,
+  voteStatus, statusLabel, generateInviteCode, attachDigitFilter,
 } from './util.js';
 
 const loginSection = document.getElementById('login-section');
@@ -382,6 +382,7 @@ function renderForm(vote) {
 
   const itemsContainer = document.getElementById('items-container');
   const errorEl = document.getElementById('form-error');
+  attachDigitFilter(document.getElementById('f-phones'), { allowSeparators: true });
 
   function renderItems(values) {
     itemsContainer.innerHTML = values.map((val, idx) => `
