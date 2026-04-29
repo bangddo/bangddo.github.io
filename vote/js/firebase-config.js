@@ -21,7 +21,7 @@ const firebaseConfig = {
 // 3) 아래 APP_CHECK_SITE_KEY에 v3 "사이트 키"(공개 키) 입력
 // 4) Firebase 콘솔 → App Check → API → Cloud Firestore에서 처음에는 "모니터링" 모드로 1주일 운영
 //    후 정상 사용자 차단이 없으면 "강제(Enforce)"로 전환
-const APP_CHECK_SITE_KEY = ''; // ← reCAPTCHA v3 사이트 키를 여기에 입력하면 활성화됨
+const APP_CHECK_SITE_KEY = '6Ldzh88sAAAAAPeGPBOTAZroSpLDugJiC5LKAjUC'; // ← reCAPTCHA v3 사이트 키를 여기에 입력하면 활성화됨
 
 export const app = initializeApp(firebaseConfig);
 
