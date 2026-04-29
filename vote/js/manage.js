@@ -254,11 +254,45 @@ function showManage(user) {
   subscribeVotes();
 }
 
+let phoneHashIndexBackfillRan = false;
+
+async function maybeBackfillPhoneHashIndex(allVotes) {
+  if (phoneHashIndexBackfillRan) return;
+  phoneHashIndexBackfillRan = true;
+  try {
+    const probe = await getDocs(query(collection(db, 'phoneHashIndex'), limit(1)));
+    if (!probe.empty) return;
+    const allHashes = new Set();
+    for (const v of allVotes) {
+      for (const h of (v.allowedPhoneHashes ?? [])) allHashes.add(h);
+    }
+    if (allHashes.size === 0) return;
+    const chunks = [];
+    let cur = [];
+    for (const h of allHashes) {
+      cur.push(h);
+      if (cur.length >= 400) { chunks.push(cur); cur = []; }
+    }
+    if (cur.length) chunks.push(cur);
+    for (const chunk of chunks) {
+      const batch = writeBatch(db);
+      for (const h of chunk) {
+        batch.set(doc(db, 'phoneHashIndex', h), { at: serverTimestamp() }, { merge: true });
+      }
+      await batch.commit();
+    }
+  } catch (err) {
+    console.error('phoneHashIndex backfill 실패:', err);
+    phoneHashIndexBackfillRan = false;
+  }
+}
+
 function subscribeVotes() {
   if (votesUnsubscribe) votesUnsubscribe();
   const q = query(collection(db, 'votes'), orderBy('createdAt', 'desc'));
   votesUnsubscribe = onSnapshot(q, snap => {
     votes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    maybeBackfillPhoneHashIndex(votes);
     renderSidebar();
     if (selectedVoteId) {
       const exists = votes.find(v => v.id === selectedVoteId);
@@ -610,6 +644,7 @@ function renderForm(vote) {
       }
       for (const a of additions) {
         batch.set(doc(db, 'votes', voteRef.id, 'phoneNames', a.hash), { name: a.name });
+        batch.set(doc(db, 'phoneHashIndex', a.hash), { at: serverTimestamp() }, { merge: true });
       }
 
       await batch.commit();

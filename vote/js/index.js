@@ -7,6 +7,7 @@ import { hashPhone, normalizePhone, formatRemaining, voteStatus, attachDigitFilt
 
 const SESSION_HASH = 'vote.phoneHash';
 const SESSION_RAW = 'vote.phoneRaw';
+const SESSION_INDEX_ONLY = 'vote.indexOnly';
 const FAILURE_KEY = 'vote.entry.failures';
 const LOCKOUT_KEY = 'vote.entry.lockoutUntil';
 // 5회 누적부터 잠금 시작, 이후 1회마다 시간 증가 (분)
@@ -22,6 +23,7 @@ const phoneDisplay = document.getElementById('phone-display');
 
 let phoneHash = sessionStorage.getItem(SESSION_HASH);
 let phoneRaw = sessionStorage.getItem(SESSION_RAW);
+let enteredViaIndex = sessionStorage.getItem(SESSION_INDEX_ONLY) === '1';
 let votes = [];
 let votedSet = new Set();
 let unsubscribe = null;
@@ -158,18 +160,28 @@ async function handleEntry() {
       where('isPublic', '==', true),
     );
     const snap = await getDocs(checkQ);
+    let viaIndex = false;
     if (snap.empty) {
-      recordFailure();
-      if (applyLockoutUI()) return;
-      errorEl.textContent = '등록되지 않은 인증번호입니다. 다시 확인해주세요.';
-      errorEl.classList.remove('hidden');
-      return;
+      // 공개 투표에는 매칭이 없지만, 비공개 투표에만 등록된 인증번호일 수 있어
+      // 공용 인덱스로 한 번 더 확인한다. 인덱스에 있으면 진입 통과 (목록은 빈 상태로 표시).
+      const indexDoc = await getDoc(doc(db, 'phoneHashIndex', hash));
+      if (!indexDoc.exists()) {
+        recordFailure();
+        if (applyLockoutUI()) return;
+        errorEl.textContent = '등록되지 않은 인증번호입니다. 다시 확인해주세요.';
+        errorEl.classList.remove('hidden');
+        return;
+      }
+      viaIndex = true;
     }
     clearFailures();
     phoneHash = hash;
     phoneRaw = normalizePhone(raw);
+    enteredViaIndex = viaIndex;
     sessionStorage.setItem(SESSION_HASH, phoneHash);
     sessionStorage.setItem(SESSION_RAW, phoneRaw);
+    if (viaIndex) sessionStorage.setItem(SESSION_INDEX_ONLY, '1');
+    else sessionStorage.removeItem(SESSION_INDEX_ONLY);
     showList();
     await loadVotes();
   } catch (err) {
@@ -186,10 +198,12 @@ function clearPhone() {
   if (unsubscribe) { unsubscribe(); unsubscribe = null; }
   phoneHash = null;
   phoneRaw = null;
+  enteredViaIndex = false;
   votes = [];
   votedSet = new Set();
   sessionStorage.removeItem(SESSION_HASH);
   sessionStorage.removeItem(SESSION_RAW);
+  sessionStorage.removeItem(SESSION_INDEX_ONLY);
   listEl.innerHTML = '';
   emptyEl.classList.add('hidden');
   showEntry();
@@ -207,6 +221,9 @@ function renderList() {
     listEl.innerHTML = '';
     emptyEl.classList.remove('hidden');
     if (active.length > 0) {
+      emptyEl.textContent = '참여 가능한 모든 투표에 이미 참여하셨습니다.';
+    } else if (enteredViaIndex && votes.length === 0) {
+      // 비공개 투표에만 등록되어 진입한 케이스 — 공개 목록은 빈 상태가 정상.
       emptyEl.textContent = '참여 가능한 모든 투표에 이미 참여하셨습니다.';
     } else if (ended.length > 0 && upcoming.length === 0) {
       emptyEl.textContent = '참여 가능한 투표가 모두 종료되었습니다.';

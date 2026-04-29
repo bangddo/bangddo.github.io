@@ -1,1 +1,3 @@
 /.claude
+/firestore.rules
+/firestore.indexes.json
