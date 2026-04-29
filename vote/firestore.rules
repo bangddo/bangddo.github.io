@@ -102,6 +102,13 @@ service cloud.firestore {
         allow delete: if isAdmin();
       }
 
+      // 등록자 이름 매핑 — 관리자 전용 (개인정보 보호)
+      // phoneHash → name 매핑이 vote 문서 본체에 있으면 isPublic==true 시
+      // 누구나 read 되어 노출되므로 별도 서브컬렉션으로 분리.
+      match /phoneNames/{phoneHash} {
+        allow read, write: if isAdmin();
+      }
+
       // 참여 마커 — 익명성 보호를 위해 ballots 와 분리
       // 유권자가 "내가 이 투표에 참여했는지" 만 확인할 수 있도록 get 공개
       // (choices 는 ballots 에만 들어있고 ballots 는 관리자만 read)

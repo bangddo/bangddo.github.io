@@ -4,12 +4,12 @@ import {
   signOut, onAuthStateChanged,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
-  collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc,
+  collection, doc, getDoc, getDocs, updateDoc, deleteDoc,
   setDoc, onSnapshot, query, orderBy, writeBatch, serverTimestamp, Timestamp, limit,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import {
-  hashPhoneList, formatDateTime, toLocalInputValue, fromLocalInputValue,
-  voteStatus, statusLabel, generateInviteCode, attachDigitFilter,
+  parseAndHashNamedPhoneEntries, formatDateTime, toLocalInputValue, fromLocalInputValue,
+  voteStatus, statusLabel, generateInviteCode,
 } from './util.js';
 
 const loginSection = document.getElementById('login-section');
@@ -368,10 +368,18 @@ function renderForm(vote) {
         <label for="f-public">공개 (체크 해제 시 유권자 화면에 노출되지 않음)</label>
       </div>
     </div>
+    ${isEdit ? `
     <div class="form-group">
-      <label>투표 대상자 인증번호 (줄/콤마 구분)</label>
-      <textarea id="f-phones" placeholder="인증번호1&#10;인증번호2" rows="6"></textarea>
-      ${isEdit ? `<div class="text-muted mt-2">기존 ${vote.allowedPhoneHashes?.length ?? 0}개 등록됨. 새로 입력하면 전체 교체됩니다. 비워두면 유지됩니다.</div>` : ''}
+      <label>현재 등록자 (${vote.allowedPhoneHashes?.length ?? 0}명)</label>
+      <div id="phones-list" class="phones-list">
+        <div class="text-muted" style="padding: 12px; text-align: center;">불러오는 중...</div>
+      </div>
+    </div>
+    ` : ''}
+    <div class="form-group">
+      <label>${isEdit ? '추가할 인증번호' : '투표 대상자'} (이름 인증번호 형식, 한 줄에 한 명)</label>
+      <textarea id="f-phones" placeholder="홍길동 인증번호1&#10;김철수 인증번호2" rows="6"></textarea>
+      ${isEdit ? '<div class="text-muted mt-2">기존 목록에 추가됩니다. 같은 인증번호나 이름이 이미 등록되어 있으면 거부됩니다.</div>' : ''}
     </div>
     <div id="form-error" class="message error hidden"></div>
     <div class="button-row">
@@ -382,7 +390,60 @@ function renderForm(vote) {
 
   const itemsContainer = document.getElementById('items-container');
   const errorEl = document.getElementById('form-error');
-  attachDigitFilter(document.getElementById('f-phones'), { allowSeparators: true });
+
+  // 수정 모드 등록자 목록 상태
+  const removalSet = new Set();
+  const votedHashes = new Set();
+  const phoneNames = new Map();
+
+  function renderPhonesList() {
+    const phonesListEl = document.getElementById('phones-list');
+    if (!phonesListEl) return;
+    const hashes = vote?.allowedPhoneHashes ?? [];
+    if (hashes.length === 0) {
+      phonesListEl.innerHTML = '<div class="text-muted" style="padding: 12px; text-align: center;">등록된 대상자가 없습니다.</div>';
+      return;
+    }
+    phonesListEl.innerHTML = hashes.map(h => {
+      const name = phoneNames.get(h) ?? '';
+      const voted = votedHashes.has(h);
+      const isRemoved = removalSet.has(h);
+      const nameHtml = name
+        ? `<span class="phones-name">${escapeHtml(name)}</span>`
+        : '<span class="phones-name unnamed">이름 미등록</span>';
+      return `
+        <div class="phones-row ${isRemoved ? 'removed' : ''}" data-hash="${h}">
+          ${nameHtml}
+          ${voted ? '<span class="badge active">투표함</span>' : ''}
+          <button class="btn-secondary btn-sm phones-remove" data-hash="${h}" ${voted ? 'disabled' : ''} title="${voted ? '이미 투표했습니다' : '제거'}">×</button>
+        </div>
+      `;
+    }).join('');
+    phonesListEl.querySelectorAll('.phones-remove').forEach(btn => {
+      btn.onclick = () => {
+        const h = btn.dataset.hash;
+        if (votedHashes.has(h)) return;
+        const row = btn.closest('.phones-row');
+        if (removalSet.has(h)) { removalSet.delete(h); row.classList.remove('removed'); }
+        else { removalSet.add(h); row.classList.add('removed'); }
+      };
+    });
+  }
+
+  if (isEdit) {
+    Promise.all([
+      getDocs(collection(db, 'votes', vote.id, 'phoneNames')),
+      getDocs(collection(db, 'votes', vote.id, 'voters')),
+    ]).then(([namesSnap, votersSnap]) => {
+      for (const d of namesSnap.docs) phoneNames.set(d.id, d.data().name ?? '');
+      for (const d of votersSnap.docs) votedHashes.add(d.id);
+      renderPhonesList();
+    }).catch(err => {
+      console.error(err);
+      const phonesListEl = document.getElementById('phones-list');
+      if (phonesListEl) phonesListEl.innerHTML = '<div class="text-muted" style="padding: 12px;">목록을 불러올 수 없습니다.</div>';
+    });
+  }
 
   function renderItems(values) {
     itemsContainer.innerHTML = values.map((val, idx) => `
@@ -441,33 +502,90 @@ function renderForm(vote) {
     if (cleanedItems.length < 2) return showError('항목을 2개 이상 입력하세요.');
     if (maxChoices < 1 || maxChoices > cleanedItems.length) return showError('최대 선택 개수가 유효하지 않습니다.');
 
-    let phoneHashes;
-    if (phonesText.trim()) {
-      phoneHashes = await hashPhoneList(phonesText);
-      if (phoneHashes.length === 0) return showError('유효한 인증번호가 없습니다.');
-    } else if (isEdit) {
-      phoneHashes = vote.allowedPhoneHashes ?? [];
-    } else {
-      return showError('투표 대상자 인증번호를 입력하세요.');
+    let startAt, endAt;
+    if (!isEdit) {
+      startAt = fromLocalInputValue(document.getElementById('f-start').value);
+      endAt = fromLocalInputValue(document.getElementById('f-end').value);
+      if (!startAt || !endAt) return showError('시간을 입력하세요.');
+      if (endAt <= startAt) return showError('종료 시간이 시작 시간보다 뒤여야 합니다.');
+    }
+
+    let entries;
+    try {
+      entries = await parseAndHashNamedPhoneEntries(phonesText);
+    } catch (err) {
+      console.error(err);
+      return showError('인증번호 처리 중 오류가 발생했습니다.');
+    }
+
+    const violations = [];
+    for (const e of entries) {
+      if (e.error === 'parse_failed') violations.push(`${e.lineNo}번째 줄을 인식할 수 없습니다: "${e.original}"`);
+      if (e.error === 'empty_phone')  violations.push(`${e.lineNo}번째 줄: 인증번호가 비어 있습니다.`);
+    }
+    const valid = entries.filter(e => !e.error);
+
+    const hashFirstSeen = new Map();
+    for (const e of valid) {
+      const prev = hashFirstSeen.get(e.hash);
+      if (prev != null) violations.push(`${prev}번째 줄과 ${e.lineNo}번째 줄의 인증번호가 같습니다.`);
+      else hashFirstSeen.set(e.hash, e.lineNo);
+    }
+
+    const nameFirstSeen = new Map();
+    for (const e of valid) {
+      if (!e.name) continue;
+      const prev = nameFirstSeen.get(e.name);
+      if (prev != null) violations.push(`${prev}번째 줄과 ${e.lineNo}번째 줄의 이름 "${e.name}"이 같습니다.`);
+      else nameFirstSeen.set(e.name, e.lineNo);
+    }
+
+    // 안전 가드: 이미 투표한 hash는 어떤 경로로도 제거되지 않음
+    const safeRemoval = new Set([...removalSet].filter(h => !votedHashes.has(h)));
+    const existingHashes = isEdit ? (vote.allowedPhoneHashes ?? []) : [];
+    const remainingHashes = new Set(existingHashes.filter(h => !safeRemoval.has(h)));
+    const remainingNameByHash = new Map();
+    for (const h of remainingHashes) {
+      const name = phoneNames.get(h);
+      if (name) remainingNameByHash.set(h, name);
+    }
+    const remainingNames = new Set(remainingNameByHash.values());
+
+    for (const e of valid) {
+      if (remainingHashes.has(e.hash)) {
+        const existingName = remainingNameByHash.get(e.hash) ?? '';
+        violations.push(`${e.lineNo}번째 줄의 인증번호는 이미 등록되어 있습니다${existingName ? ` (${existingName})` : ''}.`);
+        continue;
+      }
+      if (e.name && remainingNames.has(e.name)) {
+        violations.push(`${e.lineNo}번째 줄의 이름 "${e.name}"은 이미 등록되어 있습니다.`);
+      }
+    }
+
+    if (violations.length > 0) {
+      return showError(violations);
+    }
+
+    const additions = valid.map(e => ({ name: e.name, hash: e.hash }));
+    const finalHashes = [...remainingHashes, ...additions.map(a => a.hash)];
+
+    if (finalHashes.length === 0) {
+      return showError('투표 대상자 인증번호를 1명 이상 등록해야 합니다.');
     }
 
     try {
+      const voteRef = isEdit ? doc(db, 'votes', vote.id) : doc(collection(db, 'votes'));
+      const batch = writeBatch(db);
+
       if (isEdit) {
-        const update = {
+        batch.update(voteRef, {
           title,
           items: cleanedItems,
-          allowedPhoneHashes: phoneHashes,
+          allowedPhoneHashes: finalHashes,
           isPublic,
-        };
-        await updateDoc(doc(db, 'votes', vote.id), update);
-        showMessage('수정되었습니다.', 'success');
+        });
       } else {
-        const startAt = fromLocalInputValue(document.getElementById('f-start').value);
-        const endAt = fromLocalInputValue(document.getElementById('f-end').value);
-        if (!startAt || !endAt) return showError('시간을 입력하세요.');
-        if (endAt <= startAt) return showError('종료 시간이 시작 시간보다 뒤여야 합니다.');
-
-        const ref = await addDoc(collection(db, 'votes'), {
+        batch.set(voteRef, {
           title,
           items: cleanedItems,
           startAt: Timestamp.fromDate(startAt),
@@ -475,12 +593,21 @@ function renderForm(vote) {
           isAnonymous,
           isPublic,
           maxChoices,
-          allowedPhoneHashes: phoneHashes,
+          allowedPhoneHashes: finalHashes,
           createdAt: serverTimestamp(),
         });
-        selectedVoteId = ref.id;
-        showMessage('등록되었습니다.', 'success');
       }
+
+      for (const h of safeRemoval) {
+        batch.delete(doc(db, 'votes', voteRef.id, 'phoneNames', h));
+      }
+      for (const a of additions) {
+        batch.set(doc(db, 'votes', voteRef.id, 'phoneNames', a.hash), { name: a.name });
+      }
+
+      await batch.commit();
+      if (!isEdit) selectedVoteId = voteRef.id;
+      showMessage(isEdit ? '수정되었습니다.' : '등록되었습니다.', 'success');
     } catch (err) {
       console.error(err);
       showError('저장 실패: ' + err.message);
@@ -488,7 +615,13 @@ function renderForm(vote) {
   };
 
   function showError(text) {
-    errorEl.textContent = text;
+    if (Array.isArray(text)) {
+      errorEl.innerHTML = '<ul style="margin: 0; padding-left: 20px;">'
+        + text.map(t => `<li>${escapeHtml(t)}</li>`).join('')
+        + '</ul>';
+    } else {
+      errorEl.textContent = text;
+    }
     errorEl.classList.remove('hidden');
   }
 }
@@ -676,6 +809,7 @@ async function deleteSubcollection(path) {
 async function deleteVoteWithSubcollections(voteId) {
   await deleteSubcollection(['votes', voteId, 'ballots']);
   await deleteSubcollection(['votes', voteId, 'voters']);
+  await deleteSubcollection(['votes', voteId, 'phoneNames']);
   await deleteDoc(doc(db, 'votes', voteId));
 }
 

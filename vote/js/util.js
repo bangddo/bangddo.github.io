@@ -36,6 +36,39 @@ export async function hashPhoneList(text) {
   return Promise.all(unique.map(sha256Hex));
 }
 
+export function parseNamedPhoneLine(line) {
+  const t = String(line ?? '').trim();
+  if (!t) return null;
+  const m = t.match(/^(.+?)\s+([\d\s\-]+)$/);
+  if (m) return { name: m[1].trim(), raw: m[2] };
+  if (/^[\d\s\-]+$/.test(t)) return { name: '', raw: t };
+  return null;
+}
+
+export async function parseAndHashNamedPhoneEntries(text) {
+  const rawLines = String(text ?? '').split(/[\n;]/);
+  const out = [];
+  for (let i = 0; i < rawLines.length; i++) {
+    const lineNo = i + 1;
+    const original = rawLines[i];
+    const trimmed = original.trim();
+    if (!trimmed) continue;
+    const parsed = parseNamedPhoneLine(trimmed);
+    if (!parsed) {
+      out.push({ lineNo, original, error: 'parse_failed' });
+      continue;
+    }
+    const normalized = normalizePhone(parsed.raw);
+    if (!normalized) {
+      out.push({ lineNo, original, name: parsed.name, error: 'empty_phone' });
+      continue;
+    }
+    const hash = await sha256Hex(normalized);
+    out.push({ lineNo, original, name: parsed.name, normalized, hash, error: null });
+  }
+  return out;
+}
+
 export function attachDigitFilter(el, { allowSeparators = false } = {}) {
   const re = allowSeparators ? /[^0-9\n,;]/g : /\D/g;
   el.addEventListener('input', () => {
