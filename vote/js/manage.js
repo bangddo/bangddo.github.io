@@ -5,7 +5,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
   collection, doc, getDoc, getDocs, updateDoc, deleteDoc,
-  setDoc, onSnapshot, query, orderBy, writeBatch, serverTimestamp, Timestamp, limit,
+  setDoc, onSnapshot, query, where, orderBy, writeBatch, serverTimestamp, Timestamp, limit,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import {
   parseAndHashNamedPhoneEntries, formatDateTime, toLocalInputValue, fromLocalInputValue,
@@ -287,12 +287,41 @@ async function maybeBackfillPhoneHashIndex(allVotes) {
   }
 }
 
+let phoneHashIndexCleanupRan = false;
+
+// 어떤 투표에서도 더 이상 참조되지 않는 phoneHashIndex 엔트리를 1회성으로 정리.
+// 과거 삭제/편집 경로에서 누수된 고아 항목을 청소하기 위함.
+async function maybeCleanupPhoneHashIndex(allVotes) {
+  if (phoneHashIndexCleanupRan) return;
+  phoneHashIndexCleanupRan = true;
+  try {
+    const validHashes = new Set();
+    for (const v of allVotes) {
+      for (const h of (v.allowedPhoneHashes ?? [])) validHashes.add(h);
+    }
+    const indexSnap = await getDocs(collection(db, 'phoneHashIndex'));
+    const orphans = indexSnap.docs.map(d => d.id).filter(h => !validHashes.has(h));
+    if (orphans.length === 0) return;
+    for (let i = 0; i < orphans.length; i += 400) {
+      const batch = writeBatch(db);
+      for (const h of orphans.slice(i, i + 400)) {
+        batch.delete(doc(db, 'phoneHashIndex', h));
+      }
+      await batch.commit();
+    }
+  } catch (err) {
+    console.error('phoneHashIndex 정리 실패:', err);
+    phoneHashIndexCleanupRan = false;
+  }
+}
+
 function subscribeVotes() {
   if (votesUnsubscribe) votesUnsubscribe();
   const q = query(collection(db, 'votes'), orderBy('createdAt', 'desc'));
   votesUnsubscribe = onSnapshot(q, snap => {
     votes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     maybeBackfillPhoneHashIndex(votes);
+    maybeCleanupPhoneHashIndex(votes);
     renderSidebar();
     if (selectedVoteId) {
       const exists = votes.find(v => v.id === selectedVoteId);
@@ -648,6 +677,13 @@ function renderForm(vote) {
       }
 
       await batch.commit();
+      if (isEdit && safeRemoval.size > 0) {
+        // 본 batch 가 이미 allowedPhoneHashes 를 갱신했으므로, 다른 투표 사용
+        // 여부만 확인하면 충분하다. best-effort — 실패해도 데이터 정합성 영향 없음.
+        pruneOrphanIndexEntries([...safeRemoval]).catch(err => {
+          console.error('phoneHashIndex 정리 실패:', err);
+        });
+      }
       if (!isEdit) selectedVoteId = voteRef.id;
       showMessage(isEdit ? '수정되었습니다.' : '등록되었습니다.', 'success');
     } catch (err) {
@@ -849,11 +885,42 @@ async function deleteSubcollection(path) {
   }
 }
 
+// 후보 hash 들 중 어느 투표에서도 더 이상 사용되지 않는 항목의
+// phoneHashIndex 엔트리를 정리. 호출 시점에 해당 hash 를 갖던 투표(들)는
+// 이미 삭제/갱신된 상태여야 한다.
+async function pruneOrphanIndexEntries(hashes) {
+  const unique = [...new Set((hashes ?? []).filter(Boolean))];
+  if (unique.length === 0) return;
+  const checks = await Promise.all(unique.map(async h => {
+    const otherQ = query(
+      collection(db, 'votes'),
+      where('allowedPhoneHashes', 'array-contains', h),
+      limit(1),
+    );
+    const snap = await getDocs(otherQ);
+    return [h, snap.empty];
+  }));
+  const orphans = checks.filter(([, empty]) => empty).map(([h]) => h);
+  for (let i = 0; i < orphans.length; i += 400) {
+    const batch = writeBatch(db);
+    for (const h of orphans.slice(i, i + 400)) {
+      batch.delete(doc(db, 'phoneHashIndex', h));
+    }
+    await batch.commit();
+  }
+}
+
 async function deleteVoteWithSubcollections(voteId) {
+  // 인덱스 정리에 쓸 hash 목록은 본문 삭제 전에 확보해 둔다.
+  const voteSnap = await getDoc(doc(db, 'votes', voteId));
+  const hashes = voteSnap.exists() ? (voteSnap.data().allowedPhoneHashes ?? []) : [];
+
   await deleteSubcollection(['votes', voteId, 'ballots']);
   await deleteSubcollection(['votes', voteId, 'voters']);
   await deleteSubcollection(['votes', voteId, 'phoneNames']);
   await deleteDoc(doc(db, 'votes', voteId));
+
+  await pruneOrphanIndexEntries(hashes);
 }
 
 // ========== 관리자 관리 패널 ==========
