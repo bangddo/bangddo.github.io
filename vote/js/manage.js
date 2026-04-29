@@ -357,14 +357,14 @@ function renderForm(vote) {
       <div class="form-group">
         <label>익명 투표</label>
         <div class="checkbox-row" style="height: 36px;">
-          <input type="checkbox" id="f-anon" ${isEdit && vote.isAnonymous ? 'checked' : ''} ${lockTimeAndAnon ? 'disabled' : ''}>
+          <input type="checkbox" id="f-anon" ${(!isEdit || vote.isAnonymous) ? 'checked' : ''} ${lockTimeAndAnon ? 'disabled' : ''}>
           <label for="f-anon">익명으로 진행</label>
         </div>
       </div>
     </div>
     <div class="form-group">
       <div class="checkbox-row">
-        <input type="checkbox" id="f-public" ${!isEdit || vote.isPublic !== false ? 'checked' : ''}>
+        <input type="checkbox" id="f-public" ${isEdit && vote.isPublic !== false ? 'checked' : ''}>
         <label for="f-public">공개 (체크 해제 시 유권자 화면에 노출되지 않음)</label>
       </div>
     </div>
