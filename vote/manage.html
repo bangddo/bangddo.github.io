@@ -31,6 +31,23 @@
       </div>
       <div id="login-error" class="message error hidden"></div>
       <button id="login-submit" class="btn-primary" style="width: 100%;">로그인</button>
+      <p style="text-align: center; margin-top: 12px;">
+        <a href="#" id="forgot-password-link" class="text-muted">비밀번호를 잊으셨나요?</a>
+      </p>
+    </section>
+
+    <section id="reset-section" class="panel hidden" style="max-width: 400px; margin: 40px auto;">
+      <h2>비밀번호 재설정</h2>
+      <p class="text-muted">가입한 이메일을 입력하면 비밀번호 재설정 링크를 보내드립니다.</p>
+      <div class="form-group">
+        <label>이메일</label>
+        <input type="email" id="reset-email" autocomplete="username">
+      </div>
+      <div id="reset-result" class="message hidden"></div>
+      <button id="reset-submit" class="btn-primary" style="width: 100%;">재설정 메일 보내기</button>
+      <p style="text-align: center; margin-top: 12px;">
+        <a href="#" id="reset-back-link" class="text-muted">로그인으로 돌아가기</a>
+      </p>
     </section>
 
     <section id="signup-section" class="panel hidden" style="max-width: 400px; margin: 40px auto;">

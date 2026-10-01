@@ -1,7 +1,7 @@
 import { db, auth } from './firebase-config.js';
 import {
   signInWithEmailAndPassword, createUserWithEmailAndPassword,
-  signOut, onAuthStateChanged,
+  signOut, onAuthStateChanged, sendPasswordResetEmail,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
   collection, doc, getDoc, getDocs, updateDoc, deleteDoc,
@@ -16,6 +16,7 @@ const loginSection = document.getElementById('login-section');
 const signupSection = document.getElementById('signup-section');
 const pendingSection = document.getElementById('pending-section');
 const rejectedSection = document.getElementById('rejected-section');
+const resetSection = document.getElementById('reset-section');
 const manageSection = document.getElementById('manage-section');
 const userInfo = document.getElementById('user-info');
 const logoutBtn = document.getElementById('logout-btn');
@@ -50,6 +51,18 @@ document.getElementById('signup-submit').onclick = handleSignup;
 document.getElementById('signup-password').addEventListener('keydown', e => {
   if (e.key === 'Enter') handleSignup();
 });
+document.getElementById('forgot-password-link').onclick = e => {
+  e.preventDefault();
+  showReset();
+};
+document.getElementById('reset-back-link').onclick = e => {
+  e.preventDefault();
+  showLogin();
+};
+document.getElementById('reset-submit').onclick = handlePasswordReset;
+document.getElementById('reset-email').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handlePasswordReset();
+});
 document.getElementById('pending-cancel').onclick = handlePendingCancel;
 document.getElementById('rejected-confirm').onclick = handleRejectedConfirm;
 
@@ -67,6 +80,44 @@ async function handleLogin() {
     console.error(err);
     errorEl.textContent = '로그인 실패: ' + (err.code ?? err.message);
     errorEl.classList.remove('hidden');
+  }
+}
+
+async function handlePasswordReset() {
+  const email = document.getElementById('reset-email').value.trim();
+  const resultEl = document.getElementById('reset-result');
+  const submitBtn = document.getElementById('reset-submit');
+  const setResult = (text, type) => {
+    resultEl.className = `message ${type}`;
+    resultEl.textContent = text;
+  };
+
+  if (!email) {
+    setResult('이메일을 입력하세요.', 'error');
+    return;
+  }
+
+  submitBtn.disabled = true;
+  try {
+    auth.languageCode = 'ko';
+    await sendPasswordResetEmail(auth, email, {
+      url: location.origin + location.pathname,
+    });
+    // 계정 존재 여부를 노출하지 않도록 성공/미가입 모두 동일 문구
+    setResult('입력한 이메일로 가입된 계정이 있다면 재설정 메일이 발송됩니다. 메일함(스팸함 포함)을 확인하세요.', 'success');
+  } catch (err) {
+    console.error(err);
+    if (err.code === 'auth/user-not-found') {
+      setResult('입력한 이메일로 가입된 계정이 있다면 재설정 메일이 발송됩니다. 메일함(스팸함 포함)을 확인하세요.', 'success');
+    } else if (err.code === 'auth/invalid-email') {
+      setResult('이메일 형식이 올바르지 않습니다.', 'error');
+    } else if (err.code === 'auth/too-many-requests') {
+      setResult('요청이 너무 많습니다. 잠시 후 다시 시도하세요.', 'error');
+    } else {
+      setResult('메일 발송 실패: ' + (err.code ?? err.message), 'error');
+    }
+  } finally {
+    submitBtn.disabled = false;
   }
 }
 
@@ -192,7 +243,20 @@ function hideAllSections() {
   signupSection.classList.add('hidden');
   pendingSection.classList.add('hidden');
   rejectedSection.classList.add('hidden');
+  resetSection.classList.add('hidden');
   manageSection.classList.add('hidden');
+}
+
+function showReset() {
+  hideAllSections();
+  resetSection.classList.remove('hidden');
+  const resultEl = document.getElementById('reset-result');
+  resultEl.className = 'message hidden';
+  resultEl.textContent = '';
+  const loginEmail = document.getElementById('login-email').value.trim();
+  const resetEmail = document.getElementById('reset-email');
+  if (loginEmail && !resetEmail.value) resetEmail.value = loginEmail;
+  resetEmail.focus();
 }
 
 function showLogin() {
