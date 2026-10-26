@@ -213,7 +213,7 @@ code { background: #f1f3f9; padding: 1px 5px; border-radius: 6px; font-size: 90%
   body { font-size: 16px; }
   .page { padding-top: 28px; }
   .page-head h1 { font-size: 32px; }
-  .grid-2 { grid-template-columns: 3fr 2fr; align-items: start; }
+  .grid-2 { grid-template-columns: 1fr 1fr; align-items: start; }   /* 다가올 일정 : 나머지 카드 = 반반 */
   .card { padding: 20px 22px; }
   .card h2 { font-size: 19px; }
   .table-wrap { margin: 0; padding: 0; }
