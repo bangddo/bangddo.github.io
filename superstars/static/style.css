@@ -135,6 +135,7 @@ pre.raw { background: #f6f7fb; padding: 8px; border-radius: 8px; font-size: 12px
 .filters { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: flex-end; margin-bottom: 14px; }
 .filters label { display: flex; flex-direction: column; font-size: 12px; color: var(--muted); gap: 4px; }
 .filters select, .filters input { font: inherit; font-size: 14px; padding: 9px 12px; border: 1px solid #d8dbe6; border-radius: var(--radius-s); background: #fff; min-width: 140px; max-width: 100%; }
+.filters input[type="checkbox"] { min-width: 0; width: auto; padding: 0; margin: 0; }   /* 체크박스에는 입력란 최소 너비를 주지 않는다 */
 .filters .merge-toggle { flex-direction: row; align-items: center; gap: 6px; font-size: 13px; color: var(--text); align-self: flex-end; padding-bottom: 10px; }
 .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
 .tab { padding: 8px 16px; border-radius: 999px; font-weight: 600; color: #333; background: #fff; border: 1px solid var(--line-2); font-size: 14px; }
