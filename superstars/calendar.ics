@@ -6,241 +6,241 @@ X-WR-CALNAME:슈퍼스타즈 일정
 X-WR-TIMEZONE:Asia/Seoul
 BEGIN:VEVENT
 UID:game-1@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260221T060000Z
 DTEND:20260221T083000Z
-SUMMARY:vs PENNANT [성남리그]
+SUMMARY:vs PENNANT (선공) [성남리그]
 LOCATION:백현야구장
-DESCRIPTION:출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/yryl2l4yuc
+DESCRIPTION:선공 (사이트 표기 순서 기준)\n출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/yryl2l4yuc
 END:VEVENT
 BEGIN:VEVENT
 UID:game-22@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260228T043000Z
 DTEND:20260228T070000Z
-SUMMARY:vs ACE Twins [경희빅리그]
+SUMMARY:vs ACE Twins (후공) [경희빅리그]
 LOCATION:경희2구장
-DESCRIPTION:출처: 유니크플레이\n콜드승\nhttps://unique-play.com/game/47241/boxscore
+DESCRIPTION:후공 (사이트 표기 순서 기준)\n출처: 유니크플레이\n콜드승\nhttps://unique-play.com/game/47241/boxscore
 END:VEVENT
 BEGIN:VEVENT
 UID:game-2@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260306T233000Z
 DTEND:20260307T020000Z
-SUMMARY:vs Big Hits [성남리그]
+SUMMARY:vs Big Hits (후공) [성남리그]
 LOCATION:탄천야구장
-DESCRIPTION:출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/cfubl0n7gf
+DESCRIPTION:후공 (사이트 표기 순서 기준)\n출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/cfubl0n7gf
 END:VEVENT
 BEGIN:VEVENT
 UID:game-21@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260314T003000Z
 DTEND:20260314T030000Z
-SUMMARY:vs 로커스트 [경희빅리그]
+SUMMARY:vs 로커스트 (선공) [경희빅리그]
 LOCATION:경희2구장
-DESCRIPTION:출처: 유니크플레이\n콜드승\nhttps://unique-play.com/game/47188/boxscore
+DESCRIPTION:선공 (사이트 표기 순서 기준)\n출처: 유니크플레이\n콜드승\nhttps://unique-play.com/game/47188/boxscore
 END:VEVENT
 BEGIN:VEVENT
 UID:game-3@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260320T213000Z
 DTEND:20260321T000000Z
-SUMMARY:vs GP Cobras [성남리그]
+SUMMARY:vs GP Cobras (선공) [성남리그]
 LOCATION:탄천야구장
-DESCRIPTION:출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/hsrmdfsbyc
+DESCRIPTION:선공 (사이트 표기 순서 기준)\n출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/hsrmdfsbyc
 END:VEVENT
 BEGIN:VEVENT
 UID:game-20@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260328T033000Z
 DTEND:20260328T060000Z
-SUMMARY:vs 브레이커스 [경희빅리그]
+SUMMARY:vs 브레이커스 (후공) [경희빅리그]
 LOCATION:경희2구장
-DESCRIPTION:출처: 유니크플레이\nhttps://unique-play.com/game/47192/boxscore
+DESCRIPTION:후공 (사이트 표기 순서 기준)\n출처: 유니크플레이\nhttps://unique-play.com/game/47192/boxscore
 END:VEVENT
 BEGIN:VEVENT
 UID:game-19@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260404T033000Z
 DTEND:20260404T060000Z
-SUMMARY:vs 벤치클리어 [경희빅리그]
+SUMMARY:vs 벤치클리어 (후공) [경희빅리그]
 LOCATION:경희2구장
-DESCRIPTION:출처: 유니크플레이\nhttps://unique-play.com/game/47182/boxscore
+DESCRIPTION:후공 (사이트 표기 순서 기준)\n출처: 유니크플레이\nhttps://unique-play.com/game/47182/boxscore
 END:VEVENT
 BEGIN:VEVENT
 UID:game-18@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260417T213000Z
 DTEND:20260418T000000Z
-SUMMARY:vs Aliens [경희빅리그]
+SUMMARY:vs Aliens (선공) [경희빅리그]
 LOCATION:경희2구장
-DESCRIPTION:출처: 유니크플레이\n콜드승\nhttps://unique-play.com/game/47232/boxscore
+DESCRIPTION:선공 (사이트 표기 순서 기준)\n출처: 유니크플레이\n콜드승\nhttps://unique-play.com/game/47232/boxscore
 END:VEVENT
 BEGIN:VEVENT
 UID:game-17@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260425T053000Z
 DTEND:20260425T080000Z
-SUMMARY:vs 아이언맨티스 [경희빅리그]
+SUMMARY:vs 아이언맨티스 (선공) [경희빅리그]
 LOCATION:경희2구장
-DESCRIPTION:출처: 유니크플레이\nhttps://unique-play.com/game/47222/boxscore
+DESCRIPTION:선공 (사이트 표기 순서 기준)\n출처: 유니크플레이\nhttps://unique-play.com/game/47222/boxscore
 END:VEVENT
 BEGIN:VEVENT
 UID:game-4@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260502T040000Z
 DTEND:20260502T063000Z
-SUMMARY:vs LINE Rangers [성남리그]
+SUMMARY:vs LINE Rangers (후공) [성남리그]
 LOCATION:모란야구장
-DESCRIPTION:출처: 야구스\n후공팀몰수승\nhttps://aa.yagoos.com/league/sbsa/match/view/cvsxb1ctnw
+DESCRIPTION:후공 (사이트 표기 순서 기준)\n출처: 야구스\n후공팀몰수승\nhttps://aa.yagoos.com/league/sbsa/match/view/cvsxb1ctnw
 END:VEVENT
 BEGIN:VEVENT
 UID:game-16@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260509T053000Z
 DTEND:20260509T080000Z
-SUMMARY:vs 호야스톰스 [경희빅리그]
+SUMMARY:vs 호야스톰스 (후공) [경희빅리그]
 LOCATION:경희2구장
-DESCRIPTION:출처: 유니크플레이\nhttps://unique-play.com/game/47237/boxscore
+DESCRIPTION:후공 (사이트 표기 순서 기준)\n출처: 유니크플레이\nhttps://unique-play.com/game/47237/boxscore
 END:VEVENT
 BEGIN:VEVENT
 UID:game-15@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260516T033000Z
 DTEND:20260516T060000Z
-SUMMARY:vs WEGO [경희빅리그]
+SUMMARY:vs WEGO (후공) [경희빅리그]
 LOCATION:경희2구장
-DESCRIPTION:출처: 유니크플레이\nhttps://unique-play.com/game/47209/boxscore
+DESCRIPTION:후공 (사이트 표기 순서 기준)\n출처: 유니크플레이\nhttps://unique-play.com/game/47209/boxscore
 END:VEVENT
 BEGIN:VEVENT
 UID:game-5@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260516T080000Z
 DTEND:20260516T103000Z
-SUMMARY:vs 위드트윈스 [성남리그]
+SUMMARY:vs 위드트윈스 (후공) [성남리그]
 LOCATION:백현야구장
-DESCRIPTION:출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/boarcgoblc
+DESCRIPTION:후공 (사이트 표기 순서 기준)\n출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/boarcgoblc
 END:VEVENT
 BEGIN:VEVENT
 UID:game-14@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260523T073000Z
 DTEND:20260523T100000Z
-SUMMARY:vs Team DIESEL [경희빅리그]
+SUMMARY:vs Team DIESEL (선공) [경희빅리그]
 LOCATION:경희2구장
-DESCRIPTION:출처: 유니크플레이\n콜드승\nhttps://unique-play.com/game/47201/boxscore
+DESCRIPTION:선공 (사이트 표기 순서 기준)\n출처: 유니크플레이\n콜드승\nhttps://unique-play.com/game/47201/boxscore
 END:VEVENT
 BEGIN:VEVENT
 UID:game-6@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260530T060000Z
 DTEND:20260530T083000Z
-SUMMARY:vs 샤샤샤 [성남리그]
+SUMMARY:vs 샤샤샤 (선공) [성남리그]
 LOCATION:모란야구장
-DESCRIPTION:출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/ched3uisju
+DESCRIPTION:선공 (사이트 표기 순서 기준)\n출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/ched3uisju
 END:VEVENT
 BEGIN:VEVENT
 UID:game-7@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260626T220000Z
 DTEND:20260627T003000Z
-SUMMARY:vs 다크호스 [성남리그]
+SUMMARY:vs 다크호스 (후공) [성남리그]
 LOCATION:모란야구장
-DESCRIPTION:출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/xh9ie4yajw
+DESCRIPTION:후공 (사이트 표기 순서 기준)\n출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/xh9ie4yajw
 END:VEVENT
 BEGIN:VEVENT
 UID:game-8@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260718T040000Z
 DTEND:20260718T063000Z
-SUMMARY:vs 분당스타즈 [성남리그]
+SUMMARY:vs 분당스타즈 (선공) [성남리그]
 LOCATION:모란야구장
-DESCRIPTION:출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/h1lezrded6
+DESCRIPTION:선공 (사이트 표기 순서 기준)\n출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/h1lezrded6
 END:VEVENT
 BEGIN:VEVENT
 UID:game-9@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260724T233000Z
 DTEND:20260725T020000Z
-SUMMARY:vs 에자이갑스 [성남리그]
+SUMMARY:vs 에자이갑스 (선공) [성남리그]
 LOCATION:탄천야구장
-DESCRIPTION:출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/m5ce9zkhyw
+DESCRIPTION:선공 (사이트 표기 순서 기준)\n출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/m5ce9zkhyw
 END:VEVENT
 BEGIN:VEVENT
 UID:game-10@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260815T093000Z
 DTEND:20260815T120000Z
-SUMMARY:vs AI BEYLESS [성남리그]
+SUMMARY:vs AI BEYLESS (후공) [성남리그]
 LOCATION:탄천야구장
-DESCRIPTION:출처: 야구스\n후공팀콜드승\nhttps://aa.yagoos.com/league/sbsa/match/view/u1heozblc4
+DESCRIPTION:후공 (사이트 표기 순서 기준)\n출처: 야구스\n후공팀콜드승\nhttps://aa.yagoos.com/league/sbsa/match/view/u1heozblc4
 END:VEVENT
 BEGIN:VEVENT
 UID:game-11@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260829T040000Z
 DTEND:20260829T063000Z
-SUMMARY:vs 분당피에스타 [성남리그]
+SUMMARY:vs 분당피에스타 (후공) [성남리그]
 LOCATION:백현야구장
-DESCRIPTION:출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/xu3efxhyhw
+DESCRIPTION:후공 (사이트 표기 순서 기준)\n출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/xu3efxhyhw
 END:VEVENT
 BEGIN:VEVENT
 UID:game-29@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260905T000000Z
 DTEND:20260905T023000Z
-SUMMARY:vs 킹스볼 [광주리그]
+SUMMARY:vs 킹스볼 (선공) [광주리그]
 LOCATION:G 스타디움 야구장
-DESCRIPTION:출처: 게임원\nhttps://www.gameone.kr/club/info/schedule/boxscore?club_idx=23785&game_idx=1716720
+DESCRIPTION:선공 (사이트 표기 순서 기준)\n출처: 게임원\nhttps://www.gameone.kr/club/info/schedule/boxscore?club_idx=23785&game_idx=1716720
 END:VEVENT
 BEGIN:VEVENT
 UID:game-28@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20260912T000000Z
 DTEND:20260912T023000Z
-SUMMARY:vs 야우 [광주리그]
+SUMMARY:vs 야우 (후공) [광주리그]
 LOCATION:G 스타디움 야구장
-DESCRIPTION:출처: 게임원\nhttps://www.gameone.kr/club/info/schedule/boxscore?club_idx=23785&game_idx=1716725
+DESCRIPTION:후공 (사이트 표기 순서 기준)\n출처: 게임원\nhttps://www.gameone.kr/club/info/schedule/boxscore?club_idx=23785&game_idx=1716725
 END:VEVENT
 BEGIN:VEVENT
 UID:game-12@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20261010T020000Z
 DTEND:20261010T043000Z
-SUMMARY:vs HEAT [성남리그]
+SUMMARY:vs HEAT (선공) [성남리그]
 LOCATION:백현야구장
-DESCRIPTION:출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/ra49emqrs9
+DESCRIPTION:선공 (사이트 표기 순서 기준)\n출처: 야구스\nhttps://aa.yagoos.com/league/sbsa/match/view/ra49emqrs9
 END:VEVENT
 BEGIN:VEVENT
 UID:game-13@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20261017T020000Z
 DTEND:20261017T043000Z
-SUMMARY:vs 라이노즈 [성남리그]
+SUMMARY:vs 라이노즈 (선공) [성남리그]
 LOCATION:모란야구장
-DESCRIPTION:출처: 야구스\n후공팀콜드승\nhttps://aa.yagoos.com/league/sbsa/match/view/rpvjyvq6iu
+DESCRIPTION:선공 (사이트 표기 순서 기준)\n출처: 야구스\n후공팀콜드승\nhttps://aa.yagoos.com/league/sbsa/match/view/rpvjyvq6iu
 END:VEVENT
 BEGIN:VEVENT
 UID:game-27@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20261017T060000Z
 DTEND:20261017T083000Z
-SUMMARY:vs MTB [광주리그]
+SUMMARY:vs MTB (선공) [광주리그]
 LOCATION:G 스타디움 야구장
-DESCRIPTION:출처: 게임원\nhttps://www.gameone.kr/club/info/schedule/boxscore?club_idx=23785&game_idx=1716748
+DESCRIPTION:선공 (사이트 표기 순서 기준)\n출처: 게임원\nhttps://www.gameone.kr/club/info/schedule/boxscore?club_idx=23785&game_idx=1716748
 END:VEVENT
 BEGIN:VEVENT
 UID:game-26@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20261023T220000Z
 DTEND:20261024T003000Z
-SUMMARY:vs 나이트호크스 [광주리그]
+SUMMARY:vs 나이트호크스 (선공) [광주리그]
 LOCATION:G 스타디움 야구장
-DESCRIPTION:출처: 게임원\nhttps://www.gameone.kr/club/info/schedule/boxscore?club_idx=23785&game_idx=1716749
+DESCRIPTION:선공 (사이트 표기 순서 기준)\n출처: 게임원\nhttps://www.gameone.kr/club/info/schedule/boxscore?club_idx=23785&game_idx=1716749
 END:VEVENT
 BEGIN:VEVENT
 UID:event-1@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20261031T040000Z
 DTEND:20261031T070000Z
 SUMMARY:vs 버스터즈 [경기]
@@ -249,25 +249,25 @@ DESCRIPTION:연습경기
 END:VEVENT
 BEGIN:VEVENT
 UID:game-25@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20261107T020000Z
 DTEND:20261107T043000Z
-SUMMARY:vs Leporem [광주리그]
+SUMMARY:vs Leporem (후공) [광주리그]
 LOCATION:G 스타디움 야구장
-DESCRIPTION:출처: 게임원\nhttps://www.gameone.kr/club/info/schedule/boxscore?club_idx=23785&game_idx=1716737
+DESCRIPTION:후공 (사이트 표기 순서 기준)\n출처: 게임원\nhttps://www.gameone.kr/club/info/schedule/boxscore?club_idx=23785&game_idx=1716737
 END:VEVENT
 BEGIN:VEVENT
 UID:game-24@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20261114T040000Z
 DTEND:20261114T063000Z
-SUMMARY:vs 광주 어벤저스 [광주리그]
+SUMMARY:vs 광주 어벤저스 (선공) [광주리그]
 LOCATION:G 스타디움 야구장
-DESCRIPTION:출처: 게임원\nhttps://www.gameone.kr/club/info/schedule/boxscore?club_idx=23785&game_idx=1716761
+DESCRIPTION:선공 (사이트 표기 순서 기준)\n출처: 게임원\nhttps://www.gameone.kr/club/info/schedule/boxscore?club_idx=23785&game_idx=1716761
 END:VEVENT
 BEGIN:VEVENT
 UID:event-2@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20261120T150000Z
 DTEND:20261120T170000Z
 SUMMARY:2026 총회 [모임]
@@ -275,11 +275,11 @@ LOCATION:용인 더후펜션
 END:VEVENT
 BEGIN:VEVENT
 UID:game-23@superstars
-DTSTAMP:20261026T220417Z
+DTSTAMP:20261026T220905Z
 DTSTART:20261121T000000Z
 DTEND:20261121T023000Z
-SUMMARY:vs IMPACTER'S [광주리그]
+SUMMARY:vs IMPACTER'S (후공) [광주리그]
 LOCATION:G 스타디움 야구장
-DESCRIPTION:출처: 게임원\nhttps://www.gameone.kr/club/info/schedule/boxscore?club_idx=23785&game_idx=1717946
+DESCRIPTION:후공 (사이트 표기 순서 기준)\n출처: 게임원\nhttps://www.gameone.kr/club/info/schedule/boxscore?club_idx=23785&game_idx=1717946
 END:VEVENT
 END:VCALENDAR
