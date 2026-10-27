@@ -70,7 +70,7 @@ h1, h2, h3 { line-height: 1.3; }
 .win { color: var(--win); font-weight: 700; }
 .lose { color: var(--lose); font-weight: 700; }
 .note, .memo { font-size: 12px; color: var(--muted); }
-a.venue { color: inherit; text-decoration: underline dotted; text-underline-offset: 3px; }   /* 카카오맵 검색 */
+a.venue { color: inherit; text-decoration: underline dotted; text-underline-offset: 3px; }   /* 네이버 지도 검색 */
 a.venue:hover { text-decoration: underline; }
 
 /* 다가올 일정 */
