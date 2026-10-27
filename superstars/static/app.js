@@ -79,6 +79,20 @@
       apply();
     });
 
+    // 팀 일정 폼: 시작 날짜를 고르면 종료 날짜를 같은 날로 맞춘다. 따로 바꿔 둔 종료 날짜는 유지 (관리자)
+    root.querySelectorAll('input[data-sync-end]').forEach(function (start) {
+      var scope = start.form || root;
+      var end = scope.querySelector('input[name="' + start.dataset.syncEnd + '"]');
+      if (!end) return;
+      var prev = start.value;
+      if (start.value) end.min = start.value;
+      start.addEventListener('change', function () {
+        if (!end.value || end.value === prev || (start.value && end.value < start.value)) end.value = start.value;
+        if (start.value) end.min = start.value; else end.removeAttribute('min');
+        prev = start.value;
+      });
+    });
+
     // 삭제 등 확인이 필요한 폼 (관리자)
     root.querySelectorAll('form[data-confirm]').forEach(function (f) {
       f.addEventListener('submit', function (e) {
