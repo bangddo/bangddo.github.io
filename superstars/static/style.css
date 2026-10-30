@@ -204,6 +204,21 @@ tr.dim-row td { color: #9aa3ad; }
 .roster-table td.player { font-weight: 700; }
 .pos { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; background: #f1f3f8; color: #444; margin: 1px 4px 1px 0; }
 .field-label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+/* 관리자 명부: 표 안에서 바로 고치고 한 번에 저장 */
+.roster-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.roster-head h2 { margin: 0; }
+.roster-edit .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 10px 0; }
+.roster-edit input[type=text] { font: inherit; font-size: 14px; padding: 6px 8px; border: 1px solid #d8dbe6; border-radius: 8px; background: #fff; }
+.roster-edit .w-no { width: 58px; text-align: center; }
+.roster-edit .w-name { width: 130px; }
+.roster-edit .w-car { width: 110px; }
+.roster-edit .w-memo { width: 170px; }
+.roster-edit td { vertical-align: middle; }
+.roster-edit tr.new-row td { background: #fafbfd; }
+.pill-picker { display: flex; flex-wrap: wrap; gap: 4px; min-width: 300px; max-width: 370px; }
+.pill-picker .check { font-size: 12px; padding: 2px 7px; border: 1px solid var(--line); border-radius: 999px; background: #fff; gap: 3px; white-space: nowrap; cursor: pointer; }
+.pill-picker .check input { margin: 0; }
+.pill-picker .check:has(input:checked) { background: var(--badge); border-color: var(--accent); color: var(--accent-2); font-weight: 600; }
 .col-picker { display: flex; flex-wrap: wrap; gap: 6px 14px; }
 .col-picker .check { font-size: 13px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 999px; background: #fff; }
 .col-picker .check input { margin: 0; }

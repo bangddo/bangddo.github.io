@@ -93,6 +93,19 @@
       });
     });
 
+    // 표 전체를 한 번에 저장하는 폼(선수 명부): 고친 뒤 저장 없이 떠나려 하면 경고 (관리자)
+    root.querySelectorAll('form[data-dirty-guard]').forEach(function (f) {
+      var dirty = false;
+      f.addEventListener('input', function () { dirty = true; });
+      f.addEventListener('change', function () { dirty = true; });
+      f.addEventListener('submit', function () { dirty = false; });
+      window.addEventListener('beforeunload', function (e) { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+    });
+    // formaction 으로 다른 주소에 보내는 버튼의 확인창 (예: 명부의 삭제)
+    root.querySelectorAll('button[data-confirm]').forEach(function (b) {
+      b.addEventListener('click', function (e) { if (!window.confirm(b.dataset.confirm)) e.preventDefault(); });
+    });
+
     // 삭제 등 확인이 필요한 폼 (관리자)
     root.querySelectorAll('form[data-confirm]').forEach(function (f) {
       f.addEventListener('submit', function (e) {
