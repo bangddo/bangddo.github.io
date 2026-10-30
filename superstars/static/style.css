@@ -204,7 +204,13 @@ tr.dim-row td { color: #9aa3ad; }
 .season-tabs .tab { padding: 6px 14px; font-size: 13px; }
 .cand { font: inherit; font-size: 13px; cursor: pointer; color: var(--text); }
 .cand:hover { border-color: var(--accent); color: var(--accent); }
+tr.merged-row td { background: #fbfbfd; color: var(--muted); font-size: 12px; }
+tr.merged-row td:nth-child(3) { padding-left: 18px; }
 /* 전적 */
+.history-table tr.kind-row td { font-size: 13px; background: #fbfbfd; font-weight: 500; }
+.history-table tr.kind-row td:first-child { padding-left: 24px; }
+.kind-select { font: inherit; font-size: 13px; padding: 4px 6px; border: 1px solid #d8dbe6; border-radius: 8px; background: #fff; }
+.badge-tournament { box-shadow: inset 0 0 0 1px rgba(122, 82, 0, .25); }
 .history-table tr.season-row td { border-top: 2px solid #e4e7f0; font-weight: 700; }
 .history-table tr.season-row:first-child td { border-top: 0; }
 .history-table tr.total-row td { background: #f6f7fb; border-top: 2px solid #d8dde8; }

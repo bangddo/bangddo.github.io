@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f2d5c">
+  <title>전적 · 슈퍼스타즈</title>
+  <link rel="icon" href="/superstars/static/favicon.ico?v=1793049504">
+  <link rel="stylesheet" href="/superstars/static/style.css?v=1793339189">
+  <link rel="alternate" type="text/calendar" title="슈퍼스타즈 일정" href="/superstars/calendar.ics">
+</head>
+<body data-static="1" data-base="/superstars">
+<header class="topbar">
+  <div class="container topbar-in">
+    <a class="brand" href="/superstars/"><span class="brand-ball">⚾</span> 슈퍼스타즈<span class="brand-sep">|</span><span class="brand-page">전적</span></a>
+    <nav class="nav" aria-label="주 메뉴">
+      <a href="/superstars/" class="">홈</a>
+      <a href="/superstars/schedule/" class="">일정</a>
+      <a href="/superstars/records/" class="">기록</a>
+      <a href="/superstars/team/" class="active">전적</a>
+      <a href="/superstars/roster/" class="">선수단</a>
+      <a href="/superstars/notices/" class="">공지</a>
+      
+    </nav>
+  </div>
+</header>
+
+<main class="container page">
+  
+  
+  
+<div class="filters">
+  <div class="tabs" role="tablist">
+    <a role="tab" class="tab " href="/superstars/team/">전체</a><a role="tab" class="tab " href="/superstars/team/league/">리그</a><a role="tab" class="tab active" href="/superstars/team/tournament/">🏆 대회</a><a role="tab" class="tab " href="/superstars/team/other/">기타</a>
+  </div>
+  
+  
+<label>시즌
+  
+  <select data-nav>
+    <option value="/superstars/team/tournament/" selected>전체 시즌</option><option value="/superstars/team/tournament/2026.html" >2026</option><option value="/superstars/team/tournament/2025.html" >2025</option><option value="/superstars/team/tournament/2024.html" >2024</option><option value="/superstars/team/tournament/2023.html" >2023</option><option value="/superstars/team/tournament/2022.html" >2022</option><option value="/superstars/team/tournament/2021.html" >2021</option><option value="/superstars/team/tournament/2020.html" >2020</option><option value="/superstars/team/tournament/2019.html" >2019</option><option value="/superstars/team/tournament/2018.html" >2018</option><option value="/superstars/team/tournament/2017.html" >2017</option><option value="/superstars/team/tournament/2016.html" >2016</option><option value="/superstars/team/tournament/2015.html" >2015</option>
+  </select>
+  
+</label>
+
+  <span class="small muted filters-note">종류 탭과 시즌 선택이 팀 성적과 상대팀 전적 두 표에 함께 적용됩니다.</span>
+</div>
+
+<section class="card">
+  <h2>연도별 대회 성적</h2>
+  
+  <div class="table-wrap">
+    <table class="table history-table">
+      <thead><tr><th class="left">시즌 · 리그</th><th>경기</th><th>승</th><th>패</th><th>무</th><th>승률</th><th>득점</th><th>실점</th><th>득실차</th></tr></thead>
+      <tbody>
+      
+        <tr class="season-row">
+          <td class="left">2017</td>
+          <td>2</td><td class="win">0</td><td class="lose">2</td><td>0</td>
+          <td>0.000</td>
+          <td>8</td><td>25</td>
+          <td class="lose">-17</td>
+        </tr>
+        
+        
+        <tr class="sub-row">
+          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-5 badge-tournament" title="대회">🏆 스트라이크존</span></td>
+          <td>1</td><td class="win">0</td><td class="lose">1</td><td>0</td>
+          <td>0.000</td>
+          <td colspan="3" class="left"></td>
+        </tr>
+        
+        <tr class="sub-row">
+          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-5 badge-tournament" title="대회">🏆 스트라이크존</span></td>
+          <td>1</td><td class="win">0</td><td class="lose">1</td><td>0</td>
+          <td>0.000</td>
+          <td colspan="3" class="left"></td>
+        </tr>
+        
+      
+      
+      </tbody>
+    </table>
+  </div>
+  <p class="hint">리그 줄은 사이트의 리그 단위라 같은 경기가 두 리그 줄에 각각 들어갈 수 있습니다. 시즌 줄은 두 사이트에 같이 올라온 경기를 하나로 세고, 점수를 입력한 팀 등록 경기도 포함합니다. 리그의 종류(리그/대회/기타)는 사이트 정보와 이름으로 자동 분류하며 관리 화면 '리그 이름 매칭'에서 바꿀 수 있습니다.
+    지난 시즌 성적은 관리 화면의 '과거 시즌 채우기' 또는 시즌을 지정한 동기화로 받아오면 여기에 쌓입니다.</p>
+  
+</section>
+
+<section class="card">
+  <h2>상대팀별 대회 전적 <small class="muted">2팀 · 전체 시즌</small></h2>
+  
+  <div class="table-wrap">
+    <table class="table sortable opp-table">
+      <thead>
+        <tr>
+          <th class="left" data-sort="text">상대팀</th><th data-sort="num">경기</th><th data-sort="num">승</th><th data-sort="num">패</th><th data-sort="num">무</th>
+          <th data-sort="num">승률</th><th data-sort="num">득점</th><th data-sort="num">실점</th><th data-sort="num">득실차</th>
+          <th class="left">리그</th><th class="left" data-sort="text">최근 경기</th>
+        </tr>
+      </thead>
+      <tbody class="sortable-body">
+      
+        <tr>
+          <td class="left"><strong>푸르밀 야구단</strong></td>
+          <td data-value="1">1</td>
+          <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
+          <td data-value="0.0">0.000</td>
+          <td data-value="2">2</td><td data-value="12">12</td>
+          <td data-value="-10" class="lose">-10</td>
+          <td class="left"><span class="badge lg-5 badge-tournament" title="대회">🏆 스트라이크존</span></td>
+          <td class="left small">2017.06.11(일) 13:00 <span class="res res-L">패</span> 2:12</td>
+        </tr>
+      
+        <tr>
+          <td class="left"><strong>프라임야구단</strong></td>
+          <td data-value="1">1</td>
+          <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
+          <td data-value="0.0">0.000</td>
+          <td data-value="6">6</td><td data-value="13">13</td>
+          <td data-value="-7" class="lose">-7</td>
+          <td class="left"><span class="badge lg-5 badge-tournament" title="대회">🏆 스트라이크존</span></td>
+          <td class="left small">2017.04.09(일) 07:00 <span class="res res-L">패</span> 6:13</td>
+        </tr>
+      
+      </tbody>
+    </table>
+  </div>
+  <p class="hint">같은 상대는 이름의 띄어쓰기·기호 차이를 무시하고 합쳤습니다. 열 제목을 누르면 정렬됩니다.</p>
+  
+</section>
+
+</main>
+
+<footer class="container footer">
+  <span>마지막 동기화: 2026.10.27(화) 07:33 · 게시 2026.10.30(금) 15:23</span>
+  <span><a href="/superstars/calendar.ics">📅 캘린더 구독(ics)</a></span>
+</footer>
+<script src="/superstars/static/app.js?v=1793329941" defer></script>
+</body>
+</html>

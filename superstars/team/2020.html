@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f2d5c">
   <title>전적 · 슈퍼스타즈</title>
   <link rel="icon" href="/superstars/static/favicon.ico?v=1793049504">
-  <link rel="stylesheet" href="/superstars/static/style.css?v=1793334600">
+  <link rel="stylesheet" href="/superstars/static/style.css?v=1793339189">
   <link rel="alternate" type="text/calendar" title="슈퍼스타즈 일정" href="/superstars/calendar.ics">
 </head>
 <body data-static="1" data-base="/superstars">
@@ -30,6 +30,10 @@
   
   
 <div class="filters">
+  <div class="tabs" role="tablist">
+    <a role="tab" class="tab active" href="/superstars/team/2020.html">전체</a><a role="tab" class="tab " href="/superstars/team/league/2020.html">리그</a><a role="tab" class="tab " href="/superstars/team/tournament/2020.html">🏆 대회</a><a role="tab" class="tab " href="/superstars/team/other/2020.html">기타</a>
+  </div>
+  
   
 <label>시즌
   
@@ -39,7 +43,7 @@
   
 </label>
 
-  <span class="small muted filters-note">시즌을 고르면 팀 성적과 상대팀 전적이 모두 그 시즌 기준으로 바뀝니다.</span>
+  <span class="small muted filters-note">종류 탭과 시즌 선택이 팀 성적과 상대팀 전적 두 표에 함께 적용됩니다.</span>
 </div>
 
 <section class="card">
@@ -58,33 +62,21 @@
           <td class="lose">-6</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-13">토요4부 마이너</span></td>
-          <td>17</td><td class="win">10</td><td class="lose">7</td><td>0</td>
-          <td>0.588</td>
-          <td colspan="3" class="left"></td>
+        <tr class="kind-row">
+          <td class="left">리그</td>
+          <td>32</td><td class="win">16</td><td class="lose">16</td><td>0</td>
+          <td>0.500</td>
+          <td>318</td><td>324</td>
+          <td class="lose">-6</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-7">토요루키(토요루키A)</span></td>
-          <td>8</td><td class="win">2</td><td class="lose">6</td><td>0</td>
-          <td>0.250</td>
-          <td colspan="3" class="left"></td>
-        </tr>
-        
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-2">토요후반기B조</span></td>
-          <td>7</td><td class="win">4</td><td class="lose">3</td><td>0</td>
-          <td>0.571</td>
-          <td colspan="3" class="left"></td>
-        </tr>
         
       
       
       </tbody>
     </table>
   </div>
-  <p class="hint">시즌 줄은 두 사이트에 같이 올라온 경기를 하나로 세고, 점수를 입력한 팀 등록 경기도 포함합니다. 리그 줄은 사이트의 리그 단위라 같은 경기가 두 리그 줄에 각각 들어갈 수 있습니다.
+  <p class="hint">전체 보기에서는 시즌마다 리그·대회·기타 소계를 보여 줍니다. 리그별 내역은 위의 종류 탭(리그 / 대회)에서 봅니다. 시즌 줄은 두 사이트에 같이 올라온 경기를 하나로 세고, 점수를 입력한 팀 등록 경기도 포함합니다. 리그의 종류(리그/대회/기타)는 사이트 정보와 이름으로 자동 분류하며 관리 화면 '리그 이름 매칭'에서 바꿀 수 있습니다.
     지난 시즌 성적은 관리 화면의 '과거 시즌 채우기' 또는 시즌을 지정한 동기화로 받아오면 여기에 쌓입니다.</p>
   
 </section>
@@ -110,7 +102,7 @@
           <td data-value="0.6666666666666666">0.667</td>
           <td data-value="43">43</td><td data-value="34">34</td>
           <td data-value="9" class="win">+9</td>
-          <td class="left"><span class="badge lg-13">토요4부 마이너</span></td>
+          <td class="left"><span class="badge lg-13" >토요4부 마이너</span></td>
           <td class="left small">2020.12.19(토) 17:00 <span class="res res-L">패</span> 14:16</td>
         </tr>
       
@@ -121,7 +113,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="20">20</td><td data-value="8">8</td>
           <td data-value="12" class="win">+12</td>
-          <td class="left"><span class="badge lg-13">토요4부 마이너</span></td>
+          <td class="left"><span class="badge lg-13" >토요4부 마이너</span></td>
           <td class="left small">2020.10.17(토) 12:00 <span class="res res-W">승</span> 7:0</td>
         </tr>
       
@@ -132,7 +124,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="7">7</td><td data-value="15">15</td>
           <td data-value="-8" class="lose">-8</td>
-          <td class="left"><span class="badge lg-13">토요4부 마이너</span></td>
+          <td class="left"><span class="badge lg-13" >토요4부 마이너</span></td>
           <td class="left small">2020.08.08(토) 09:30 <span class="res res-L">패</span> 0:6</td>
         </tr>
       
@@ -143,7 +135,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="8">8</td><td data-value="34">34</td>
           <td data-value="-26" class="lose">-26</td>
-          <td class="left"><span class="badge lg-13">토요4부 마이너</span></td>
+          <td class="left"><span class="badge lg-13" >토요4부 마이너</span></td>
           <td class="left small">2020.11.07(토) 09:30 <span class="res res-L">패</span> 5:25</td>
         </tr>
       
@@ -154,7 +146,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="7">7</td><td data-value="44">44</td>
           <td data-value="-37" class="lose">-37</td>
-          <td class="left"><span class="badge lg-13">토요4부 마이너</span></td>
+          <td class="left"><span class="badge lg-13" >토요4부 마이너</span></td>
           <td class="left small">2020.07.11(토) 17:00 <span class="res res-L">패</span> 4:23</td>
         </tr>
       
@@ -165,7 +157,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="27">27</td><td data-value="15">15</td>
           <td data-value="12" class="win">+12</td>
-          <td class="left"><span class="badge lg-13">토요4부 마이너</span></td>
+          <td class="left"><span class="badge lg-13" >토요4부 마이너</span></td>
           <td class="left small">2020.12.05(토) 17:00 <span class="res res-W">승</span> 14:5</td>
         </tr>
       
@@ -176,7 +168,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="36">36</td><td data-value="14">14</td>
           <td data-value="22" class="win">+22</td>
-          <td class="left"><span class="badge lg-13">토요4부 마이너</span></td>
+          <td class="left"><span class="badge lg-13" >토요4부 마이너</span></td>
           <td class="left small">2020.11.21(토) 07:00 <span class="res res-W">승</span> 19:4</td>
         </tr>
       
@@ -187,7 +179,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="30">30</td><td data-value="13">13</td>
           <td data-value="17" class="win">+17</td>
-          <td class="left"><span class="badge lg-13">토요4부 마이너</span></td>
+          <td class="left"><span class="badge lg-13" >토요4부 마이너</span></td>
           <td class="left small">2020.10.24(토) 14:30 <span class="res res-W">승</span> 17:11</td>
         </tr>
       
@@ -198,7 +190,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="22">22</td><td data-value="8">8</td>
           <td data-value="14" class="win">+14</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2020.11.14(토) 07:00 <span class="res res-W">승</span> 22:8</td>
         </tr>
       
@@ -209,7 +201,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="2">2</td><td data-value="7">7</td>
           <td data-value="-5" class="lose">-5</td>
-          <td class="left"><span class="badge lg-2">토요후반기B조</span></td>
+          <td class="left"><span class="badge lg-2" >토요후반기B조</span></td>
           <td class="left small">2020.08.01(토) 09:00 <span class="res res-L">패</span> 2:7</td>
         </tr>
       
@@ -220,7 +212,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="16">16</td><td data-value="5">5</td>
           <td data-value="11" class="win">+11</td>
-          <td class="left"><span class="badge lg-2">토요후반기B조</span></td>
+          <td class="left"><span class="badge lg-2" >토요후반기B조</span></td>
           <td class="left small">2020.12.19(토) 08:00 <span class="res res-W">승</span> 16:5</td>
         </tr>
       
@@ -231,7 +223,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="8">8</td><td data-value="10">10</td>
           <td data-value="-2" class="lose">-2</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2020.11.28(토) 13:00 <span class="res res-L">패</span> 8:10</td>
         </tr>
       
@@ -242,7 +234,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="12">12</td><td data-value="6">6</td>
           <td data-value="6" class="win">+6</td>
-          <td class="left"><span class="badge lg-2">토요후반기B조</span></td>
+          <td class="left"><span class="badge lg-2" >토요후반기B조</span></td>
           <td class="left small">2020.10.04(일) 09:00 <span class="res res-W">승</span> 12:6</td>
         </tr>
       
@@ -253,7 +245,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="2">2</td><td data-value="7">7</td>
           <td data-value="-5" class="lose">-5</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2020.05.23(토) 13:00 <span class="res res-L">패</span> 2:7</td>
         </tr>
       
@@ -264,7 +256,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="12">12</td><td data-value="8">8</td>
           <td data-value="4" class="win">+4</td>
-          <td class="left"><span class="badge lg-2">토요후반기B조</span></td>
+          <td class="left"><span class="badge lg-2" >토요후반기B조</span></td>
           <td class="left small">2020.10.10(토) 09:00 <span class="res res-W">승</span> 12:8</td>
         </tr>
       
@@ -275,7 +267,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="13">13</td><td data-value="6">6</td>
           <td data-value="7" class="win">+7</td>
-          <td class="left"><span class="badge lg-2">토요후반기B조</span></td>
+          <td class="left"><span class="badge lg-2" >토요후반기B조</span></td>
           <td class="left small">2020.10.17(토) 17:00 <span class="res res-W">승</span> 13:6</td>
         </tr>
       
@@ -286,7 +278,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="3">3</td><td data-value="14">14</td>
           <td data-value="-11" class="lose">-11</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2020.11.21(토) 13:00 <span class="res res-L">패</span> 3:14</td>
         </tr>
       
@@ -297,7 +289,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="11">11</td><td data-value="14">14</td>
           <td data-value="-3" class="lose">-3</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2020.05.02(토) 09:00 <span class="res res-L">패</span> 11:14</td>
         </tr>
       
@@ -308,7 +300,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="12">12</td><td data-value="1">1</td>
           <td data-value="11" class="win">+11</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2020.02.15(토) 11:30 <span class="res res-W">승</span> 12:1</td>
         </tr>
       
@@ -319,7 +311,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="13">13</td><td data-value="17">17</td>
           <td data-value="-4" class="lose">-4</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2020.11.07(토) 13:00 <span class="res res-L">패</span> 13:17</td>
         </tr>
       
@@ -330,7 +322,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="6">6</td><td data-value="15">15</td>
           <td data-value="-9" class="lose">-9</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2020.08.15(토) 15:00 <span class="res res-L">패</span> 6:15</td>
         </tr>
       
@@ -341,7 +333,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="1">1</td><td data-value="9">9</td>
           <td data-value="-8" class="lose">-8</td>
-          <td class="left"><span class="badge lg-2">토요후반기B조</span></td>
+          <td class="left"><span class="badge lg-2" >토요후반기B조</span></td>
           <td class="left small">2020.12.05(토) 12:00 <span class="res res-L">패</span> 1:9</td>
         </tr>
       
@@ -352,7 +344,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="7">7</td><td data-value="20">20</td>
           <td data-value="-13" class="lose">-13</td>
-          <td class="left"><span class="badge lg-2">토요후반기B조</span></td>
+          <td class="left"><span class="badge lg-2" >토요후반기B조</span></td>
           <td class="left small">2020.12.12(토) 12:00 <span class="res res-L">패</span> 7:20</td>
         </tr>
       
@@ -366,7 +358,7 @@
 </main>
 
 <footer class="container footer">
-  <span>마지막 동기화: 2026.10.27(화) 07:33 · 게시 2026.10.30(금) 14:37</span>
+  <span>마지막 동기화: 2026.10.27(화) 07:33 · 게시 2026.10.30(금) 15:23</span>
   <span><a href="/superstars/calendar.ics">📅 캘린더 구독(ics)</a></span>
 </footer>
 <script src="/superstars/static/app.js?v=1793329941" defer></script>

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f2d5c">
   <title>전적 · 슈퍼스타즈</title>
   <link rel="icon" href="/superstars/static/favicon.ico?v=1793049504">
-  <link rel="stylesheet" href="/superstars/static/style.css?v=1793334600">
+  <link rel="stylesheet" href="/superstars/static/style.css?v=1793339189">
   <link rel="alternate" type="text/calendar" title="슈퍼스타즈 일정" href="/superstars/calendar.ics">
 </head>
 <body data-static="1" data-base="/superstars">
@@ -30,6 +30,10 @@
   
   
 <div class="filters">
+  <div class="tabs" role="tablist">
+    <a role="tab" class="tab active" href="/superstars/team/">전체</a><a role="tab" class="tab " href="/superstars/team/league/">리그</a><a role="tab" class="tab " href="/superstars/team/tournament/">🏆 대회</a><a role="tab" class="tab " href="/superstars/team/other/">기타</a>
+  </div>
+  
   
 <label>시즌
   
@@ -39,7 +43,7 @@
   
 </label>
 
-  <span class="small muted filters-note">시즌을 고르면 팀 성적과 상대팀 전적이 모두 그 시즌 기준으로 바뀝니다.</span>
+  <span class="small muted filters-note">종류 탭과 시즌 선택이 팀 성적과 상대팀 전적 두 표에 함께 적용됩니다.</span>
 </div>
 
 <section class="card">
@@ -58,26 +62,14 @@
           <td class="lose">-8</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-10">광주리그</span></td>
-          <td>4</td><td class="win">1</td><td class="lose">3</td><td>0</td>
-          <td>0.250</td>
-          <td colspan="3" class="left">남은 경기 3</td>
+        <tr class="kind-row">
+          <td class="left">리그</td>
+          <td>26</td><td class="win">10</td><td class="lose">15</td><td>1</td>
+          <td>0.400</td>
+          <td>258</td><td>266</td>
+          <td class="lose">-8</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-unique">유니크플레이</span> <span class="badge lg-12">경희빅리그</span></td>
-          <td>9</td><td class="win">3</td><td class="lose">6</td><td>0</td>
-          <td>0.333</td>
-          <td colspan="3" class="left"></td>
-        </tr>
-        
-        <tr class="sub-row">
-          <td class="left"><span class="src src-yagoos">야구스</span> <span class="badge lg-9">성남리그</span></td>
-          <td>13</td><td class="win">6</td><td class="lose">6</td><td>1</td>
-          <td>0.500</td>
-          <td colspan="3" class="left"></td>
-        </tr>
         
       
         <tr class="season-row">
@@ -88,19 +80,14 @@
           <td class="lose">-25</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-5">팀업캠퍼스리그</span></td>
-          <td>14</td><td class="win">6</td><td class="lose">8</td><td>0</td>
-          <td>0.429</td>
-          <td colspan="3" class="left"></td>
+        <tr class="kind-row">
+          <td class="left">리그</td>
+          <td>28</td><td class="win">9</td><td class="lose">17</td><td>2</td>
+          <td>0.346</td>
+          <td>261</td><td>286</td>
+          <td class="lose">-25</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-9">성남리그</span></td>
-          <td>14</td><td class="win">3</td><td class="lose">9</td><td>2</td>
-          <td>0.250</td>
-          <td colspan="3" class="left"></td>
-        </tr>
         
       
         <tr class="season-row">
@@ -111,26 +98,14 @@
           <td class="lose">-14</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-6">용인에버리그</span></td>
-          <td>6</td><td class="win">4</td><td class="lose">2</td><td>0</td>
-          <td>0.667</td>
-          <td colspan="3" class="left"></td>
+        <tr class="kind-row">
+          <td class="left">리그</td>
+          <td>30</td><td class="win">14</td><td class="lose">16</td><td>0</td>
+          <td>0.467</td>
+          <td>274</td><td>288</td>
+          <td class="lose">-14</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-6">용인에버리그</span></td>
-          <td>10</td><td class="win">2</td><td class="lose">8</td><td>0</td>
-          <td>0.200</td>
-          <td colspan="3" class="left"></td>
-        </tr>
-        
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-6">용인에버리그</span></td>
-          <td>14</td><td class="win">8</td><td class="lose">6</td><td>0</td>
-          <td>0.571</td>
-          <td colspan="3" class="left"></td>
-        </tr>
         
       
         <tr class="season-row">
@@ -141,26 +116,14 @@
           <td class="lose">-29</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-11">토요 4부(토요루키 )</span></td>
-          <td>10</td><td class="win">4</td><td class="lose">6</td><td>0</td>
-          <td>0.400</td>
-          <td colspan="3" class="left"></td>
+        <tr class="kind-row">
+          <td class="left">리그</td>
+          <td>33</td><td class="win">12</td><td class="lose">21</td><td>0</td>
+          <td>0.364</td>
+          <td>341</td><td>370</td>
+          <td class="lose">-29</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-7">토요루키(토요루키A)</span></td>
-          <td>14</td><td class="win">5</td><td class="lose">9</td><td>0</td>
-          <td>0.357</td>
-          <td colspan="3" class="left"></td>
-        </tr>
-        
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-8">후반기 토요4부(후반기 토요루키)</span></td>
-          <td>9</td><td class="win">3</td><td class="lose">6</td><td>0</td>
-          <td>0.333</td>
-          <td colspan="3" class="left"></td>
-        </tr>
         
       
         <tr class="season-row">
@@ -171,12 +134,14 @@
           <td class="lose">-32</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-4">토요4부 에버</span></td>
+        <tr class="kind-row">
+          <td class="left">리그</td>
           <td>15</td><td class="win">7</td><td class="lose">8</td><td>0</td>
           <td>0.467</td>
-          <td colspan="3" class="left"></td>
+          <td>152</td><td>184</td>
+          <td class="lose">-32</td>
         </tr>
+        
         
       
         <tr class="season-row">
@@ -187,19 +152,14 @@
           <td class="lose">-56</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-1">토요4부 용인</span></td>
-          <td>8</td><td class="win">2</td><td class="lose">6</td><td>0</td>
-          <td>0.250</td>
-          <td colspan="3" class="left"></td>
+        <tr class="kind-row">
+          <td class="left">리그</td>
+          <td>14</td><td class="win">4</td><td class="lose">10</td><td>0</td>
+          <td>0.286</td>
+          <td>115</td><td>171</td>
+          <td class="lose">-56</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-7">토요루키(토요루키A)</span></td>
-          <td>6</td><td class="win">2</td><td class="lose">4</td><td>0</td>
-          <td>0.333</td>
-          <td colspan="3" class="left"></td>
-        </tr>
         
       
         <tr class="season-row">
@@ -210,26 +170,14 @@
           <td class="lose">-6</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-13">토요4부 마이너</span></td>
-          <td>17</td><td class="win">10</td><td class="lose">7</td><td>0</td>
-          <td>0.588</td>
-          <td colspan="3" class="left"></td>
+        <tr class="kind-row">
+          <td class="left">리그</td>
+          <td>32</td><td class="win">16</td><td class="lose">16</td><td>0</td>
+          <td>0.500</td>
+          <td>318</td><td>324</td>
+          <td class="lose">-6</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-7">토요루키(토요루키A)</span></td>
-          <td>8</td><td class="win">2</td><td class="lose">6</td><td>0</td>
-          <td>0.250</td>
-          <td colspan="3" class="left"></td>
-        </tr>
-        
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-2">토요후반기B조</span></td>
-          <td>7</td><td class="win">4</td><td class="lose">3</td><td>0</td>
-          <td>0.571</td>
-          <td colspan="3" class="left"></td>
-        </tr>
         
       
         <tr class="season-row">
@@ -240,19 +188,14 @@
           <td class="win">+8</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-15">토요리그 4부 D조</span></td>
-          <td>12</td><td class="win">3</td><td class="lose">8</td><td>1</td>
-          <td>0.273</td>
-          <td colspan="3" class="left"></td>
+        <tr class="kind-row">
+          <td class="left">리그</td>
+          <td>28</td><td class="win">12</td><td class="lose">15</td><td>1</td>
+          <td>0.444</td>
+          <td>308</td><td>300</td>
+          <td class="win">+8</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-3">토요메이저</span></td>
-          <td>16</td><td class="win">9</td><td class="lose">7</td><td>0</td>
-          <td>0.562</td>
-          <td colspan="3" class="left"></td>
-        </tr>
         
       
         <tr class="season-row">
@@ -263,26 +206,14 @@
           <td class="lose">-35</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-9">전반기 토요리그</span></td>
-          <td>10</td><td class="win">4</td><td class="lose">6</td><td>0</td>
-          <td>0.400</td>
-          <td colspan="3" class="left"></td>
+        <tr class="kind-row">
+          <td class="left">리그</td>
+          <td>32</td><td class="win">14</td><td class="lose">16</td><td>2</td>
+          <td>0.467</td>
+          <td>336</td><td>371</td>
+          <td class="lose">-35</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-0">토요 루키(4부)(토요 A조)</span></td>
-          <td>15</td><td class="win">8</td><td class="lose">5</td><td>2</td>
-          <td>0.615</td>
-          <td colspan="3" class="left"></td>
-        </tr>
-        
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-15">후반기 토요메이저</span></td>
-          <td>7</td><td class="win">2</td><td class="lose">5</td><td>0</td>
-          <td>0.286</td>
-          <td colspan="3" class="left"></td>
-        </tr>
         
       
         <tr class="season-row">
@@ -293,47 +224,22 @@
           <td class="win">+13</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-8">STRIKEZON CUP</span></td>
-          <td>1</td><td class="win">0</td><td class="lose">1</td><td>0</td>
+        <tr class="kind-row">
+          <td class="left">리그</td>
+          <td>19</td><td class="win">10</td><td class="lose">7</td><td>2</td>
+          <td>0.588</td>
+          <td>180</td><td>150</td>
+          <td class="win">+30</td>
+        </tr>
+        
+        <tr class="kind-row">
+          <td class="left">🏆 대회</td>
+          <td>2</td><td class="win">0</td><td class="lose">2</td><td>0</td>
           <td>0.000</td>
-          <td colspan="3" class="left"></td>
+          <td>8</td><td>25</td>
+          <td class="lose">-17</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-2">야탑리그(후)</span></td>
-          <td>5</td><td class="win">1</td><td class="lose">4</td><td>0</td>
-          <td>0.200</td>
-          <td colspan="3" class="left"></td>
-        </tr>
-        
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-1">제2회 스트라이크존 야구대회(4부 그룹)</span></td>
-          <td>1</td><td class="win">0</td><td class="lose">1</td><td>0</td>
-          <td>0.000</td>
-          <td colspan="3" class="left"></td>
-        </tr>
-        
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-7">야탑리그</span></td>
-          <td>1</td><td class="win">1</td><td class="lose">0</td><td>0</td>
-          <td>1.000</td>
-          <td colspan="3" class="left"></td>
-        </tr>
-        
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-7">야탑리그</span></td>
-          <td>11</td><td class="win">7</td><td class="lose">2</td><td>2</td>
-          <td>0.778</td>
-          <td colspan="3" class="left"></td>
-        </tr>
-        
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-5">수지윈리그</span></td>
-          <td>2</td><td class="win">1</td><td class="lose">1</td><td>0</td>
-          <td>0.500</td>
-          <td colspan="3" class="left"></td>
-        </tr>
         
       
         <tr class="season-row">
@@ -344,19 +250,14 @@
           <td class="lose">-86</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-9">대원리그</span></td>
-          <td>11</td><td class="win">4</td><td class="lose">7</td><td>0</td>
-          <td>0.364</td>
-          <td colspan="3" class="left"></td>
+        <tr class="kind-row">
+          <td class="left">리그</td>
+          <td>21</td><td class="win">6</td><td class="lose">15</td><td>0</td>
+          <td>0.286</td>
+          <td>165</td><td>251</td>
+          <td class="lose">-86</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-4">용인힐링리그</span></td>
-          <td>10</td><td class="win">2</td><td class="lose">8</td><td>0</td>
-          <td>0.200</td>
-          <td colspan="3" class="left"></td>
-        </tr>
         
       
         <tr class="season-row">
@@ -367,33 +268,14 @@
           <td class="win">+29</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-5">백두리그</span></td>
-          <td>7</td><td class="win">3</td><td class="lose">4</td><td>0</td>
-          <td>0.429</td>
-          <td colspan="3" class="left"></td>
+        <tr class="kind-row">
+          <td class="left">리그</td>
+          <td>16</td><td class="win">8</td><td class="lose">7</td><td>1</td>
+          <td>0.533</td>
+          <td>160</td><td>131</td>
+          <td class="win">+29</td>
         </tr>
         
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-0">제주특별자치도직장인리그</span></td>
-          <td>2</td><td class="win">2</td><td class="lose">0</td><td>0</td>
-          <td>1.000</td>
-          <td colspan="3" class="left"></td>
-        </tr>
-        
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-3">제주특별자치도직장인리그 (백두리그)</span></td>
-          <td>4</td><td class="win">2</td><td class="lose">1</td><td>1</td>
-          <td>0.667</td>
-          <td colspan="3" class="left"></td>
-        </tr>
-        
-        <tr class="sub-row">
-          <td class="left"><span class="src src-gameone">게임원</span> <span class="badge lg-13">제주특별자치도직장인리그 (위원장배/G조)</span></td>
-          <td>3</td><td class="win">1</td><td class="lose">2</td><td>0</td>
-          <td>0.333</td>
-          <td colspan="3" class="left"></td>
-        </tr>
         
       
       
@@ -408,7 +290,7 @@
       </tbody>
     </table>
   </div>
-  <p class="hint">시즌 줄은 두 사이트에 같이 올라온 경기를 하나로 세고, 점수를 입력한 팀 등록 경기도 포함합니다. 리그 줄은 사이트의 리그 단위라 같은 경기가 두 리그 줄에 각각 들어갈 수 있습니다.
+  <p class="hint">전체 보기에서는 시즌마다 리그·대회·기타 소계를 보여 줍니다. 리그별 내역은 위의 종류 탭(리그 / 대회)에서 봅니다. 시즌 줄은 두 사이트에 같이 올라온 경기를 하나로 세고, 점수를 입력한 팀 등록 경기도 포함합니다. 리그의 종류(리그/대회/기타)는 사이트 정보와 이름으로 자동 분류하며 관리 화면 '리그 이름 매칭'에서 바꿀 수 있습니다.
     지난 시즌 성적은 관리 화면의 '과거 시즌 채우기' 또는 시즌을 지정한 동기화로 받아오면 여기에 쌓입니다.</p>
   
 </section>
@@ -434,7 +316,7 @@
           <td data-value="0.42857142857142855">0.429</td>
           <td data-value="86">86</td><td data-value="100">100</td>
           <td data-value="-14" class="lose">-14</td>
-          <td class="left"><span class="badge lg-8">후반기 토요4부(후반기 토요루키)</span><span class="badge lg-4">토요4부 에버</span><span class="badge lg-3">토요메이저</span><span class="badge lg-15">후반기 토요메이저</span></td>
+          <td class="left"><span class="badge lg-8" >후반기 토요4부(후반기 토요루키)</span><span class="badge lg-4" >토요4부 에버</span><span class="badge lg-3" >토요메이저</span><span class="badge lg-15" >후반기 토요메이저</span></td>
           <td class="left small">2023.11.11(토) 14:30 <span class="res res-W">승</span> 14:13</td>
         </tr>
       
@@ -445,7 +327,7 @@
           <td data-value="0.6666666666666666">0.667</td>
           <td data-value="62">62</td><td data-value="40">40</td>
           <td data-value="22" class="win">+22</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span><span class="badge lg-8">후반기 토요4부(후반기 토요루키)</span><span class="badge lg-4">토요4부 에버</span><span class="badge lg-1">토요4부 용인</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span><span class="badge lg-8" >후반기 토요4부(후반기 토요루키)</span><span class="badge lg-4" >토요4부 에버</span><span class="badge lg-1" >토요4부 용인</span></td>
           <td class="left small">2024.06.29(토) 12:00 <span class="res res-L">패</span> 0:12</td>
         </tr>
       
@@ -456,7 +338,7 @@
           <td data-value="0.6666666666666666">0.667</td>
           <td data-value="71">71</td><td data-value="57">57</td>
           <td data-value="14" class="win">+14</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span><span class="badge lg-11">토요 4부(토요루키 )</span><span class="badge lg-8">후반기 토요4부(후반기 토요루키)</span><span class="badge lg-13">토요4부 마이너</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span><span class="badge lg-11" >토요 4부(토요루키 )</span><span class="badge lg-8" >후반기 토요4부(후반기 토요루키)</span><span class="badge lg-13" >토요4부 마이너</span></td>
           <td class="left small">2024.10.05(토) 09:30 <span class="res res-L">패</span> 8:16</td>
         </tr>
       
@@ -467,7 +349,7 @@
           <td data-value="0.6666666666666666">0.667</td>
           <td data-value="89">89</td><td data-value="67">67</td>
           <td data-value="22" class="win">+22</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span><span class="badge lg-8">후반기 토요4부(후반기 토요루키)</span><span class="badge lg-1">토요4부 용인</span><span class="badge lg-13">토요4부 마이너</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span><span class="badge lg-8" >후반기 토요4부(후반기 토요루키)</span><span class="badge lg-1" >토요4부 용인</span><span class="badge lg-13" >토요4부 마이너</span></td>
           <td class="left small">2024.07.06(토) 19:30 <span class="res res-L">패</span> 15:16</td>
         </tr>
       
@@ -478,7 +360,7 @@
           <td data-value="0.8">0.800</td>
           <td data-value="53">53</td><td data-value="47">47</td>
           <td data-value="6" class="win">+6</td>
-          <td class="left"><span class="badge lg-13">토요4부 마이너</span><span class="badge lg-3">토요메이저</span><span class="badge lg-9">전반기 토요리그</span></td>
+          <td class="left"><span class="badge lg-13" >토요4부 마이너</span><span class="badge lg-3" >토요메이저</span><span class="badge lg-9" >전반기 토요리그</span></td>
           <td class="left small">2020.10.17(토) 12:00 <span class="res res-W">승</span> 7:0</td>
         </tr>
       
@@ -489,7 +371,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="26">26</td><td data-value="83">83</td>
           <td data-value="-57" class="lose">-57</td>
-          <td class="left"><span class="badge lg-4">토요4부 에버</span><span class="badge lg-1">토요4부 용인</span></td>
+          <td class="left"><span class="badge lg-4" >토요4부 에버</span><span class="badge lg-1" >토요4부 용인</span></td>
           <td class="left small">2022.08.20(토) 19:30 <span class="res res-L">패</span> 1:18</td>
         </tr>
       
@@ -500,7 +382,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="27">27</td><td data-value="75">75</td>
           <td data-value="-48" class="lose">-48</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span><span class="badge lg-11">토요 4부(토요루키 )</span><span class="badge lg-8">후반기 토요4부(후반기 토요루키)</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span><span class="badge lg-11" >토요 4부(토요루키 )</span><span class="badge lg-8" >후반기 토요4부(후반기 토요루키)</span></td>
           <td class="left small">2024.04.06(토) 12:00 <span class="res res-L">패</span> 8:16</td>
         </tr>
       
@@ -511,7 +393,7 @@
           <td data-value="0.2">0.200</td>
           <td data-value="53">53</td><td data-value="47">47</td>
           <td data-value="6" class="win">+6</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span><span class="badge lg-11">토요 4부(토요루키 )</span><span class="badge lg-8">후반기 토요4부(후반기 토요루키)</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span><span class="badge lg-11" >토요 4부(토요루키 )</span><span class="badge lg-8" >후반기 토요4부(후반기 토요루키)</span></td>
           <td class="left small">2024.05.11(토) 07:00 <span class="res res-L">패</span> 7:11</td>
         </tr>
       
@@ -522,7 +404,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="33">33</td><td data-value="63">63</td>
           <td data-value="-30" class="lose">-30</td>
-          <td class="left"><span class="badge lg-3">토요메이저</span><span class="badge lg-9">전반기 토요리그</span><span class="badge lg-15">후반기 토요메이저</span></td>
+          <td class="left"><span class="badge lg-3" >토요메이저</span><span class="badge lg-9" >전반기 토요리그</span><span class="badge lg-15" >후반기 토요메이저</span></td>
           <td class="left small">2019.10.19(토) 09:30 <span class="res res-L">패</span> 13:14</td>
         </tr>
       
@@ -533,7 +415,7 @@
           <td data-value="0.5">0.500</td>
           <td data-value="50">50</td><td data-value="49">49</td>
           <td data-value="1" class="win">+1</td>
-          <td class="left"><span class="badge lg-1">토요4부 용인</span><span class="badge lg-13">토요4부 마이너</span></td>
+          <td class="left"><span class="badge lg-1" >토요4부 용인</span><span class="badge lg-13" >토요4부 마이너</span></td>
           <td class="left small">2021.05.22(토) 07:00 <span class="res res-L">패</span> 7:15</td>
         </tr>
       
@@ -544,7 +426,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="30">30</td><td data-value="47">47</td>
           <td data-value="-17" class="lose">-17</td>
-          <td class="left"><span class="badge lg-9">성남리그</span><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2025.03.15(토) 19:00 <span class="res res-L">패</span> 6:13</td>
         </tr>
       
@@ -555,7 +437,7 @@
           <td data-value="0.25">0.250</td>
           <td data-value="40">40</td><td data-value="35">35</td>
           <td data-value="5" class="win">+5</td>
-          <td class="left"><span class="badge lg-9">성남리그</span><span class="badge lg-6">용인에버리그</span><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span><span class="badge lg-6" >용인에버리그</span><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2026.10.10(토) 11:00 <span class="res res-L">패</span> 13:14</td>
         </tr>
       
@@ -566,7 +448,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="37">37</td><td data-value="49">49</td>
           <td data-value="-12" class="lose">-12</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span><span class="badge lg-13">토요4부 마이너</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span><span class="badge lg-13" >토요4부 마이너</span></td>
           <td class="left small">2024.05.25(토) 17:00 <span class="res res-L">패</span> 16:19</td>
         </tr>
       
@@ -577,7 +459,7 @@
           <td data-value="0.25">0.250</td>
           <td data-value="28">28</td><td data-value="55">55</td>
           <td data-value="-27" class="lose">-27</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span><span class="badge lg-1">토요4부 용인</span><span class="badge lg-13">토요4부 마이너</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span><span class="badge lg-1" >토요4부 용인</span><span class="badge lg-13" >토요4부 마이너</span></td>
           <td class="left small">2023.06.10(토) 13:00 <span class="res res-L">패</span> 5:7</td>
         </tr>
       
@@ -588,7 +470,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="22">22</td><td data-value="52">52</td>
           <td data-value="-30" class="lose">-30</td>
-          <td class="left"><span class="badge lg-9">성남리그</span><span class="badge lg-7">토요루키(토요루키A)</span><span class="badge lg-9">전반기 토요리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span><span class="badge lg-7" >토요루키(토요루키A)</span><span class="badge lg-9" >전반기 토요리그</span></td>
           <td class="left small">2025.11.08(토) 15:00 <span class="res res-L">패</span> 4:19</td>
         </tr>
       
@@ -599,7 +481,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="26">26</td><td data-value="81">81</td>
           <td data-value="-55" class="lose">-55</td>
-          <td class="left"><span class="badge lg-11">토요 4부(토요루키 )</span><span class="badge lg-13">토요4부 마이너</span></td>
+          <td class="left"><span class="badge lg-11" >토요 4부(토요루키 )</span><span class="badge lg-13" >토요4부 마이너</span></td>
           <td class="left small">2023.06.24(토) 14:30 <span class="res res-L">패</span> 5:14</td>
         </tr>
       
@@ -610,7 +492,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="30">30</td><td data-value="41">41</td>
           <td data-value="-11" class="lose">-11</td>
-          <td class="left"><span class="badge lg-9">성남리그</span><span class="badge lg-6">용인에버리그</span><span class="badge lg-0">토요 루키(4부)(토요 A조)</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span><span class="badge lg-6" >용인에버리그</span><span class="badge lg-0" >토요 루키(4부)(토요 A조)</span></td>
           <td class="left small">2025.05.10(토) 11:00 <span class="res res-L">패</span> 3:8</td>
         </tr>
       
@@ -621,7 +503,7 @@
           <td data-value="0.75">0.750</td>
           <td data-value="56">56</td><td data-value="49">49</td>
           <td data-value="7" class="win">+7</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span><span class="badge lg-4">토요4부 에버</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span><span class="badge lg-4" >토요4부 에버</span></td>
           <td class="left small">2024.09.28(토) 09:30 <span class="res res-W">승</span> 16:5</td>
         </tr>
       
@@ -632,7 +514,7 @@
           <td data-value="0.5">0.500</td>
           <td data-value="41">41</td><td data-value="38">38</td>
           <td data-value="3" class="win">+3</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span><span class="badge lg-11">토요 4부(토요루키 )</span><span class="badge lg-8">후반기 토요4부(후반기 토요루키)</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span><span class="badge lg-11" >토요 4부(토요루키 )</span><span class="badge lg-8" >후반기 토요4부(후반기 토요루키)</span></td>
           <td class="left small">2024.03.23(토) 14:30 <span class="res res-W">승</span> 10:3</td>
         </tr>
       
@@ -643,7 +525,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="78">78</td><td data-value="31">31</td>
           <td data-value="47" class="win">+47</td>
-          <td class="left"><span class="badge lg-13">토요4부 마이너</span><span class="badge lg-3">토요메이저</span></td>
+          <td class="left"><span class="badge lg-13" >토요4부 마이너</span><span class="badge lg-3" >토요메이저</span></td>
           <td class="left small">2020.11.21(토) 07:00 <span class="res res-W">승</span> 19:4</td>
         </tr>
       
@@ -654,7 +536,7 @@
           <td data-value="0.25">0.250</td>
           <td data-value="36">36</td><td data-value="43">43</td>
           <td data-value="-7" class="lose">-7</td>
-          <td class="left"><span class="badge lg-0">토요 루키(4부)(토요 A조)</span><span class="badge lg-2">야탑리그(후)</span></td>
+          <td class="left"><span class="badge lg-0" >토요 루키(4부)(토요 A조)</span><span class="badge lg-2" >야탑리그(후)</span></td>
           <td class="left small">2018.12.01(토) 10:00 <span class="res res-L">패</span> 6:13</td>
         </tr>
       
@@ -665,7 +547,7 @@
           <td data-value="0.6666666666666666">0.667</td>
           <td data-value="36">36</td><td data-value="33">33</td>
           <td data-value="3" class="win">+3</td>
-          <td class="left"><span class="badge lg-12">경희빅리그</span><span class="badge lg-5">팀업캠퍼스리그</span></td>
+          <td class="left"><span class="badge lg-12" >경희빅리그</span><span class="badge lg-5" >팀업캠퍼스리그</span></td>
           <td class="left small">2026.04.18(토) 06:30 <span class="res res-W">승</span> 17:10</td>
         </tr>
       
@@ -676,7 +558,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="43">43</td><td data-value="4">4</td>
           <td data-value="39" class="win">+39</td>
-          <td class="left"><span class="badge lg-7">야탑리그</span></td>
+          <td class="left"><span class="badge lg-7" >야탑리그</span></td>
           <td class="left small">2017.08.26(토) 09:00 <span class="res res-W">승</span> 19:2</td>
         </tr>
       
@@ -687,7 +569,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="42">42</td><td data-value="10">10</td>
           <td data-value="32" class="win">+32</td>
-          <td class="left"><span class="badge lg-7">야탑리그</span></td>
+          <td class="left"><span class="badge lg-7" >야탑리그</span></td>
           <td class="left small">2017.08.12(토) 09:00 <span class="res res-W">승</span> 13:3</td>
         </tr>
       
@@ -698,7 +580,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="26">26</td><td data-value="25">25</td>
           <td data-value="1" class="win">+1</td>
-          <td class="left"><span class="badge lg-9">성남리그</span><span class="badge lg-7">야탑리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span><span class="badge lg-7" >야탑리그</span></td>
           <td class="left small">2026.02.21(토) 15:00 <span class="res res-D">무</span> 9:9</td>
         </tr>
       
@@ -709,7 +591,7 @@
           <td data-value="0.3333333333333333">0.333</td>
           <td data-value="19">19</td><td data-value="41">41</td>
           <td data-value="-22" class="lose">-22</td>
-          <td class="left"><span class="badge lg-4">토요4부 에버</span></td>
+          <td class="left"><span class="badge lg-4" >토요4부 에버</span></td>
           <td class="left small">2022.10.22(토) 12:00 <span class="res res-L">패</span> 5:22</td>
         </tr>
       
@@ -720,7 +602,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="15">15</td><td data-value="43">43</td>
           <td data-value="-28" class="lose">-28</td>
-          <td class="left"><span class="badge lg-10">광주리그</span><span class="badge lg-1">토요4부 용인</span></td>
+          <td class="left"><span class="badge lg-10" >광주리그</span><span class="badge lg-1" >토요4부 용인</span></td>
           <td class="left small">2026.10.24(토) 07:00 <span class="res res-L">패</span> 10:15</td>
         </tr>
       
@@ -731,7 +613,7 @@
           <td data-value="0.6666666666666666">0.667</td>
           <td data-value="44">44</td><td data-value="33">33</td>
           <td data-value="11" class="win">+11</td>
-          <td class="left"><span class="badge lg-9">전반기 토요리그</span><span class="badge lg-4">용인힐링리그</span></td>
+          <td class="left"><span class="badge lg-9" >전반기 토요리그</span><span class="badge lg-4" >용인힐링리그</span></td>
           <td class="left small">2018.06.23(토) 09:30 <span class="res res-W">승</span> 20:9</td>
         </tr>
       
@@ -742,7 +624,7 @@
           <td data-value="0.6666666666666666">0.667</td>
           <td data-value="33">33</td><td data-value="22">22</td>
           <td data-value="11" class="win">+11</td>
-          <td class="left"><span class="badge lg-9">성남리그</span><span class="badge lg-6">용인에버리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span><span class="badge lg-6" >용인에버리그</span></td>
           <td class="left small">2025.06.21(토) 13:00 <span class="res res-W">승</span> 16:9</td>
         </tr>
       
@@ -753,7 +635,7 @@
           <td data-value="0.6666666666666666">0.667</td>
           <td data-value="37">37</td><td data-value="29">29</td>
           <td data-value="8" class="win">+8</td>
-          <td class="left"><span class="badge lg-9">성남리그</span><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2026.07.18(토) 13:00 <span class="res res-W">승</span> 9:4</td>
         </tr>
       
@@ -764,7 +646,7 @@
           <td data-value="0.3333333333333333">0.333</td>
           <td data-value="17">17</td><td data-value="42">42</td>
           <td data-value="-25" class="lose">-25</td>
-          <td class="left"><span class="badge lg-7">야탑리그</span><span class="badge lg-2">야탑리그(후)</span></td>
+          <td class="left"><span class="badge lg-7" >야탑리그</span><span class="badge lg-2" >야탑리그(후)</span></td>
           <td class="left small">2017.10.21(토) 11:30 <span class="res res-L">패</span> 3:20</td>
         </tr>
       
@@ -775,7 +657,7 @@
           <td data-value="0.6666666666666666">0.667</td>
           <td data-value="53">53</td><td data-value="23">23</td>
           <td data-value="30" class="win">+30</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span><span class="badge lg-8">후반기 토요4부(후반기 토요루키)</span><span class="badge lg-9">전반기 토요리그</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span><span class="badge lg-8" >후반기 토요4부(후반기 토요루키)</span><span class="badge lg-9" >전반기 토요리그</span></td>
           <td class="left small">2024.10.19(토) 12:00 <span class="res res-W">승</span> 8:0</td>
         </tr>
       
@@ -786,7 +668,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="17">17</td><td data-value="25">25</td>
           <td data-value="-8" class="lose">-8</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2023.05.20(토) 13:00 <span class="res res-L">패</span> 10:13</td>
         </tr>
       
@@ -797,7 +679,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="31">31</td><td data-value="23">23</td>
           <td data-value="8" class="win">+8</td>
-          <td class="left"><span class="badge lg-0">토요 루키(4부)(토요 A조)</span></td>
+          <td class="left"><span class="badge lg-0" >토요 루키(4부)(토요 A조)</span></td>
           <td class="left small">2018.07.14(토) 09:00 <span class="res res-W">승</span> 14:13</td>
         </tr>
       
@@ -808,7 +690,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="28">28</td><td data-value="10">10</td>
           <td data-value="18" class="win">+18</td>
-          <td class="left"><span class="badge lg-3">토요메이저</span></td>
+          <td class="left"><span class="badge lg-3" >토요메이저</span></td>
           <td class="left small">2019.10.05(토) 12:00 <span class="res res-W">승</span> 11:8</td>
         </tr>
       
@@ -819,7 +701,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="36">36</td><td data-value="10">10</td>
           <td data-value="26" class="win">+26</td>
-          <td class="left"><span class="badge lg-3">토요메이저</span></td>
+          <td class="left"><span class="badge lg-3" >토요메이저</span></td>
           <td class="left small">2019.07.06(토) 17:00 <span class="res res-W">승</span> 9:8</td>
         </tr>
       
@@ -830,7 +712,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="26">26</td><td data-value="29">29</td>
           <td data-value="-3" class="lose">-3</td>
-          <td class="left"><span class="badge lg-3">토요메이저</span></td>
+          <td class="left"><span class="badge lg-3" >토요메이저</span></td>
           <td class="left small">2019.08.17(토) 12:00 <span class="res res-L">패</span> 14:16</td>
         </tr>
       
@@ -841,7 +723,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="17">17</td><td data-value="7">7</td>
           <td data-value="10" class="win">+10</td>
-          <td class="left"><span class="badge lg-9">성남리그</span><span class="badge lg-6">용인에버리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span><span class="badge lg-6" >용인에버리그</span></td>
           <td class="left small">2026.05.02(토) 13:00 <span class="res res-W">승</span> 7:0</td>
         </tr>
       
@@ -852,7 +734,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="5">5</td><td data-value="20">20</td>
           <td data-value="-15" class="lose">-15</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2024.05.18(토) 07:00 <span class="res res-L">패</span> 1:11</td>
         </tr>
       
@@ -863,7 +745,7 @@
           <td data-value="0.5">0.500</td>
           <td data-value="16">16</td><td data-value="11">11</td>
           <td data-value="5" class="win">+5</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2021.06.05(토) 07:00 <span class="res res-W">승</span> 14:4</td>
         </tr>
       
@@ -874,7 +756,7 @@
           <td data-value="0.5">0.500</td>
           <td data-value="30">30</td><td data-value="23">23</td>
           <td data-value="7" class="win">+7</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span><span class="badge lg-15">후반기 토요메이저</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span><span class="badge lg-15" >후반기 토요메이저</span></td>
           <td class="left small">2023.11.11(토) 09:00 <span class="res res-W">승</span> 22:5</td>
         </tr>
       
@@ -885,7 +767,7 @@
           <td data-value="0.5">0.500</td>
           <td data-value="14">14</td><td data-value="23">23</td>
           <td data-value="-9" class="lose">-9</td>
-          <td class="left"><span class="badge lg-12">경희빅리그</span><span class="badge lg-2">토요후반기B조</span></td>
+          <td class="left"><span class="badge lg-12" >경희빅리그</span><span class="badge lg-2" >토요후반기B조</span></td>
           <td class="left small">2026.05.23(토) 16:30 <span class="res res-L">패</span> 2:15</td>
         </tr>
       
@@ -896,7 +778,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="17">17</td><td data-value="13">13</td>
           <td data-value="4" class="win">+4</td>
-          <td class="left"><span class="badge lg-9">성남리그</span><span class="badge lg-6">용인에버리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span><span class="badge lg-6" >용인에버리그</span></td>
           <td class="left small">2025.07.26(토) 07:00 <span class="res res-D">무</span> 10:10</td>
         </tr>
       
@@ -907,7 +789,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="12">12</td><td data-value="16">16</td>
           <td data-value="-4" class="lose">-4</td>
-          <td class="left"><span class="badge lg-3">토요메이저</span></td>
+          <td class="left"><span class="badge lg-3" >토요메이저</span></td>
           <td class="left small">2019.09.21(토) 09:30 <span class="res res-L">패</span> 6:7</td>
         </tr>
       
@@ -918,7 +800,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="33">33</td><td data-value="17">17</td>
           <td data-value="16" class="win">+16</td>
-          <td class="left"><span class="badge lg-5">팀업캠퍼스리그</span></td>
+          <td class="left"><span class="badge lg-5" >팀업캠퍼스리그</span></td>
           <td class="left small">2025.05.03(토) 15:15 <span class="res res-W">승</span> 15:14</td>
         </tr>
       
@@ -929,7 +811,7 @@
           <td data-value="0.5">0.500</td>
           <td data-value="18">18</td><td data-value="26">26</td>
           <td data-value="-8" class="lose">-8</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2023.10.14(토) 11:00 <span class="res res-W">승</span> 15:12</td>
         </tr>
       
@@ -940,7 +822,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="28">28</td><td data-value="9">9</td>
           <td data-value="19" class="win">+19</td>
-          <td class="left"><span class="badge lg-9">성남리그</span><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2025.08.16(토) 17:00 <span class="res res-W">승</span> 12:3</td>
         </tr>
       
@@ -951,7 +833,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="18">18</td><td data-value="32">32</td>
           <td data-value="-14" class="lose">-14</td>
-          <td class="left"><span class="badge lg-9">성남리그</span><span class="badge lg-6">용인에버리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span><span class="badge lg-6" >용인에버리그</span></td>
           <td class="left small">2026.06.27(토) 07:00 <span class="res res-L">패</span> 11:19</td>
         </tr>
       
@@ -962,7 +844,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="21">21</td><td data-value="31">31</td>
           <td data-value="-10" class="lose">-10</td>
-          <td class="left"><span class="badge lg-9">성남리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span></td>
           <td class="left small">2026.10.17(토) 11:00 <span class="res res-L">패</span> 6:16</td>
         </tr>
       
@@ -973,7 +855,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="25">25</td><td data-value="4">4</td>
           <td data-value="21" class="win">+21</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2023.07.01(토) 17:00 <span class="res res-W">승</span> 13:3</td>
         </tr>
       
@@ -984,7 +866,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="21">21</td><td data-value="18">18</td>
           <td data-value="3" class="win">+3</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span></td>
           <td class="left small">2024.08.24(토) 09:00 <span class="res res-W">승</span> 11:10</td>
         </tr>
       
@@ -995,7 +877,7 @@
           <td data-value="0.5">0.500</td>
           <td data-value="16">16</td><td data-value="20">20</td>
           <td data-value="-4" class="lose">-4</td>
-          <td class="left"><span class="badge lg-9">전반기 토요리그</span><span class="badge lg-15">후반기 토요메이저</span></td>
+          <td class="left"><span class="badge lg-9" >전반기 토요리그</span><span class="badge lg-15" >후반기 토요메이저</span></td>
           <td class="left small">2018.09.29(토) 12:00 <span class="res res-W">승</span> 15:7</td>
         </tr>
       
@@ -1006,7 +888,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="25">25</td><td data-value="22">22</td>
           <td data-value="3" class="win">+3</td>
-          <td class="left"><span class="badge lg-0">토요 루키(4부)(토요 A조)</span></td>
+          <td class="left"><span class="badge lg-0" >토요 루키(4부)(토요 A조)</span></td>
           <td class="left small">2018.11.03(토) 09:30 <span class="res res-D">무</span> 10:10</td>
         </tr>
       
@@ -1017,7 +899,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="13">13</td><td data-value="4">4</td>
           <td data-value="9" class="win">+9</td>
-          <td class="left"><span class="badge lg-0">토요 루키(4부)(토요 A조)</span></td>
+          <td class="left"><span class="badge lg-0" >토요 루키(4부)(토요 A조)</span></td>
           <td class="left small">2018.07.21(토) 13:00 <span class="res res-W">승</span> 7:0</td>
         </tr>
       
@@ -1028,7 +910,7 @@
           <td data-value="0.5">0.500</td>
           <td data-value="14">14</td><td data-value="28">28</td>
           <td data-value="-14" class="lose">-14</td>
-          <td class="left"><span class="badge lg-15">토요리그 4부 D조</span></td>
+          <td class="left"><span class="badge lg-15" >토요리그 4부 D조</span></td>
           <td class="left small">2019.11.09(토) 16:30 <span class="res res-L">패</span> 4:19</td>
         </tr>
       
@@ -1039,7 +921,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="26">26</td><td data-value="20">20</td>
           <td data-value="6" class="win">+6</td>
-          <td class="left"><span class="badge lg-0">토요 루키(4부)(토요 A조)</span></td>
+          <td class="left"><span class="badge lg-0" >토요 루키(4부)(토요 A조)</span></td>
           <td class="left small">2018.11.10(토) 11:30 <span class="res res-W">승</span> 12:7</td>
         </tr>
       
@@ -1050,7 +932,7 @@
           <td data-value="0.5">0.500</td>
           <td data-value="12">12</td><td data-value="20">20</td>
           <td data-value="-8" class="lose">-8</td>
-          <td class="left"><span class="badge lg-15">토요리그 4부 D조</span></td>
+          <td class="left"><span class="badge lg-15" >토요리그 4부 D조</span></td>
           <td class="left small">2019.08.24(토) 13:00 <span class="res res-L">패</span> 4:14</td>
         </tr>
       
@@ -1061,7 +943,7 @@
           <td data-value="0.5">0.500</td>
           <td data-value="16">16</td><td data-value="18">18</td>
           <td data-value="-2" class="lose">-2</td>
-          <td class="left"><span class="badge lg-10">광주리그</span><span class="badge lg-5">팀업캠퍼스리그</span></td>
+          <td class="left"><span class="badge lg-10" >광주리그</span><span class="badge lg-5" >팀업캠퍼스리그</span></td>
           <td class="left small">2026.09.12(토) 09:00 <span class="res res-W">승</span> 15:5</td>
         </tr>
       
@@ -1072,7 +954,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="14">14</td><td data-value="22">22</td>
           <td data-value="-8" class="lose">-8</td>
-          <td class="left"><span class="badge lg-0">토요 루키(4부)(토요 A조)</span></td>
+          <td class="left"><span class="badge lg-0" >토요 루키(4부)(토요 A조)</span></td>
           <td class="left small">2018.08.11(토) 11:00 <span class="res res-L">패</span> 6:13</td>
         </tr>
       
@@ -1083,7 +965,7 @@
           <td data-value="0.5">0.500</td>
           <td data-value="22">22</td><td data-value="15">15</td>
           <td data-value="7" class="win">+7</td>
-          <td class="left"><span class="badge lg-9">성남리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span></td>
           <td class="left small">2026.07.25(토) 08:30 <span class="res res-W">승</span> 13:4</td>
         </tr>
       
@@ -1094,7 +976,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="9">9</td><td data-value="18">18</td>
           <td data-value="-9" class="lose">-9</td>
-          <td class="left"><span class="badge lg-7">야탑리그</span></td>
+          <td class="left"><span class="badge lg-7" >야탑리그</span></td>
           <td class="left small">2017.06.17(토) 07:00 <span class="res res-D">무</span> 8:8</td>
         </tr>
       
@@ -1105,7 +987,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="9">9</td><td data-value="24">24</td>
           <td data-value="-15" class="lose">-15</td>
-          <td class="left"><span class="badge lg-13">제주특별자치도직장인리그 (위원장배/G조)</span><span class="badge lg-5">백두리그</span></td>
+          <td class="left"><span class="badge lg-13" >제주특별자치도직장인리그 (위원장배/G조)</span><span class="badge lg-5" >백두리그</span></td>
           <td class="left small">2015.09.19(토) 11:00 <span class="res res-L">패</span> 0:14</td>
         </tr>
       
@@ -1116,7 +998,7 @@
           <td data-value="0.5">0.500</td>
           <td data-value="24">24</td><td data-value="22">22</td>
           <td data-value="2" class="win">+2</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span></td>
           <td class="left small">2024.09.07(토) 14:30 <span class="res res-L">패</span> 12:21</td>
         </tr>
       
@@ -1127,7 +1009,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="3">3</td><td data-value="26">26</td>
           <td data-value="-23" class="lose">-23</td>
-          <td class="left"><span class="badge lg-15">토요리그 4부 D조</span><span class="badge lg-4">용인힐링리그</span></td>
+          <td class="left"><span class="badge lg-15" >토요리그 4부 D조</span><span class="badge lg-4" >용인힐링리그</span></td>
           <td class="left small">2019.08.10(토) 07:00 <span class="res res-L">패</span> 2:15</td>
         </tr>
       
@@ -1138,7 +1020,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="14">14</td><td data-value="22">22</td>
           <td data-value="-8" class="lose">-8</td>
-          <td class="left"><span class="badge lg-5">팀업캠퍼스리그</span></td>
+          <td class="left"><span class="badge lg-5" >팀업캠퍼스리그</span></td>
           <td class="left small">2025.06.07(토) 15:15 <span class="res res-L">패</span> 6:12</td>
         </tr>
       
@@ -1149,7 +1031,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="14">14</td><td data-value="24">24</td>
           <td data-value="-10" class="lose">-10</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2023.04.15(토) 09:00 <span class="res res-L">패</span> 9:13</td>
         </tr>
       
@@ -1160,7 +1042,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="10">10</td><td data-value="25">25</td>
           <td data-value="-15" class="lose">-15</td>
-          <td class="left"><span class="badge lg-13">제주특별자치도직장인리그 (위원장배/G조)</span><span class="badge lg-5">백두리그</span></td>
+          <td class="left"><span class="badge lg-13" >제주특별자치도직장인리그 (위원장배/G조)</span><span class="badge lg-5" >백두리그</span></td>
           <td class="left small">2015.10.24(토) 11:00 <span class="res res-L">패</span> 10:11</td>
         </tr>
       
@@ -1171,7 +1053,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="14">14</td><td data-value="18">18</td>
           <td data-value="-4" class="lose">-4</td>
-          <td class="left"><span class="badge lg-15">후반기 토요메이저</span><span class="badge lg-4">용인힐링리그</span></td>
+          <td class="left"><span class="badge lg-15" >후반기 토요메이저</span><span class="badge lg-4" >용인힐링리그</span></td>
           <td class="left small">2018.12.08(토) 12:00 <span class="res res-L">패</span> 4:5</td>
         </tr>
       
@@ -1182,7 +1064,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="10">10</td><td data-value="6">6</td>
           <td data-value="4" class="win">+4</td>
-          <td class="left"><span class="badge lg-9">대원리그</span></td>
+          <td class="left"><span class="badge lg-9" >대원리그</span></td>
           <td class="left small">2016.05.21(토) 13:00 <span class="res res-W">승</span> 10:6</td>
         </tr>
       
@@ -1193,7 +1075,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="6">6</td><td data-value="18">18</td>
           <td data-value="-12" class="lose">-12</td>
-          <td class="left"><span class="badge lg-12">경희빅리그</span></td>
+          <td class="left"><span class="badge lg-12" >경희빅리그</span></td>
           <td class="left small">2026.02.28(토) 13:30 <span class="res res-L">패</span> 6:18</td>
         </tr>
       
@@ -1204,7 +1086,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="22">22</td><td data-value="6">6</td>
           <td data-value="16" class="win">+16</td>
-          <td class="left"><span class="badge lg-9">성남리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span></td>
           <td class="left small">2026.08.15(토) 18:30 <span class="res res-W">승</span> 22:6</td>
         </tr>
       
@@ -1215,7 +1097,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="22">22</td><td data-value="8">8</td>
           <td data-value="14" class="win">+14</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2020.11.14(토) 07:00 <span class="res res-W">승</span> 22:8</td>
         </tr>
       
@@ -1226,7 +1108,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="11">11</td><td data-value="5">5</td>
           <td data-value="6" class="win">+6</td>
-          <td class="left"><span class="badge lg-9">성남리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span></td>
           <td class="left small">2026.03.07(토) 08:30 <span class="res res-W">승</span> 11:5</td>
         </tr>
       
@@ -1237,7 +1119,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="2">2</td><td data-value="7">7</td>
           <td data-value="-5" class="lose">-5</td>
-          <td class="left"><span class="badge lg-2">토요후반기B조</span></td>
+          <td class="left"><span class="badge lg-2" >토요후반기B조</span></td>
           <td class="left small">2020.08.01(토) 09:00 <span class="res res-L">패</span> 2:7</td>
         </tr>
       
@@ -1248,7 +1130,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="7">7</td><td data-value="15">15</td>
           <td data-value="-8" class="lose">-8</td>
-          <td class="left"><span class="badge lg-5">팀업캠퍼스리그</span></td>
+          <td class="left"><span class="badge lg-5" >팀업캠퍼스리그</span></td>
           <td class="left small">2025.07.12(토) 06:50 <span class="res res-L">패</span> 7:15</td>
         </tr>
       
@@ -1259,7 +1141,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="7">7</td><td data-value="0">0</td>
           <td data-value="7" class="win">+7</td>
-          <td class="left"><span class="badge lg-9">대원리그</span></td>
+          <td class="left"><span class="badge lg-9" >대원리그</span></td>
           <td class="left small">2016.08.13(토) 11:00 <span class="res res-W">승</span> 7:0</td>
         </tr>
       
@@ -1270,7 +1152,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="16">16</td><td data-value="5">5</td>
           <td data-value="11" class="win">+11</td>
-          <td class="left"><span class="badge lg-2">토요후반기B조</span></td>
+          <td class="left"><span class="badge lg-2" >토요후반기B조</span></td>
           <td class="left small">2020.12.19(토) 08:00 <span class="res res-W">승</span> 16:5</td>
         </tr>
       
@@ -1281,7 +1163,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="18">18</td><td data-value="9">9</td>
           <td data-value="9" class="win">+9</td>
-          <td class="left"><span class="badge lg-4">용인힐링리그</span></td>
+          <td class="left"><span class="badge lg-4" >용인힐링리그</span></td>
           <td class="left small">2016.09.03(토) 10:30 <span class="res res-W">승</span> 18:9</td>
         </tr>
       
@@ -1292,7 +1174,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="13">13</td><td data-value="14">14</td>
           <td data-value="-1" class="lose">-1</td>
-          <td class="left"><span class="badge lg-9">성남리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span></td>
           <td class="left small">2026.03.21(토) 06:30 <span class="res res-L">패</span> 13:14</td>
         </tr>
       
@@ -1303,7 +1185,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="12">12</td><td data-value="1">1</td>
           <td data-value="11" class="win">+11</td>
-          <td class="left"><span class="badge lg-5">팀업캠퍼스리그</span></td>
+          <td class="left"><span class="badge lg-5" >팀업캠퍼스리그</span></td>
           <td class="left small">2025.04.26(토) 15:15 <span class="res res-W">승</span> 12:1</td>
         </tr>
       
@@ -1314,7 +1196,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="12">12</td><td data-value="6">6</td>
           <td data-value="6" class="win">+6</td>
-          <td class="left"><span class="badge lg-2">토요후반기B조</span></td>
+          <td class="left"><span class="badge lg-2" >토요후반기B조</span></td>
           <td class="left small">2020.10.04(일) 09:00 <span class="res res-W">승</span> 12:6</td>
         </tr>
       
@@ -1325,7 +1207,7 @@
           <td data-value="">-</td>
           <td data-value="13">13</td><td data-value="13">13</td>
           <td data-value="0" class="">0</td>
-          <td class="left"><span class="badge lg-15">토요리그 4부 D조</span></td>
+          <td class="left"><span class="badge lg-15" >토요리그 4부 D조</span></td>
           <td class="left small">2019.04.13(토) 13:00 <span class="res res-D">무</span> 13:13</td>
         </tr>
       
@@ -1336,7 +1218,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="10">10</td><td data-value="11">11</td>
           <td data-value="-1" class="lose">-1</td>
-          <td class="left"><span class="badge lg-5">백두리그</span></td>
+          <td class="left"><span class="badge lg-5" >백두리그</span></td>
           <td class="left small">2015.10.09(금) 07:30 <span class="res res-L">패</span> 10:11</td>
         </tr>
       
@@ -1347,7 +1229,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="17">17</td><td data-value="4">4</td>
           <td data-value="13" class="win">+13</td>
-          <td class="left"><span class="badge lg-5">팀업캠퍼스리그</span></td>
+          <td class="left"><span class="badge lg-5" >팀업캠퍼스리그</span></td>
           <td class="left small">2025.05.17(토) 10:40 <span class="res res-W">승</span> 17:4</td>
         </tr>
       
@@ -1358,7 +1240,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="8">8</td><td data-value="9">9</td>
           <td data-value="-1" class="lose">-1</td>
-          <td class="left"><span class="badge lg-9">성남리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span></td>
           <td class="left small">2025.05.31(토) 13:00 <span class="res res-L">패</span> 8:9</td>
         </tr>
       
@@ -1369,7 +1251,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="11">11</td><td data-value="13">13</td>
           <td data-value="-2" class="lose">-2</td>
-          <td class="left"><span class="badge lg-10">광주리그</span></td>
+          <td class="left"><span class="badge lg-10" >광주리그</span></td>
           <td class="left small">2026.10.17(토) 15:00 <span class="res res-L">패</span> 11:13</td>
         </tr>
       
@@ -1380,7 +1262,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="7">7</td><td data-value="6">6</td>
           <td data-value="1" class="win">+1</td>
-          <td class="left"><span class="badge lg-2">야탑리그(후)</span></td>
+          <td class="left"><span class="badge lg-2" >야탑리그(후)</span></td>
           <td class="left small">2017.12.02(토) 15:00 <span class="res res-W">승</span> 7:6</td>
         </tr>
       
@@ -1391,7 +1273,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="2">2</td><td data-value="8">8</td>
           <td data-value="-6" class="lose">-6</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2021.04.24(토) 11:00 <span class="res res-L">패</span> 2:8</td>
         </tr>
       
@@ -1402,7 +1284,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="13">13</td><td data-value="8">8</td>
           <td data-value="5" class="win">+5</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span></td>
           <td class="left small">2024.04.13(토) 13:00 <span class="res res-W">승</span> 13:8</td>
         </tr>
       
@@ -1413,7 +1295,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="4">4</td><td data-value="11">11</td>
           <td data-value="-7" class="lose">-7</td>
-          <td class="left"><span class="badge lg-2">야탑리그(후)</span></td>
+          <td class="left"><span class="badge lg-2" >야탑리그(후)</span></td>
           <td class="left small">2017.10.21(토) 13:30 <span class="res res-L">패</span> 4:11</td>
         </tr>
       
@@ -1424,7 +1306,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="6">6</td><td data-value="9">9</td>
           <td data-value="-3" class="lose">-3</td>
-          <td class="left"><span class="badge lg-9">대원리그</span></td>
+          <td class="left"><span class="badge lg-9" >대원리그</span></td>
           <td class="left small">2016.06.11(토) 15:00 <span class="res res-L">패</span> 6:9</td>
         </tr>
       
@@ -1435,7 +1317,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="10">10</td><td data-value="11">11</td>
           <td data-value="-1" class="lose">-1</td>
-          <td class="left"><span class="badge lg-9">대원리그</span></td>
+          <td class="left"><span class="badge lg-9" >대원리그</span></td>
           <td class="left small">2016.06.25(토) 09:00 <span class="res res-L">패</span> 10:11</td>
         </tr>
       
@@ -1446,7 +1328,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="6">6</td><td data-value="17">17</td>
           <td data-value="-11" class="lose">-11</td>
-          <td class="left"><span class="badge lg-5">팀업캠퍼스리그</span></td>
+          <td class="left"><span class="badge lg-5" >팀업캠퍼스리그</span></td>
           <td class="left small">2025.08.02(토) 10:50 <span class="res res-L">패</span> 6:17</td>
         </tr>
       
@@ -1457,7 +1339,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="5">5</td><td data-value="6">6</td>
           <td data-value="-1" class="lose">-1</td>
-          <td class="left"><span class="badge lg-12">경희빅리그</span></td>
+          <td class="left"><span class="badge lg-12" >경희빅리그</span></td>
           <td class="left small">2026.05.16(토) 12:30 <span class="res res-L">패</span> 5:6</td>
         </tr>
       
@@ -1468,7 +1350,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="10">10</td><td data-value="11">11</td>
           <td data-value="-1" class="lose">-1</td>
-          <td class="left"><span class="badge lg-5">팀업캠퍼스리그</span></td>
+          <td class="left"><span class="badge lg-5" >팀업캠퍼스리그</span></td>
           <td class="left small">2025.03.29(토) 15:15 <span class="res res-L">패</span> 10:11</td>
         </tr>
       
@@ -1479,7 +1361,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="13">13</td><td data-value="6">6</td>
           <td data-value="7" class="win">+7</td>
-          <td class="left"><span class="badge lg-2">토요후반기B조</span></td>
+          <td class="left"><span class="badge lg-2" >토요후반기B조</span></td>
           <td class="left small">2020.10.17(토) 17:00 <span class="res res-W">승</span> 13:6</td>
         </tr>
       
@@ -1490,7 +1372,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="3">3</td><td data-value="32">32</td>
           <td data-value="-29" class="lose">-29</td>
-          <td class="left"><span class="badge lg-15">후반기 토요메이저</span></td>
+          <td class="left"><span class="badge lg-15" >후반기 토요메이저</span></td>
           <td class="left small">2018.11.03(토) 14:30 <span class="res res-L">패</span> 3:32</td>
         </tr>
       
@@ -1501,7 +1383,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="2">2</td><td data-value="16">16</td>
           <td data-value="-14" class="lose">-14</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2023.02.04(토) 15:00 <span class="res res-L">패</span> 2:16</td>
         </tr>
       
@@ -1512,7 +1394,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="2">2</td><td data-value="10">10</td>
           <td data-value="-8" class="lose">-8</td>
-          <td class="left"><span class="badge lg-5">백두리그</span></td>
+          <td class="left"><span class="badge lg-5" >백두리그</span></td>
           <td class="left small">2015.10.03(토) 13:00 <span class="res res-L">패</span> 2:10</td>
         </tr>
       
@@ -1523,7 +1405,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="8">8</td><td data-value="16">16</td>
           <td data-value="-8" class="lose">-8</td>
-          <td class="left"><span class="badge lg-9">전반기 토요리그</span></td>
+          <td class="left"><span class="badge lg-9" >전반기 토요리그</span></td>
           <td class="left small">2018.04.28(토) 14:30 <span class="res res-L">패</span> 8:16</td>
         </tr>
       
@@ -1534,7 +1416,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="20">20</td><td data-value="11">11</td>
           <td data-value="9" class="win">+9</td>
-          <td class="left"><span class="badge lg-9">전반기 토요리그</span></td>
+          <td class="left"><span class="badge lg-9" >전반기 토요리그</span></td>
           <td class="left small">2018.07.07(토) 09:30 <span class="res res-W">승</span> 20:11</td>
         </tr>
       
@@ -1545,7 +1427,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="1">1</td><td data-value="13">13</td>
           <td data-value="-12" class="lose">-12</td>
-          <td class="left"><span class="badge lg-15">토요리그 4부 D조</span></td>
+          <td class="left"><span class="badge lg-15" >토요리그 4부 D조</span></td>
           <td class="left small">2019.08.31(토) 07:00 <span class="res res-L">패</span> 1:13</td>
         </tr>
       
@@ -1556,7 +1438,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="20">20</td><td data-value="19">19</td>
           <td data-value="1" class="win">+1</td>
-          <td class="left"><span class="badge lg-9">대원리그</span></td>
+          <td class="left"><span class="badge lg-9" >대원리그</span></td>
           <td class="left small">2016.02.27(토) 16:00 <span class="res res-W">승</span> 20:19</td>
         </tr>
       
@@ -1567,7 +1449,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="12">12</td><td data-value="4">4</td>
           <td data-value="8" class="win">+8</td>
-          <td class="left"><span class="badge lg-13">제주특별자치도직장인리그 (위원장배/G조)</span></td>
+          <td class="left"><span class="badge lg-13" >제주특별자치도직장인리그 (위원장배/G조)</span></td>
           <td class="left small">2015.03.28(토) 13:00 <span class="res res-W">승</span> 12:4</td>
         </tr>
       
@@ -1578,7 +1460,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="0">0</td><td data-value="7">7</td>
           <td data-value="-7" class="lose">-7</td>
-          <td class="left"><span class="badge lg-4">용인힐링리그</span></td>
+          <td class="left"><span class="badge lg-4" >용인힐링리그</span></td>
           <td class="left small">2016.08.06(토) 08:30 <span class="res res-L">패</span> 0:7</td>
         </tr>
       
@@ -1589,7 +1471,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="11">11</td><td data-value="8">8</td>
           <td data-value="3" class="win">+3</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span></td>
           <td class="left small">2024.08.31(토) 11:00 <span class="res res-W">승</span> 11:8</td>
         </tr>
       
@@ -1600,7 +1482,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="0">0</td><td data-value="8">8</td>
           <td data-value="-8" class="lose">-8</td>
-          <td class="left"><span class="badge lg-12">경희빅리그</span></td>
+          <td class="left"><span class="badge lg-12" >경희빅리그</span></td>
           <td class="left small">2026.03.14(토) 09:30 <span class="res res-L">패</span> 0:8</td>
         </tr>
       
@@ -1611,7 +1493,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="14">14</td><td data-value="0">0</td>
           <td data-value="14" class="win">+14</td>
-          <td class="left"><span class="badge lg-3">제주특별자치도직장인리그 (백두리그)</span></td>
+          <td class="left"><span class="badge lg-3" >제주특별자치도직장인리그 (백두리그)</span></td>
           <td class="left small">2015.06.12(금) 19:30 <span class="res res-W">승</span> 14:0</td>
         </tr>
       
@@ -1622,7 +1504,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="16">16</td><td data-value="17">17</td>
           <td data-value="-1" class="lose">-1</td>
-          <td class="left"><span class="badge lg-4">용인힐링리그</span></td>
+          <td class="left"><span class="badge lg-4" >용인힐링리그</span></td>
           <td class="left small">2016.09.24(토) 16:30 <span class="res res-L">패</span> 16:17</td>
         </tr>
       
@@ -1633,7 +1515,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="6">6</td><td data-value="11">11</td>
           <td data-value="-5" class="lose">-5</td>
-          <td class="left"><span class="badge lg-5">팀업캠퍼스리그</span></td>
+          <td class="left"><span class="badge lg-5" >팀업캠퍼스리그</span></td>
           <td class="left small">2025.09.27(토) 08:45 <span class="res res-L">패</span> 6:11</td>
         </tr>
       
@@ -1644,7 +1526,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="10">10</td><td data-value="11">11</td>
           <td data-value="-1" class="lose">-1</td>
-          <td class="left"><span class="badge lg-5">수지윈리그</span></td>
+          <td class="left"><span class="badge lg-5" >수지윈리그</span></td>
           <td class="left small">2017.09.02(토) 09:00 <span class="res res-L">패</span> 10:11</td>
         </tr>
       
@@ -1655,7 +1537,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="7">7</td><td data-value="13">13</td>
           <td data-value="-6" class="lose">-6</td>
-          <td class="left"><span class="badge lg-15">토요리그 4부 D조</span></td>
+          <td class="left"><span class="badge lg-15" >토요리그 4부 D조</span></td>
           <td class="left small">2019.04.27(토) 10:00 <span class="res res-L">패</span> 7:13</td>
         </tr>
       
@@ -1666,7 +1548,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="19">19</td><td data-value="8">8</td>
           <td data-value="11" class="win">+11</td>
-          <td class="left"><span class="badge lg-15">토요리그 4부 D조</span></td>
+          <td class="left"><span class="badge lg-15" >토요리그 4부 D조</span></td>
           <td class="left small">2019.03.16(토) 16:00 <span class="res res-W">승</span> 19:8</td>
         </tr>
       
@@ -1677,7 +1559,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="14">14</td><td data-value="7">7</td>
           <td data-value="7" class="win">+7</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span></td>
           <td class="left small">2024.08.17(토) 07:00 <span class="res res-W">승</span> 14:7</td>
         </tr>
       
@@ -1688,7 +1570,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="8">8</td><td data-value="7">7</td>
           <td data-value="1" class="win">+1</td>
-          <td class="left"><span class="badge lg-12">경희빅리그</span></td>
+          <td class="left"><span class="badge lg-12" >경희빅리그</span></td>
           <td class="left small">2026.04.04(토) 12:30 <span class="res res-W">승</span> 8:7</td>
         </tr>
       
@@ -1699,7 +1581,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="27">27</td><td data-value="7">7</td>
           <td data-value="20" class="win">+20</td>
-          <td class="left"><span class="badge lg-15">후반기 토요메이저</span></td>
+          <td class="left"><span class="badge lg-15" >후반기 토요메이저</span></td>
           <td class="left small">2018.09.01(토) 17:00 <span class="res res-W">승</span> 27:7</td>
         </tr>
       
@@ -1710,7 +1592,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="8">8</td><td data-value="9">9</td>
           <td data-value="-1" class="lose">-1</td>
-          <td class="left"><span class="badge lg-9">성남리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span></td>
           <td class="left small">2026.08.29(토) 13:00 <span class="res res-L">패</span> 8:9</td>
         </tr>
       
@@ -1721,7 +1603,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="12">12</td><td data-value="13">13</td>
           <td data-value="-1" class="lose">-1</td>
-          <td class="left"><span class="badge lg-12">경희빅리그</span></td>
+          <td class="left"><span class="badge lg-12" >경희빅리그</span></td>
           <td class="left small">2026.03.28(토) 12:30 <span class="res res-L">패</span> 12:13</td>
         </tr>
       
@@ -1732,7 +1614,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="6">6</td><td data-value="15">15</td>
           <td data-value="-9" class="lose">-9</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2020.08.15(토) 15:00 <span class="res res-L">패</span> 6:15</td>
         </tr>
       
@@ -1743,7 +1625,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="1">1</td><td data-value="9">9</td>
           <td data-value="-8" class="lose">-8</td>
-          <td class="left"><span class="badge lg-2">토요후반기B조</span></td>
+          <td class="left"><span class="badge lg-2" >토요후반기B조</span></td>
           <td class="left small">2020.12.05(토) 12:00 <span class="res res-L">패</span> 1:9</td>
         </tr>
       
@@ -1754,7 +1636,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="7">7</td><td data-value="17">17</td>
           <td data-value="-10" class="lose">-10</td>
-          <td class="left"><span class="badge lg-4">용인힐링리그</span></td>
+          <td class="left"><span class="badge lg-4" >용인힐링리그</span></td>
           <td class="left small">2016.09.10(토) 14:30 <span class="res res-L">패</span> 7:17</td>
         </tr>
       
@@ -1765,7 +1647,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="5">5</td><td data-value="11">11</td>
           <td data-value="-6" class="lose">-6</td>
-          <td class="left"><span class="badge lg-9">성남리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span></td>
           <td class="left small">2026.05.30(토) 15:00 <span class="res res-L">패</span> 5:11</td>
         </tr>
       
@@ -1776,7 +1658,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="12">12</td><td data-value="2">2</td>
           <td data-value="10" class="win">+10</td>
-          <td class="left"><span class="badge lg-5">백두리그</span></td>
+          <td class="left"><span class="badge lg-5" >백두리그</span></td>
           <td class="left small">2015.07.19(일) 19:30 <span class="res res-W">승</span> 12:2</td>
         </tr>
       
@@ -1787,7 +1669,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="2">2</td><td data-value="16">16</td>
           <td data-value="-14" class="lose">-14</td>
-          <td class="left"><span class="badge lg-4">용인힐링리그</span></td>
+          <td class="left"><span class="badge lg-4" >용인힐링리그</span></td>
           <td class="left small">2016.11.19(토) 14:30 <span class="res res-L">패</span> 2:16</td>
         </tr>
       
@@ -1798,7 +1680,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="3">3</td><td data-value="11">11</td>
           <td data-value="-8" class="lose">-8</td>
-          <td class="left"><span class="badge lg-9">성남리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span></td>
           <td class="left small">2025.10.18(토) 09:00 <span class="res res-L">패</span> 3:11</td>
         </tr>
       
@@ -1809,7 +1691,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="6">6</td><td data-value="15">15</td>
           <td data-value="-9" class="lose">-9</td>
-          <td class="left"><span class="badge lg-9">대원리그</span></td>
+          <td class="left"><span class="badge lg-9" >대원리그</span></td>
           <td class="left small">2016.10.01(토) 09:00 <span class="res res-L">패</span> 6:15</td>
         </tr>
       
@@ -1820,7 +1702,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="17">17</td><td data-value="3">3</td>
           <td data-value="14" class="win">+14</td>
-          <td class="left"><span class="badge lg-5">팀업캠퍼스리그</span></td>
+          <td class="left"><span class="badge lg-5" >팀업캠퍼스리그</span></td>
           <td class="left small">2025.03.22(토) 15:05 <span class="res res-W">승</span> 17:3</td>
         </tr>
       
@@ -1831,7 +1713,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="2">2</td><td data-value="10">10</td>
           <td data-value="-8" class="lose">-8</td>
-          <td class="left"><span class="badge lg-4">용인힐링리그</span></td>
+          <td class="left"><span class="badge lg-4" >용인힐링리그</span></td>
           <td class="left small">2016.10.15(토) 16:30 <span class="res res-L">패</span> 2:10</td>
         </tr>
       
@@ -1842,7 +1724,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="3">3</td><td data-value="13">13</td>
           <td data-value="-10" class="lose">-10</td>
-          <td class="left"><span class="badge lg-9">성남리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span></td>
           <td class="left small">2025.04.26(토) 07:00 <span class="res res-L">패</span> 3:13</td>
         </tr>
       
@@ -1853,7 +1735,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="3">3</td><td data-value="22">22</td>
           <td data-value="-19" class="lose">-19</td>
-          <td class="left"><span class="badge lg-9">대원리그</span></td>
+          <td class="left"><span class="badge lg-9" >대원리그</span></td>
           <td class="left small">2016.08.27(토) 13:00 <span class="res res-L">패</span> 3:22</td>
         </tr>
       
@@ -1864,7 +1746,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="15">15</td><td data-value="8">8</td>
           <td data-value="7" class="win">+7</td>
-          <td class="left"><span class="badge lg-5">수지윈리그</span></td>
+          <td class="left"><span class="badge lg-5" >수지윈리그</span></td>
           <td class="left small">2017.09.09(토) 17:00 <span class="res res-W">승</span> 15:8</td>
         </tr>
       
@@ -1875,7 +1757,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="14">14</td><td data-value="15">15</td>
           <td data-value="-1" class="lose">-1</td>
-          <td class="left"><span class="badge lg-12">경희빅리그</span></td>
+          <td class="left"><span class="badge lg-12" >경희빅리그</span></td>
           <td class="left small">2026.04.25(토) 14:30 <span class="res res-L">패</span> 14:15</td>
         </tr>
       
@@ -1886,7 +1768,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="14">14</td><td data-value="10">10</td>
           <td data-value="4" class="win">+4</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2021.05.08(토) 13:00 <span class="res res-W">승</span> 14:10</td>
         </tr>
       
@@ -1897,7 +1779,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="2">2</td><td data-value="9">9</td>
           <td data-value="-7" class="lose">-7</td>
-          <td class="left"><span class="badge lg-2">야탑리그(후)</span></td>
+          <td class="left"><span class="badge lg-2" >야탑리그(후)</span></td>
           <td class="left small">2017.11.18(토) 13:00 <span class="res res-L">패</span> 2:9</td>
         </tr>
       
@@ -1908,7 +1790,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="4">4</td><td data-value="7">7</td>
           <td data-value="-3" class="lose">-3</td>
-          <td class="left"><span class="badge lg-9">성남리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span></td>
           <td class="left small">2025.06.14(토) 09:00 <span class="res res-L">패</span> 4:7</td>
         </tr>
       
@@ -1919,7 +1801,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="6">6</td><td data-value="12">12</td>
           <td data-value="-6" class="lose">-6</td>
-          <td class="left"><span class="badge lg-7">토요루키(토요루키A)</span></td>
+          <td class="left"><span class="badge lg-7" >토요루키(토요루키A)</span></td>
           <td class="left small">2023.09.09(토) 07:00 <span class="res res-L">패</span> 6:12</td>
         </tr>
       
@@ -1930,7 +1812,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="9">9</td><td data-value="8">8</td>
           <td data-value="1" class="win">+1</td>
-          <td class="left"><span class="badge lg-8">후반기 토요4부(후반기 토요루키)</span></td>
+          <td class="left"><span class="badge lg-8" >후반기 토요4부(후반기 토요루키)</span></td>
           <td class="left small">2023.08.26(토) 17:00 <span class="res res-W">승</span> 9:8</td>
         </tr>
       
@@ -1941,7 +1823,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="8">8</td><td data-value="20">20</td>
           <td data-value="-12" class="lose">-12</td>
-          <td class="left"><span class="badge lg-9">전반기 토요리그</span></td>
+          <td class="left"><span class="badge lg-9" >전반기 토요리그</span></td>
           <td class="left small">2018.04.07(토) 12:00 <span class="res res-L">패</span> 8:20</td>
         </tr>
       
@@ -1952,7 +1834,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="4">4</td><td data-value="17">17</td>
           <td data-value="-13" class="lose">-13</td>
-          <td class="left"><span class="badge lg-9">대원리그</span></td>
+          <td class="left"><span class="badge lg-9" >대원리그</span></td>
           <td class="left small">2016.04.23(토) 09:00 <span class="res res-L">패</span> 4:17</td>
         </tr>
       
@@ -1963,7 +1845,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="7">7</td><td data-value="20">20</td>
           <td data-value="-13" class="lose">-13</td>
-          <td class="left"><span class="badge lg-2">토요후반기B조</span></td>
+          <td class="left"><span class="badge lg-2" >토요후반기B조</span></td>
           <td class="left small">2020.12.12(토) 12:00 <span class="res res-L">패</span> 7:20</td>
         </tr>
       
@@ -1974,7 +1856,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="10">10</td><td data-value="11">11</td>
           <td data-value="-1" class="lose">-1</td>
-          <td class="left"><span class="badge lg-15">토요리그 4부 D조</span></td>
+          <td class="left"><span class="badge lg-15" >토요리그 4부 D조</span></td>
           <td class="left small">2019.10.12(토) 15:00 <span class="res res-L">패</span> 10:11</td>
         </tr>
       
@@ -1985,7 +1867,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="9">9</td><td data-value="5">5</td>
           <td data-value="4" class="win">+4</td>
-          <td class="left"><span class="badge lg-9">성남리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span></td>
           <td class="left small">2026.05.16(토) 17:00 <span class="res res-W">승</span> 9:5</td>
         </tr>
       
@@ -1996,7 +1878,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="16">16</td><td data-value="10">10</td>
           <td data-value="6" class="win">+6</td>
-          <td class="left"><span class="badge lg-5">백두리그</span></td>
+          <td class="left"><span class="badge lg-5" >백두리그</span></td>
           <td class="left small">2015.10.10(토) 09:00 <span class="res res-W">승</span> 16:10</td>
         </tr>
       
@@ -2007,7 +1889,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="6">6</td><td data-value="5">5</td>
           <td data-value="1" class="win">+1</td>
-          <td class="left"><span class="badge lg-3">제주특별자치도직장인리그 (백두리그)</span></td>
+          <td class="left"><span class="badge lg-3" >제주특별자치도직장인리그 (백두리그)</span></td>
           <td class="left small">2015.05.09(토) 08:40 <span class="res res-W">승</span> 6:5</td>
         </tr>
       
@@ -2018,7 +1900,7 @@
           <td data-value="">-</td>
           <td data-value="18">18</td><td data-value="18">18</td>
           <td data-value="0" class="">0</td>
-          <td class="left"><span class="badge lg-3">제주특별자치도직장인리그 (백두리그)</span></td>
+          <td class="left"><span class="badge lg-3" >제주특별자치도직장인리그 (백두리그)</span></td>
           <td class="left small">2015.06.12(금) 19:30 <span class="res res-D">무</span> 18:18</td>
         </tr>
       
@@ -2029,7 +1911,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="14">14</td><td data-value="1">1</td>
           <td data-value="13" class="win">+13</td>
-          <td class="left"><span class="badge lg-0">제주특별자치도직장인리그</span></td>
+          <td class="left"><span class="badge lg-0" >제주특별자치도직장인리그</span></td>
           <td class="left small">2015.07.04(토) 07:00 <span class="res res-W">승</span> 14:1</td>
         </tr>
       
@@ -2040,7 +1922,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="10">10</td><td data-value="8">8</td>
           <td data-value="2" class="win">+2</td>
-          <td class="left"><span class="badge lg-5">백두리그</span></td>
+          <td class="left"><span class="badge lg-5" >백두리그</span></td>
           <td class="left small">2015.08.01(토) 11:00 <span class="res res-W">승</span> 10:8</td>
         </tr>
       
@@ -2051,7 +1933,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="21">21</td><td data-value="6">6</td>
           <td data-value="15" class="win">+15</td>
-          <td class="left"><span class="badge lg-0">제주특별자치도직장인리그</span></td>
+          <td class="left"><span class="badge lg-0" >제주특별자치도직장인리그</span></td>
           <td class="left small">2015.07.18(토) 09:00 <span class="res res-W">승</span> 21:6</td>
         </tr>
       
@@ -2062,7 +1944,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="6">6</td><td data-value="8">8</td>
           <td data-value="-2" class="lose">-2</td>
-          <td class="left"><span class="badge lg-15">토요리그 4부 D조</span></td>
+          <td class="left"><span class="badge lg-15" >토요리그 4부 D조</span></td>
           <td class="left small">2019.07.13(토) 11:00 <span class="res res-L">패</span> 6:8</td>
         </tr>
       
@@ -2073,7 +1955,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="8">8</td><td data-value="15">15</td>
           <td data-value="-7" class="lose">-7</td>
-          <td class="left"><span class="badge lg-9">성남리그</span></td>
+          <td class="left"><span class="badge lg-9" >성남리그</span></td>
           <td class="left small">2025.08.30(토) 15:00 <span class="res res-L">패</span> 8:15</td>
         </tr>
       
@@ -2084,7 +1966,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="5">5</td><td data-value="9">9</td>
           <td data-value="-4" class="lose">-4</td>
-          <td class="left"><span class="badge lg-10">광주리그</span></td>
+          <td class="left"><span class="badge lg-10" >광주리그</span></td>
           <td class="left small">2026.09.05(토) 09:00 <span class="res res-L">패</span> 5:9</td>
         </tr>
       
@@ -2095,7 +1977,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="0">0</td><td data-value="7">7</td>
           <td data-value="-7" class="lose">-7</td>
-          <td class="left"><span class="badge lg-9">대원리그</span></td>
+          <td class="left"><span class="badge lg-9" >대원리그</span></td>
           <td class="left small">2016.03.19(토) 12:00 <span class="res res-L">패</span> 0:7</td>
         </tr>
       
@@ -2106,7 +1988,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="17">17</td><td data-value="7">7</td>
           <td data-value="10" class="win">+10</td>
-          <td class="left"><span class="badge lg-9">전반기 토요리그</span></td>
+          <td class="left"><span class="badge lg-9" >전반기 토요리그</span></td>
           <td class="left small">2018.05.19(토) 09:30 <span class="res res-W">승</span> 17:7</td>
         </tr>
       
@@ -2117,7 +1999,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="16">16</td><td data-value="2">2</td>
           <td data-value="14" class="win">+14</td>
-          <td class="left"><span class="badge lg-9">대원리그</span></td>
+          <td class="left"><span class="badge lg-9" >대원리그</span></td>
           <td class="left small">2016.07.09(토) 07:00 <span class="res res-W">승</span> 16:2</td>
         </tr>
       
@@ -2128,7 +2010,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="6">6</td><td data-value="7">7</td>
           <td data-value="-1" class="lose">-1</td>
-          <td class="left"><span class="badge lg-3">제주특별자치도직장인리그 (백두리그)</span></td>
+          <td class="left"><span class="badge lg-3" >제주특별자치도직장인리그 (백두리그)</span></td>
           <td class="left small">2015.06.20(토) 10:30 <span class="res res-L">패</span> 6:7</td>
         </tr>
       
@@ -2139,7 +2021,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="2">2</td><td data-value="12">12</td>
           <td data-value="-10" class="lose">-10</td>
-          <td class="left"><span class="badge lg-1">제2회 스트라이크존 야구대회(4부 그룹)</span></td>
+          <td class="left"><span class="badge lg-5 badge-tournament" title="대회">🏆 스트라이크존</span></td>
           <td class="left small">2017.06.11(일) 13:00 <span class="res res-L">패</span> 2:12</td>
         </tr>
       
@@ -2150,7 +2032,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="6">6</td><td data-value="13">13</td>
           <td data-value="-7" class="lose">-7</td>
-          <td class="left"><span class="badge lg-8">STRIKEZON CUP</span></td>
+          <td class="left"><span class="badge lg-5 badge-tournament" title="대회">🏆 스트라이크존</span></td>
           <td class="left small">2017.04.09(일) 07:00 <span class="res res-L">패</span> 6:13</td>
         </tr>
       
@@ -2161,7 +2043,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="3">3</td><td data-value="19">19</td>
           <td data-value="-16" class="lose">-16</td>
-          <td class="left"><span class="badge lg-9">대원리그</span></td>
+          <td class="left"><span class="badge lg-9" >대원리그</span></td>
           <td class="left small">2016.04.09(토) 15:00 <span class="res res-L">패</span> 3:19</td>
         </tr>
       
@@ -2172,7 +2054,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="4">4</td><td data-value="14">14</td>
           <td data-value="-10" class="lose">-10</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span></td>
           <td class="left small">2024.06.01(토) 09:00 <span class="res res-L">패</span> 4:14</td>
         </tr>
       
@@ -2183,7 +2065,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="7">7</td><td data-value="0">0</td>
           <td data-value="7" class="win">+7</td>
-          <td class="left"><span class="badge lg-6">용인에버리그</span></td>
+          <td class="left"><span class="badge lg-6" >용인에버리그</span></td>
           <td class="left small">2024.07.27(토) 19:00 <span class="res res-W">승</span> 7:0</td>
         </tr>
       
@@ -2194,7 +2076,7 @@
           <td data-value="1.0">1.000</td>
           <td data-value="17">17</td><td data-value="16">16</td>
           <td data-value="1" class="win">+1</td>
-          <td class="left"><span class="badge lg-12">경희빅리그</span></td>
+          <td class="left"><span class="badge lg-12" >경희빅리그</span></td>
           <td class="left small">2026.05.09(토) 14:30 <span class="res res-W">승</span> 17:16</td>
         </tr>
       
@@ -2205,7 +2087,7 @@
           <td data-value="0.0">0.000</td>
           <td data-value="5">5</td><td data-value="15">15</td>
           <td data-value="-10" class="lose">-10</td>
-          <td class="left"><span class="badge lg-15">토요리그 4부 D조</span></td>
+          <td class="left"><span class="badge lg-15" >토요리그 4부 D조</span></td>
           <td class="left small">2019.03.30(토) 14:00 <span class="res res-L">패</span> 5:15</td>
         </tr>
       
@@ -2219,7 +2101,7 @@
 </main>
 
 <footer class="container footer">
-  <span>마지막 동기화: 2026.10.27(화) 07:33 · 게시 2026.10.30(금) 14:37</span>
+  <span>마지막 동기화: 2026.10.27(화) 07:33 · 게시 2026.10.30(금) 15:23</span>
   <span><a href="/superstars/calendar.ics">📅 캘린더 구독(ics)</a></span>
 </footer>
 <script src="/superstars/static/app.js?v=1793329941" defer></script>
