@@ -200,9 +200,14 @@ pre.raw { background: #f6f7fb; padding: 8px; border-radius: 8px; font-size: 12px
 .sync-status { font-weight: 700; color: var(--accent); }
 tr.dim-row td { color: #9aa3ad; }
 .backfill { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px solid #eef1f6; }
+.season-tabs { margin: 4px 0 12px; }
+.season-tabs .tab { padding: 6px 14px; font-size: 13px; }
+.cand { font: inherit; font-size: 13px; cursor: pointer; color: var(--text); }
+.cand:hover { border-color: var(--accent); color: var(--accent); }
 /* 전적 */
 .history-table tr.season-row td { border-top: 2px solid #e4e7f0; font-weight: 700; }
 .history-table tr.season-row:first-child td { border-top: 0; }
+.history-table tr.total-row td { background: #f6f7fb; border-top: 2px solid #d8dde8; }
 .history-table tr.sub-row td { color: var(--muted); font-size: 13px; background: #fbfbfd; font-weight: 400; }
 .opp-table th[data-sort] { cursor: pointer; }
 /* 선수단 */
