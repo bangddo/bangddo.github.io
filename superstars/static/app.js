@@ -93,7 +93,7 @@
       });
     });
 
-    // 선수단: 가입 리그 체크박스로 표의 행을 거른다 (모두 해제 = 전체). 선택은 브라우저에 기억해 둔다
+    // 선수단: 가입 리그 체크박스로 표의 행을 거른다. 여러 개 체크하면 전부 가입한 선수만(AND), 모두 해제 = 전체. 선택은 탭 안에서 기억
     root.querySelectorAll('[data-roster-filter]').forEach(function (box) {
       var card = box.closest('.card') || root;
       var table = card.querySelector('table.roster-table');
@@ -112,7 +112,7 @@
         var shown = 0;
         rows.forEach(function (tr) {
           var mine = (tr.dataset.leagues || '').split(',').filter(Boolean);
-          var ok = !sel.length || sel.some(function (id) { return mine.indexOf(id) !== -1; });
+          var ok = !sel.length || sel.every(function (id) { return mine.indexOf(id) !== -1; });   // AND: 체크한 리그 전부에 가입
           tr.hidden = !ok;
           if (ok) shown++;
         });
