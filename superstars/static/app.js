@@ -93,6 +93,37 @@
       });
     });
 
+    // 선수단: 가입 리그 체크박스로 표의 행을 거른다 (모두 해제 = 전체). 선택은 브라우저에 기억해 둔다
+    root.querySelectorAll('[data-roster-filter]').forEach(function (box) {
+      var card = box.closest('.card') || root;
+      var table = card.querySelector('table.roster-table');
+      if (!table) return;
+      var boxes = Array.prototype.slice.call(box.querySelectorAll('input[type=checkbox][data-league-filter]'));
+      var rows = Array.prototype.slice.call(table.querySelectorAll('tbody tr'));
+      var counter = card.querySelector('[data-roster-count]');
+      var empty = card.querySelector('[data-roster-empty]');
+      var KEY = 'superstars-roster-leagues';
+      try {
+        var saved = JSON.parse(sessionStorage.getItem(KEY) || '[]');
+        boxes.forEach(function (c) { if (saved.indexOf(c.value) !== -1) c.checked = true; });
+      } catch (e) { /* 저장소를 못 쓰면 그냥 전체 */ }
+      var apply = function () {
+        var sel = boxes.filter(function (c) { return c.checked; }).map(function (c) { return c.value; });
+        var shown = 0;
+        rows.forEach(function (tr) {
+          var mine = (tr.dataset.leagues || '').split(',').filter(Boolean);
+          var ok = !sel.length || sel.some(function (id) { return mine.indexOf(id) !== -1; });
+          tr.hidden = !ok;
+          if (ok) shown++;
+        });
+        if (counter) counter.textContent = sel.length ? shown + '명 / 전체 ' + rows.length + '명' : rows.length + '명';
+        if (empty) empty.hidden = shown > 0;
+        try { sessionStorage.setItem(KEY, JSON.stringify(sel)); } catch (e) { /* 무시 */ }
+      };
+      box.addEventListener('change', apply);
+      apply();
+    });
+
     // 표 전체를 한 번에 저장하는 폼(선수 명부): 고친 뒤 저장 없이 떠나려 하면 경고 (관리자)
     root.querySelectorAll('form[data-dirty-guard]').forEach(function (f) {
       var dirty = false;

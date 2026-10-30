@@ -200,6 +200,26 @@ pre.raw { background: #f6f7fb; padding: 8px; border-radius: 8px; font-size: 12px
 .sync-status { font-weight: 700; color: var(--accent); }
 tr.dim-row td { color: #9aa3ad; }
 /* 선수단 */
+.roster-filter { margin: -4px 0 12px; }
+.roster-filter .field-label small { font-weight: 400; }
+.roster-table tbody tr[hidden] { display: none; }
+/* 리그 색 팔레트 (이름 해시로 배정: views.league_classes). 배지와 체크된 알약에 적용 */
+.badge.lg-0, .check.lg-0:has(input:checked) { background: #e3f2fd; color: #0d47a1; border-color: #90caf9; }
+.badge.lg-1, .check.lg-1:has(input:checked) { background: #fce4ec; color: #880e4f; border-color: #f48fb1; }
+.badge.lg-2, .check.lg-2:has(input:checked) { background: #e8f5e9; color: #1b5e20; border-color: #a5d6a7; }
+.badge.lg-3, .check.lg-3:has(input:checked) { background: #fff3e0; color: #e65100; border-color: #ffcc80; }
+.badge.lg-4, .check.lg-4:has(input:checked) { background: #ede7f6; color: #4527a0; border-color: #b39ddb; }
+.badge.lg-5, .check.lg-5:has(input:checked) { background: #e0f7fa; color: #006064; border-color: #80deea; }
+.badge.lg-6, .check.lg-6:has(input:checked) { background: #fffde7; color: #7a5c00; border-color: #ffe082; }
+.badge.lg-7, .check.lg-7:has(input:checked) { background: #efebe9; color: #4e342e; border-color: #bcaaa4; }
+.badge.lg-8, .check.lg-8:has(input:checked) { background: #f1f8e9; color: #33691e; border-color: #c5e1a5; }
+.badge.lg-9, .check.lg-9:has(input:checked) { background: #fbe9e7; color: #bf360c; border-color: #ffab91; }
+.badge.lg-10, .check.lg-10:has(input:checked) { background: #e8eaf6; color: #283593; border-color: #9fa8da; }
+.badge.lg-11, .check.lg-11:has(input:checked) { background: #f3e5f5; color: #6a1b9a; border-color: #ce93d8; }
+.badge.lg-12, .check.lg-12:has(input:checked) { background: #e0f2f1; color: #004d40; border-color: #80cbc4; }
+.badge.lg-13, .check.lg-13:has(input:checked) { background: #fff8e1; color: #8a5a00; border-color: #ffd54f; }
+.badge.lg-14, .check.lg-14:has(input:checked) { background: #eceff1; color: #37474f; border-color: #b0bec5; }
+.badge.lg-15, .check.lg-15:has(input:checked) { background: #ffebee; color: #b71c1c; border-color: #ef9a9a; }
 .roster-table th.no, .roster-table td.no { width: 56px; font-weight: 800; }
 .roster-table td.player { font-weight: 700; }
 .pos { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; background: #f1f3f8; color: #444; margin: 1px 4px 1px 0; }
