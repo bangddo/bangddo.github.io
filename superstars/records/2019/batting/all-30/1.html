@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f2d5c">
+  <title>기록 · 슈퍼스타즈</title>
+  <link rel="icon" href="/superstars/static/favicon.ico?v=1793049504">
+  <link rel="stylesheet" href="/superstars/static/style.css?v=1793333523">
+  <link rel="alternate" type="text/calendar" title="슈퍼스타즈 일정" href="/superstars/calendar.ics">
+</head>
+<body data-static="1" data-base="/superstars">
+<header class="topbar">
+  <div class="container topbar-in">
+    <a class="brand" href="/superstars/"><span class="brand-ball">⚾</span> 슈퍼스타즈<span class="brand-sep">|</span><span class="brand-page">기록</span></a>
+    <nav class="nav" aria-label="주 메뉴">
+      <a href="/superstars/" class="">홈</a>
+      <a href="/superstars/schedule/" class="">일정</a>
+      <a href="/superstars/records/" class="active">기록</a>
+      <a href="/superstars/team/" class="">전적</a>
+      <a href="/superstars/roster/" class="">선수단</a>
+      <a href="/superstars/notices/" class="">공지</a>
+      
+    </nav>
+  </div>
+</header>
+
+<main class="container page">
+  
+  
+  
+<div class="filters" id="recordFilters">
+  <div class="tabs" role="tablist">
+    <a role="tab" class="tab active" href="/superstars/records/2019/batting/all-30/1.html">타자</a><a role="tab" class="tab " href="/superstars/records/2019/pitching/all-30/1.html">투수</a>
+  </div>
+  
+  
+<label>시즌
+  
+  <select data-nav>
+    <option value="/superstars/records/2026/batting/all-all/1.html" >2026</option><option value="/superstars/records/2025/batting/all-all/1.html" >2025</option><option value="/superstars/records/2024/batting/all-all/1.html" >2024</option><option value="/superstars/records/2023/batting/all-all/1.html" >2023</option><option value="/superstars/records/2022/batting/all-all/1.html" >2022</option><option value="/superstars/records/2021/batting/all-all/1.html" >2021</option><option value="/superstars/records/2020/batting/all-all/1.html" >2020</option><option value="/superstars/records/2019/batting/all-all/1.html" selected>2019</option><option value="/superstars/records/2018/batting/all-all/1.html" >2018</option><option value="/superstars/records/2017/batting/all-all/1.html" >2017</option><option value="/superstars/records/2016/batting/all-all/1.html" >2016</option><option value="/superstars/records/2015/batting/all-all/1.html" >2015</option>
+  </select>
+  
+</label>
+
+  
+<label>보기
+  
+  <select data-nav>
+    <option value="/superstars/records/2019/batting/all-30/1.html" selected>통합 (리그 합산)</option><option value="/superstars/records/2019/batting/league-30/1.html" >리그 경기 전체 · 게임원</option>
+  </select>
+  
+</label>
+
+  
+  <label class="check merge-toggle"><input type="checkbox" data-nav-url="/superstars/records/2019/batting/all-30/0.html" checked> 규정 미충족 선수도 함께 정렬</label>
+</div>
+
+
+<section class="card">
+  <h2>통합 기록 · 타자 <small class="muted">7명</small></h2>
+  <p class="qual-info">규정타석 0타석 (팀 경기 0 × 경기당 1.5) · 충족 7명
+    </p>
+  
+  <div class="table-wrap">
+    <table class="table stat-table sortable" data-kind="batting">
+      <thead>
+        <tr>
+          <th class="rank">#</th>
+          <th class="player left" data-sort="text">선수</th>
+          <th data-sort="num" title="경기"><span class="abbr">G</span><span class="label">경기</span></th><th data-sort="num" title="타율"><span class="abbr">AVG</span><span class="label">타율</span></th><th data-sort="num" title="타석"><span class="abbr">PA</span><span class="label">타석</span></th><th data-sort="num" title="타수"><span class="abbr">AB</span><span class="label">타수</span></th><th data-sort="num" title="득점"><span class="abbr">R</span><span class="label">득점</span></th><th data-sort="num" title="안타"><span class="abbr">H</span><span class="label">안타</span></th><th data-sort="num" title="1루타"><span class="abbr">1B</span><span class="label">1루타</span></th><th data-sort="num" title="2루타"><span class="abbr">2B</span><span class="label">2루타</span></th><th data-sort="num" title="3루타"><span class="abbr">3B</span><span class="label">3루타</span></th><th data-sort="num" title="홈런"><span class="abbr">HR</span><span class="label">홈런</span></th><th data-sort="num" title="루타"><span class="abbr">TB</span><span class="label">루타</span></th><th data-sort="num" title="타점"><span class="abbr">RBI</span><span class="label">타점</span></th><th data-sort="num" title="도루"><span class="abbr">SB</span><span class="label">도루</span></th><th data-sort="num" title="도루자"><span class="abbr">CS</span><span class="label">도루자</span></th><th data-sort="num" title="도루성공률"><span class="abbr">SB%</span><span class="label">도루성공률</span></th><th data-sort="num" title="볼넷"><span class="abbr">BB</span><span class="label">볼넷</span></th><th data-sort="num" title="사구"><span class="abbr">HBP</span><span class="label">사구</span></th><th data-sort="num" title="삼진"><span class="abbr">SO</span><span class="label">삼진</span></th><th data-sort="num" title="희타"><span class="abbr">SH</span><span class="label">희타</span></th><th data-sort="num" title="희비"><span class="abbr">SF</span><span class="label">희비</span></th><th data-sort="num" title="병살"><span class="abbr">GDP</span><span class="label">병살</span></th><th data-sort="num" title="멀티히트"><span class="abbr">MH</span><span class="label">멀티히트</span></th><th data-sort="num" title="출루율"><span class="abbr">OBP</span><span class="label">출루율</span></th><th data-sort="num" title="장타율"><span class="abbr">SLG</span><span class="label">장타율</span></th><th data-sort="num" title="OPS"><span class="abbr">OPS</span><span class="label">OPS</span></th><th data-sort="num" title="볼넷/삼진"><span class="abbr">BB/K</span><span class="label">볼넷/삼진</span></th>
+          <th data-sort="text" class="left">리그</th>
+        </tr>
+      </thead>
+      
+      <tbody class="sortable-body">
+        
+        <tr class="q">
+          <td class="rank">1</td>
+          <td class="player left">최정윤 <small class="muted">#35</small></td>
+          
+            
+            <td data-value="22" class="">22</td>
+          
+            
+            <td data-value="0.4473684210526316" class="">0.447</td>
+          
+            
+            <td data-value="48" class="">48</td>
+          
+            
+            <td data-value="38" class="">38</td>
+          
+            
+            <td data-value="16" class="">16</td>
+          
+            
+            <td data-value="17" class="">17</td>
+          
+            
+            <td data-value="10" class="">10</td>
+          
+            
+            <td data-value="7" class="">7</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="24" class="">24</td>
+          
+            
+            <td data-value="19" class="">19</td>
+          
+            
+            <td data-value="5" class="">5</td>
+          
+            
+            <td data-value="3" class="">3</td>
+          
+            
+            <td data-value="0.625" class="">62%</td>
+          
+            
+            <td data-value="8" class="">8</td>
+          
+            
+            <td data-value="2" class="">2</td>
+          
+            
+            <td data-value="4" class="">4</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="4" class="">4</td>
+          
+            
+            <td data-value="0.5625" class="">0.562</td>
+          
+            
+            <td data-value="0.631578947368421" class="">0.632</td>
+          
+            
+            <td data-value="1.194078947368421" class="">1.194</td>
+          
+            
+            <td data-value="2.0" class="">2.00</td>
+          
+          <td class="left small"><span class="badge lg-14">리그 경기 전체</span></td>
+        </tr>
+
+        <tr class="q">
+          <td class="rank">2</td>
+          <td class="player left">이동훈 <small class="muted">#53</small></td>
+          
+            
+            <td data-value="26" class="">26</td>
+          
+            
+            <td data-value="0.423728813559322" class="">0.424</td>
+          
+            
+            <td data-value="80" class="">80</td>
+          
+            
+            <td data-value="59" class="">59</td>
+          
+            
+            <td data-value="33" class="">33</td>
+          
+            
+            <td data-value="25" class="">25</td>
+          
+            
+            <td data-value="18" class="">18</td>
+          
+            
+            <td data-value="6" class="">6</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="33" class="">33</td>
+          
+            
+            <td data-value="26" class="">26</td>
+          
+            
+            <td data-value="25" class="">25</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="1.0" class="">100%</td>
+          
+            
+            <td data-value="15" class="">15</td>
+          
+            
+            <td data-value="6" class="">6</td>
+          
+            
+            <td data-value="8" class="">8</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="6" class="">6</td>
+          
+            
+            <td data-value="0.575" class="">0.575</td>
+          
+            
+            <td data-value="0.559322033898305" class="">0.559</td>
+          
+            
+            <td data-value="1.134322033898305" class="">1.134</td>
+          
+            
+            <td data-value="1.875" class="">1.88</td>
+          
+          <td class="left small"><span class="badge lg-14">리그 경기 전체</span></td>
+        </tr>
+
+        <tr class="q">
+          <td class="rank">3</td>
+          <td class="player left">조민 <small class="muted">#46</small></td>
+          
+            
+            <td data-value="22" class="">22</td>
+          
+            
+            <td data-value="0.42" class="">0.420</td>
+          
+            
+            <td data-value="68" class="">68</td>
+          
+            
+            <td data-value="50" class="">50</td>
+          
+            
+            <td data-value="25" class="">25</td>
+          
+            
+            <td data-value="21" class="">21</td>
+          
+            
+            <td data-value="16" class="">16</td>
+          
+            
+            <td data-value="5" class="">5</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="26" class="">26</td>
+          
+            
+            <td data-value="20" class="">20</td>
+          
+            
+            <td data-value="15" class="">15</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="0.9375" class="">94%</td>
+          
+            
+            <td data-value="15" class="">15</td>
+          
+            
+            <td data-value="2" class="">2</td>
+          
+            
+            <td data-value="4" class="">4</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="6" class="">6</td>
+          
+            
+            <td data-value="0.5588235294117647" class="">0.559</td>
+          
+            
+            <td data-value="0.52" class="">0.520</td>
+          
+            
+            <td data-value="1.0788235294117647" class="">1.079</td>
+          
+            
+            <td data-value="3.75" class="">3.75</td>
+          
+          <td class="left small"><span class="badge lg-14">리그 경기 전체</span></td>
+        </tr>
+
+        <tr class="q">
+          <td class="rank">4</td>
+          <td class="player left">김영호 <small class="muted">#7</small></td>
+          
+            
+            <td data-value="24" class="">24</td>
+          
+            
+            <td data-value="0.3888888888888889" class="">0.389</td>
+          
+            
+            <td data-value="72" class="">72</td>
+          
+            
+            <td data-value="54" class="">54</td>
+          
+            
+            <td data-value="33" class="">33</td>
+          
+            
+            <td data-value="21" class="">21</td>
+          
+            
+            <td data-value="18" class="">18</td>
+          
+            
+            <td data-value="3" class="">3</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="24" class="">24</td>
+          
+            
+            <td data-value="19" class="">19</td>
+          
+            
+            <td data-value="19" class="">19</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="0.95" class="">95%</td>
+          
+            
+            <td data-value="13" class="">13</td>
+          
+            
+            <td data-value="4" class="">4</td>
+          
+            
+            <td data-value="4" class="">4</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="6" class="">6</td>
+          
+            
+            <td data-value="0.5277777777777778" class="">0.528</td>
+          
+            
+            <td data-value="0.4444444444444444" class="">0.444</td>
+          
+            
+            <td data-value="0.9722222222222222" class="">0.972</td>
+          
+            
+            <td data-value="3.25" class="">3.25</td>
+          
+          <td class="left small"><span class="badge lg-14">리그 경기 전체</span></td>
+        </tr>
+
+        <tr class="q">
+          <td class="rank">5</td>
+          <td class="player left">김사현 <small class="muted">#55</small></td>
+          
+            
+            <td data-value="18" class="">18</td>
+          
+            
+            <td data-value="0.36" class="">0.360</td>
+          
+            
+            <td data-value="53" class="">53</td>
+          
+            
+            <td data-value="50" class="">50</td>
+          
+            
+            <td data-value="18" class="">18</td>
+          
+            
+            <td data-value="18" class="">18</td>
+          
+            
+            <td data-value="14" class="">14</td>
+          
+            
+            <td data-value="4" class="">4</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="22" class="">22</td>
+          
+            
+            <td data-value="15" class="">15</td>
+          
+            
+            <td data-value="10" class="">10</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="0.9090909090909091" class="">91%</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="8" class="">8</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="4" class="">4</td>
+          
+            
+            <td data-value="0.35294117647058826" class="">0.353</td>
+          
+            
+            <td data-value="0.44" class="">0.440</td>
+          
+            
+            <td data-value="0.7929411764705883" class="">0.793</td>
+          
+            
+            <td data-value="0.0" class="">0.00</td>
+          
+          <td class="left small"><span class="badge lg-14">리그 경기 전체</span></td>
+        </tr>
+
+        <tr class="q">
+          <td class="rank">6</td>
+          <td class="player left">이상진 <small class="muted">#33</small></td>
+          
+            
+            <td data-value="24" class="">24</td>
+          
+            
+            <td data-value="0.32" class="">0.320</td>
+          
+            
+            <td data-value="67" class="">67</td>
+          
+            
+            <td data-value="50" class="">50</td>
+          
+            
+            <td data-value="19" class="">19</td>
+          
+            
+            <td data-value="16" class="">16</td>
+          
+            
+            <td data-value="14" class="">14</td>
+          
+            
+            <td data-value="2" class="">2</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="18" class="">18</td>
+          
+            
+            <td data-value="11" class="">11</td>
+          
+            
+            <td data-value="16" class="">16</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="1.0" class="">100%</td>
+          
+            
+            <td data-value="15" class="">15</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="11" class="">11</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="4" class="">4</td>
+          
+            
+            <td data-value="0.47761194029850745" class="">0.478</td>
+          
+            
+            <td data-value="0.36" class="">0.360</td>
+          
+            
+            <td data-value="0.8376119402985074" class="">0.838</td>
+          
+            
+            <td data-value="1.3636363636363635" class="">1.36</td>
+          
+          <td class="left small"><span class="badge lg-14">리그 경기 전체</span></td>
+        </tr>
+
+        <tr class="q">
+          <td class="rank">7</td>
+          <td class="player left">권경민 <small class="muted">#19</small></td>
+          
+            
+            <td data-value="19" class="">19</td>
+          
+            
+            <td data-value="0.20689655172413793" class="">0.207</td>
+          
+            
+            <td data-value="42" class="">42</td>
+          
+            
+            <td data-value="29" class="">29</td>
+          
+            
+            <td data-value="10" class="">10</td>
+          
+            
+            <td data-value="6" class="">6</td>
+          
+            
+            <td data-value="5" class="">5</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="7" class="">7</td>
+          
+            
+            <td data-value="5" class="">5</td>
+          
+            
+            <td data-value="9" class="">9</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="1.0" class="">100%</td>
+          
+            
+            <td data-value="13" class="">13</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="5" class="">5</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="0.4523809523809524" class="">0.452</td>
+          
+            
+            <td data-value="0.2413793103448276" class="">0.241</td>
+          
+            
+            <td data-value="0.69376026272578" class="">0.694</td>
+          
+            
+            <td data-value="2.6" class="">2.60</td>
+          
+          <td class="left small"><span class="badge lg-14">리그 경기 전체</span></td>
+        </tr>
+
+      </tbody>
+      
+    </table>
+  </div>
+  <p class="hint">기본 정렬은 타율 내림차순입니다.
+    규정 구분 없이 전체를 한 목록으로 정렬하며, 규정 미충족 선수는 '미달' 표시와 함께 흐리게 나옵니다. 열 제목을 누르면 전체가 다시 정렬됩니다.
+    
+     통합 보기에서는 리그별 누적치를 더한 뒤 타율·출루율·장타율·평균자책을 다시 계산하고, 팀 경기 수도 체크한 리그의 끝난 경기만 셉니다.</p>
+  
+</section>
+
+</main>
+
+<footer class="container footer">
+  <span>마지막 동기화: 2026.10.27(화) 07:33 · 게시 2026.10.30(금) 13:15</span>
+  <span><a href="/superstars/calendar.ics">📅 캘린더 구독(ics)</a></span>
+</footer>
+<script src="/superstars/static/app.js?v=1793329941" defer></script>
+</body>
+</html>
