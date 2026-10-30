@@ -199,6 +199,11 @@ pre.raw { background: #f6f7fb; padding: 8px; border-radius: 8px; font-size: 12px
 .ev-actions { display: flex; gap: 6px; white-space: nowrap; }
 .sync-status { font-weight: 700; color: var(--accent); }
 tr.dim-row td { color: #9aa3ad; }
+/* 선수단 */
+.roster-table th.no, .roster-table td.no { width: 56px; font-weight: 800; }
+.roster-table td.player { font-weight: 700; }
+.pos { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; background: #f1f3f8; color: #444; margin: 1px 4px 1px 0; }
+.field-label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
 .col-picker { display: flex; flex-wrap: wrap; gap: 6px 14px; }
 .col-picker .check { font-size: 13px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 999px; background: #fff; }
 .col-picker .check input { margin: 0; }
