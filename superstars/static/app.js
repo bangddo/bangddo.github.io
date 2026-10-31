@@ -9,8 +9,88 @@
     else location.href = url;
   }
 
+  // ---- 날짜 표시는 브라우저에서 다시 계산한다.
+  // 정적 사이트(GitHub Pages)는 게시한 날 기준으로 만들어지므로, 열 때마다 오늘(한국 시간) 기준으로
+  // D데이·'기준' 날짜를 고치고, 게시 뒤에 끝난 일정은 다가올 일정과 '예정된 일정' 탭에서 숨긴다.
+  var WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function todayKST() {
+    try {
+      var s = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    } catch (e) { /* 아래 방식으로 */ }
+    var d = new Date();
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  }
+  function dayNum(s) {                     // 'YYYY-MM-DD' → 1970-01-01 부터 센 날 수
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s || '');
+    return m ? Math.round(Date.UTC(+m[1], +m[2] - 1, +m[3]) / 86400000) : null;
+  }
+  function fmtDate(s) {                    // 서버의 fmt_date 와 같은 모양: 2026.10.31(토)
+    var n = dayNum(s);
+    if (n === null) return '';
+    var d = new Date(n * 86400000);
+    return d.getUTCFullYear() + '.' + pad2(d.getUTCMonth() + 1) + '.' + pad2(d.getUTCDate()) + '(' + WEEKDAYS[d.getUTCDay()] + ')';
+  }
+  function ddayLabel(start, end, today) {  // 서버의 dday_span 과 같은 규칙
+    var s = dayNum(start), e = dayNum(end), t = dayNum(today);
+    if (s === null || t === null) return null;
+    if (e !== null && e > s && s < t && t <= e) return '진행 중';
+    var diff = s - t;
+    if (diff === 0) return '오늘';
+    if (diff === 1) return '내일';
+    return diff > 1 ? 'D-' + diff : '';
+  }
+  function ended(el, t) {
+    var e = dayNum(el.dataset.end);
+    return e !== null && e < t;
+  }
+  function applyDates(root, today) {
+    today = today || todayKST();
+    var t = dayNum(today);
+    if (t === null) return;
+    root.querySelectorAll('[data-today-label]').forEach(function (el) { el.textContent = fmtDate(today) + ' 기준'; });
+    root.querySelectorAll('.dday[data-start]').forEach(function (el) {
+      var label = ddayLabel(el.dataset.start, el.dataset.end, today);
+      if (label === null) return;
+      el.textContent = label;
+      el.classList.toggle('today', label === '오늘' || label === '내일' || label === '진행 중');
+    });
+    // 홈 다가올 일정: 끝난 일정은 숨기고, 남은 것 가운데 앞의 n 개만 보인다
+    root.querySelectorAll('[data-up-list]').forEach(function (list) {
+      var limit = parseInt(list.dataset.limit || '5', 10), shown = 0;
+      list.querySelectorAll('.up-item[data-end]').forEach(function (li) {
+        li.hidden = ended(li, t) || shown >= limit;
+        li.classList.toggle('up-first', !li.hidden && shown === 0);
+        if (!li.hidden) shown++;
+      });
+      var empty = list.parentNode.querySelector('[data-up-empty]');
+      if (empty) empty.hidden = shown > 0;
+    });
+    // 일정 '예정된 일정' 탭: 게시 뒤에 끝난 일정을 숨기고 탭의 개수를 고친다
+    root.querySelectorAll('[data-sched-when="upcoming"]').forEach(function (tabs) {
+      var scope = tabs.closest('main') || root, left = 0, total = 0;
+      scope.querySelectorAll('.sched-month').forEach(function (sec) {
+        var first = true;
+        sec.querySelectorAll('.sched-item[data-end]').forEach(function (li) {
+          total++;
+          li.hidden = ended(li, t);
+          li.classList.toggle('sched-first', !li.hidden && first);
+          if (!li.hidden) { left++; first = false; }
+        });
+        sec.hidden = first;                  // 그 달 일정이 모두 끝났으면 달 카드째로 숨김
+      });
+      var n = tabs.querySelector('[data-when-tab="upcoming"] small');
+      if (n && total) n.textContent = left;
+      var empty = scope.querySelector('[data-sched-empty]');
+      if (empty) empty.hidden = !(total && !left);
+    });
+  }
+  window.superstarsApplyDates = function (today) { applyDates(document, today); };   // 다른 날짜로 확인할 때 쓰는 도우미
+
   function init(root) {
     root = root || document;
+    applyDates(root);
 
     // 기록 표 정렬: th[data-sort="num|text"] 클릭. 규정 충족/미충족 그룹(tbody)은 유지하고 각 그룹 안에서만 정렬
     root.querySelectorAll('table.sortable').forEach(function (table) {
