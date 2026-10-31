@@ -132,6 +132,8 @@ pre.raw { background: #f6f7fb; padding: 8px; border-radius: 8px; font-size: 12px
 .sched-sub { font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 8px; }
 .sched-score { grid-area: score; font-weight: 800; font-size: 18px; align-self: center; min-width: 56px; text-align: right; }
 .sched-src { grid-area: src; font-size: 12px; }
+.copy-btn { margin-left: 6px; padding: 3px 10px; font-size: 12px; white-space: nowrap; }
+.copy-btn.copied { border-color: var(--win); color: var(--win); }
 .status-canceled .sched-title { text-decoration: line-through; color: var(--muted); }
 
 /* 필터·탭 (알약형) */

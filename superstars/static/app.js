@@ -86,7 +86,25 @@
       if (empty) empty.hidden = !(total && !left);
     });
   }
-  window.superstarsApplyDates = function (today) { applyDates(document, today); };   // 다른 날짜로 확인할 때 쓰는 도우미
+  window.superstarsApplyDates = function (today) { applyDates(document, today); };
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, text.length);   // iOS 사파리
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      if (ok) resolve(); else reject(new Error('copy failed'));
+    });
+  }   // 다른 날짜로 확인할 때 쓰는 도우미
 
   function init(root) {
     root = root || document;
@@ -215,6 +233,22 @@
     // formaction 으로 다른 주소에 보내는 버튼의 확인창 (예: 명부의 삭제)
     root.querySelectorAll('button[data-confirm]').forEach(function (b) {
       b.addEventListener('click', function (e) { if (!window.confirm(b.dataset.confirm)) e.preventDefault(); });
+    });
+
+    // 참불투표 제목 복사 (관리자 일정 화면). 파이는 http 주소라 navigator.clipboard 가 막히므로 예전 방식으로도 시도한다
+    root.querySelectorAll('button[data-copy]').forEach(function (btn) {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', function () {
+        var text = btn.dataset.copy, label = btn.textContent;
+        copyText(text).then(function () {
+          btn.textContent = '복사됨 ✓';
+          btn.classList.add('copied');
+          setTimeout(function () { btn.textContent = label; btn.classList.remove('copied'); }, 1500);
+        }, function () {
+          window.prompt('자동 복사가 안 되는 환경입니다. 아래 글을 복사해 쓰세요.', text);
+        });
+      });
     });
 
     // 삭제 등 확인이 필요한 폼 (관리자)
