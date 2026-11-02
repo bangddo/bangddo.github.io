@@ -209,6 +209,8 @@ tr.dim-row td { color: #9aa3ad; }
 .cand:hover { border-color: var(--accent); color: var(--accent); }
 tr.merged-row td { background: #fbfbfd; color: var(--muted); font-size: 12px; }
 tr.merged-row td:nth-child(3) { padding-left: 18px; }
+.roles-table td, .roles-table th { white-space: nowrap; }
+.roles-table code { font-size: 12px; }
 /* 전적 */
 .history-table tr.kind-row td { font-size: 13px; background: #fbfbfd; font-weight: 500; }
 .history-table tr.kind-row td:first-child { padding-left: 24px; }
