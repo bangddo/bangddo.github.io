@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f2d5c">
   <title>기록 · 슈퍼스타즈</title>
   <link rel="icon" href="/superstars/static/favicon.ico?v=1793049504">
-  <link rel="stylesheet" href="/superstars/static/style.css?v=1793623819">
+  <link rel="stylesheet" href="/superstars/static/style.css?v=1793624590">
   <link rel="alternate" type="text/calendar" title="슈퍼스타즈 일정" href="/superstars/calendar.ics">
 </head>
 <body data-static="1" data-base="/superstars">
@@ -31,7 +31,7 @@
   
 <div class="filters" id="recordFilters">
   <div class="tabs" role="tablist">
-    <a role="tab" class="tab active" href="/superstars/records/2016/batting/all-45/0.html">타자</a><a role="tab" class="tab " href="/superstars/records/2016/pitching/all-45/0.html">투수</a>
+    <a role="tab" class="tab active" href="/superstars/records/2016/batting/all-43_44/0.html">타자</a><a role="tab" class="tab " href="/superstars/records/2016/pitching/all-43_44/0.html">투수</a>
   </div>
   
   
@@ -47,19 +47,30 @@
 <label>보기
   
   <select data-nav>
-    <option value="/superstars/records/2016/batting/all-45/0.html" selected>통합 (리그 합산)</option><option value="/superstars/records/2016/batting/league-45/0.html" >리그 경기 전체 · 게임원</option>
+    <option value="/superstars/records/2016/batting/all-43_44/0.html" selected>통합 (리그 합산)</option><option value="/superstars/records/2016/batting/league-43/0.html" >대원 · 게임원</option><option value="/superstars/records/2016/batting/league-44/0.html" >힐링 · 게임원</option>
   </select>
   
 </label>
 
   
-  <label class="check merge-toggle"><input type="checkbox" data-nav-url="/superstars/records/2016/batting/all-45/1.html" > 규정 미충족 선수도 함께 정렬</label>
+  <details class="unit-picker" >
+    <summary>합산에 포함할 리그 (2/2)</summary>
+    <div class="unit-list" data-subset-base="/superstars/records/2016/batting/all-{ids}/0.html">
+      
+      <label class="check"><input type="checkbox" data-id="43" checked> 대원 <small>· 게임원</small></label>
+      
+      <label class="check"><input type="checkbox" data-id="44" checked> 힐링 <small>· 게임원</small></label>
+      
+    </div>
+  </details>
+  
+  <label class="check merge-toggle"><input type="checkbox" data-nav-url="/superstars/records/2016/batting/all-43_44/1.html" > 규정 미충족 선수도 함께 정렬</label>
 </div>
 
 
 <section class="card">
-  <h2>통합 기록 · 타자 <small class="muted">4명</small></h2>
-  <p class="qual-info">규정타석 0타석 (팀 경기 0 × 경기당 1.5) · 충족 4명
+  <h2>통합 기록 · 타자 <small class="muted">8명</small></h2>
+  <p class="qual-info">규정타석 32타석 (팀 경기 21 × 경기당 1.5) · 충족 4명 · 미충족 4명
     </p>
   
   <div class="table-wrap">
@@ -157,7 +168,7 @@
             
             <td data-value="2.5" class="">2.50</td>
           
-          <td class="left small"><span class="badge lg-14" >리그 경기 전체</span></td>
+          <td class="left small"><span class="badge lg-14" >대원</span><span class="badge lg-9" >힐링</span></td>
         </tr>
 
         <tr class="q">
@@ -242,7 +253,7 @@
             
             <td data-value="2.0" class="">2.00</td>
           
-          <td class="left small"><span class="badge lg-14" >리그 경기 전체</span></td>
+          <td class="left small"><span class="badge lg-14" >대원</span><span class="badge lg-9" >힐링</span></td>
         </tr>
 
         <tr class="q">
@@ -327,7 +338,7 @@
             
             <td data-value="1.1666666666666667" class="">1.17</td>
           
-          <td class="left small"><span class="badge lg-14" >리그 경기 전체</span></td>
+          <td class="left small"><span class="badge lg-14" >대원</span><span class="badge lg-9" >힐링</span></td>
         </tr>
 
         <tr class="q">
@@ -412,7 +423,352 @@
             
             <td data-value="4.0" class="">4.00</td>
           
-          <td class="left small"><span class="badge lg-14" >리그 경기 전체</span></td>
+          <td class="left small"><span class="badge lg-14" >대원</span><span class="badge lg-9" >힐링</span></td>
+        </tr>
+
+      </tbody>
+      
+      <tbody class="sep-body"><tr class="sep-row"><td colspan="29"><span>규정 미충족 (타석 부족) 4명</span></td></tr></tbody>
+      <tbody class="sortable-body">
+        
+        <tr class="unq">
+          <td class="rank">5</td>
+          <td class="player left"><a href="/superstars/player/183.html" title="이상진 통산 기록">이상진</a> <small class="muted">#33</small></td>
+          
+            
+            <td data-value="2" class="">2</td>
+          
+            
+            <td data-value="0.5" class="">0.500</td>
+          
+            
+            <td data-value="5" class="">5</td>
+          
+            
+            <td data-value="4" class="">4</td>
+          
+            
+            <td data-value="3" class="">3</td>
+          
+            
+            <td data-value="2" class="">2</td>
+          
+            
+            <td data-value="2" class="">2</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="2" class="">2</td>
+          
+            
+            <td data-value="2" class="">2</td>
+          
+            
+            <td data-value="2" class="">2</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="1.0" class="">100%</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0.6" class="">0.600</td>
+          
+            
+            <td data-value="0.5" class="">0.500</td>
+          
+            
+            <td data-value="1.1" class="">1.100</td>
+          
+            
+            <td data-value="" class="dim">-</td>
+          
+          <td class="left small"><span class="badge lg-9" >힐링</span></td>
+        </tr>
+
+        <tr class="unq">
+          <td class="rank">6</td>
+          <td class="player left"><a href="/superstars/player/7.html" title="김사현 통산 기록">김사현</a> <small class="muted">#55</small></td>
+          
+            
+            <td data-value="7" class="">7</td>
+          
+            
+            <td data-value="0.47619047619047616" class="">0.476</td>
+          
+            
+            <td data-value="24" class="">24</td>
+          
+            
+            <td data-value="21" class="">21</td>
+          
+            
+            <td data-value="5" class="">5</td>
+          
+            
+            <td data-value="10" class="">10</td>
+          
+            
+            <td data-value="6" class="">6</td>
+          
+            
+            <td data-value="4" class="">4</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="14" class="">14</td>
+          
+            
+            <td data-value="4" class="">4</td>
+          
+            
+            <td data-value="7" class="">7</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="1.0" class="">100%</td>
+          
+            
+            <td data-value="2" class="">2</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="2" class="">2</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="4" class="">4</td>
+          
+            
+            <td data-value="0.5416666666666666" class="">0.542</td>
+          
+            
+            <td data-value="0.6666666666666666" class="">0.667</td>
+          
+            
+            <td data-value="1.2083333333333333" class="">1.208</td>
+          
+            
+            <td data-value="1.0" class="">1.00</td>
+          
+          <td class="left small"><span class="badge lg-14" >대원</span><span class="badge lg-9" >힐링</span></td>
+        </tr>
+
+        <tr class="unq">
+          <td class="rank">7</td>
+          <td class="player left"><a href="/superstars/player/26.html" title="진용우 통산 기록">진용우</a> <small class="muted">#38</small></td>
+          
+            
+            <td data-value="5" class="">5</td>
+          
+            
+            <td data-value="0.42857142857142855" class="">0.429</td>
+          
+            
+            <td data-value="18" class="">18</td>
+          
+            
+            <td data-value="14" class="">14</td>
+          
+            
+            <td data-value="5" class="">5</td>
+          
+            
+            <td data-value="6" class="">6</td>
+          
+            
+            <td data-value="5" class="">5</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="7" class="">7</td>
+          
+            
+            <td data-value="4" class="">4</td>
+          
+            
+            <td data-value="5" class="">5</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="1.0" class="">100%</td>
+          
+            
+            <td data-value="4" class="">4</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="5" class="">5</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="2" class="">2</td>
+          
+            
+            <td data-value="0.5555555555555556" class="">0.556</td>
+          
+            
+            <td data-value="0.5" class="">0.500</td>
+          
+            
+            <td data-value="1.0555555555555556" class="">1.056</td>
+          
+            
+            <td data-value="0.8" class="">0.80</td>
+          
+          <td class="left small"><span class="badge lg-14" >대원</span><span class="badge lg-9" >힐링</span></td>
+        </tr>
+
+        <tr class="unq">
+          <td class="rank">8</td>
+          <td class="player left"><a href="/superstars/player/2.html" title="권경민 통산 기록">권경민</a> <small class="muted">#19</small></td>
+          
+            
+            <td data-value="6" class="">6</td>
+          
+            
+            <td data-value="0.08333333333333333" class="">0.083</td>
+          
+            
+            <td data-value="18" class="">18</td>
+          
+            
+            <td data-value="12" class="">12</td>
+          
+            
+            <td data-value="4" class="">4</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="1" class="">1</td>
+          
+            
+            <td data-value="2" class="">2</td>
+          
+            
+            <td data-value="2" class="">2</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="1.0" class="">100%</td>
+          
+            
+            <td data-value="5" class="">5</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="5" class="">5</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0" class="">0</td>
+          
+            
+            <td data-value="0.35294117647058826" class="">0.353</td>
+          
+            
+            <td data-value="0.08333333333333333" class="">0.083</td>
+          
+            
+            <td data-value="0.4362745098039216" class="">0.436</td>
+          
+            
+            <td data-value="1.0" class="">1.00</td>
+          
+          <td class="left small"><span class="badge lg-9" >힐링</span></td>
         </tr>
 
       </tbody>
@@ -426,9 +782,9 @@
 </main>
 
 <footer class="container footer">
-  <span>마지막 동기화: 2026.11.02(월) 05:00 · 게시 2026.11.02(월) 21:54</span>
+  <span>마지막 동기화: 2026.11.02(월) 05:00 · 게시 2026.11.02(월) 22:13</span>
   <span><a href="/superstars/calendar.ics">📅 캘린더 구독(ics)</a></span>
 </footer>
-<script src="/superstars/static/app.js?v=1793433380" defer></script>
+<script src="/superstars/static/app.js?v=1793624590" defer></script>
 </body>
 </html>

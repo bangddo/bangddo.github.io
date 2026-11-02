@@ -251,6 +251,18 @@
       });
     });
 
+    // 선수 통산 기록: 연도 줄을 누르면 그 해의 리그별 기록을 펼치고 접는다
+    root.querySelectorAll('tr[data-season-toggle]').forEach(function (tr) {
+      var btn = tr.querySelector('.season-btn');
+      var subs = tr.parentNode.querySelectorAll('tr[data-season-of="' + tr.dataset.seasonToggle + '"]');
+      tr.addEventListener('click', function () {
+        var open = !tr.classList.contains('open');
+        tr.classList.toggle('open', open);
+        if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        Array.prototype.forEach.call(subs, function (s) { s.hidden = !open; });
+      });
+    });
+
     // 삭제 등 확인이 필요한 폼 (관리자)
     root.querySelectorAll('form[data-confirm]').forEach(function (f) {
       f.addEventListener('submit', function (e) {
