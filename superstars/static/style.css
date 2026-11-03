@@ -314,3 +314,45 @@ code { background: #f1f3f9; padding: 1px 5px; border-radius: 6px; font-size: 90%
   .topbar, .footer, .filters, .more { display: none; }
   .card { border: 0; box-shadow: none; }
 }
+/* 라인업 짜보기 (관리자) */
+.lineup-attendees { width: 100%; box-sizing: border-box; font: inherit; font-size: 15px; line-height: 1.6; padding: 10px 12px; border: 1px solid #d8dbe6; border-radius: var(--radius-s); background: #fff; resize: vertical; }
+.lineup-head { display: flex; justify-content: space-between; align-items: center; gap: 8px 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.lineup-head h2 { margin: 0; }
+.lineup-head label { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
+.lineup select { font: inherit; font-size: 14px; padding: 6px 8px; border: 1px solid #d8dbe6; border-radius: 8px; background: #fff; max-width: 100%; }
+.lineup-table select[data-pos] { min-width: 92px; }
+.lineup-table select[data-player] { min-width: 150px; }
+.lineup-table td.order { font-weight: 800; width: 36px; }
+.bench { display: flex; flex-wrap: wrap; gap: 6px; }
+.bench-chip { display: inline-flex; align-items: baseline; gap: 6px; padding: 3px 10px; border-radius: 999px; background: #f1f3f8; font-size: 13px; }
+.bench-chip small { color: var(--muted); font-size: 11px; }
+/* 그래프 색: 범주형 1~3번 (dataviz 검증 통과, 3번은 흰 바탕 대비 3:1 미만이라 값은 표에도 글자로 보여 준다) */
+.lineup-chart { --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; position: relative; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; color: #444; margin-bottom: 4px; }
+.lineup-chart .key { display: inline-block; width: 14px; height: 2px; border-radius: 1px; vertical-align: middle; margin-right: 6px; }
+.lineup-chart .key.s1 { background: var(--series-1); }
+.lineup-chart .key.s2 { background: var(--series-2); }
+.lineup-chart .key.s3 { background: var(--series-3); }
+.chart-box svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
+.chart-box .grid { stroke: #eef1f6; stroke-width: 1; }
+.chart-box .grid.base { stroke: #d8dde8; }
+.chart-box text { font-size: 11px; fill: #666; }
+.chart-box text.xlab-no { fill: #222; font-weight: 700; }
+.chart-box text.xlab { fill: #444; }
+.chart-box text.xlab.narrow { font-size: 10px; }
+.chart-box text.empty-note { font-size: 13px; fill: #8a94a0; }
+.chart-box .ln { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.chart-box .ln.s1 { stroke: var(--series-1); }
+.chart-box .ln.s2 { stroke: var(--series-2); }
+.chart-box .ln.s3 { stroke: var(--series-3); }
+.chart-box .dot { stroke: #fff; stroke-width: 2; }
+.chart-box .dot.s1 { fill: var(--series-1); }
+.chart-box .dot.s2 { fill: var(--series-2); }
+.chart-box .dot.s3 { fill: var(--series-3); }
+.chart-box .crosshair { stroke: #b5bcc6; stroke-width: 1; pointer-events: none; }
+.chart-tip { position: absolute; z-index: 3; pointer-events: none; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 4px 14px rgba(15, 45, 92, .12); padding: 8px 10px; font-size: 12px; min-width: 120px; }
+.chart-tip[hidden] { display: none; }
+.chart-tip .tip-title { font-weight: 700; color: #222; margin-bottom: 4px; white-space: nowrap; }
+.chart-tip .tip-row { display: flex; align-items: center; gap: 6px; color: #444; }
+.chart-tip .tip-row .key { margin-right: 0; }
+.chart-tip .tip-row strong { min-width: 36px; color: #222; }
