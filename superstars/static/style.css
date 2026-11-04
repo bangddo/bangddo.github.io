@@ -322,7 +322,11 @@ code { background: #f1f3f9; padding: 1px 5px; border-radius: 6px; font-size: 90%
 .lineup select { font: inherit; font-size: 14px; padding: 6px 8px; border: 1px solid #d8dbe6; border-radius: 8px; background: #fff; max-width: 100%; }
 .lineup-table select[data-pos] { min-width: 92px; }
 .lineup-table select[data-player] { min-width: 150px; }
-.lineup-table td.order { font-weight: 800; width: 36px; }
+.lineup-table td.slot-no { width: 44px; white-space: nowrap; }   /* .order 는 선공·후공 알약 모양이라 다른 이름 */
+.drag-handle { font: inherit; font-size: 17px; line-height: 1; color: #9aa3ad; background: none; border: 0; padding: 6px 6px 6px 2px; margin-right: 2px; cursor: grab; touch-action: none; vertical-align: middle; }
+.drag-handle:hover, .drag-handle:focus-visible { color: var(--accent); }
+.lineup.is-dragging, .lineup.is-dragging * { cursor: grabbing; user-select: none; -webkit-user-select: none; }
+.lineup-table tr.dragging td { background: #eef3ff; }
 .bench { display: flex; flex-wrap: wrap; gap: 6px; }
 .bench-chip { display: inline-flex; align-items: baseline; gap: 6px; padding: 3px 10px; border-radius: 999px; background: #f1f3f8; font-size: 13px; }
 .bench-chip small { color: var(--muted); font-size: 11px; }
@@ -356,3 +360,13 @@ code { background: #f1f3f9; padding: 1px 5px; border-radius: 6px; font-size: 90%
 .chart-tip .tip-row { display: flex; align-items: center; gap: 6px; color: #444; }
 .chart-tip .tip-row .key { margin-right: 0; }
 .chart-tip .tip-row strong { min-width: 36px; color: #222; }
+/* GitHub 관리 화면 껍데기 */
+.ra-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 13px; color: var(--muted); margin: 0 0 12px; }
+.ra-bar [data-ra-role] { font-weight: 700; color: #222; }
+.ra-pi::before { content: "●"; color: #1baf7a; margin-right: 5px; font-size: 10px; vertical-align: 1px; }
+.ra-pi.ra-pi-bad { color: #9a5b00; }
+.ra-pi.ra-pi-bad::before { color: #eda100; }
+.ra-bar .btn { margin-left: auto; }
+.ra-busy { position: sticky; top: 8px; z-index: 5; background: #eef3ff; border: 1px solid #c9d8ff; color: #1d3f9a; padding: 8px 14px; border-radius: var(--radius-s); margin-bottom: 12px; font-size: 14px; }
+.ra-busy[hidden], .ra-bar[hidden] { display: none; }
+.ra-view.ra-dim { opacity: .55; pointer-events: none; transition: opacity .15s; }

@@ -1,5 +1,5 @@
 // 라인업 짜보기 (관리자). 참석자 → 1~9번 포지션·선수 선택(이미 고른 항목은 다른 칸에서 빠짐) → 남는 인원은 대기,
-// 선발 9명의 타율·출루율·장타율을 꺾은선으로. 서버에 저장하지 않고 이 브라우저(localStorage)에만 임시로 남긴다.
+// 손잡이로 끌어 타순을 바꾸고, 선발 9명의 타율·출루율·장타율을 꺾은선으로. 서버에 저장하지 않고 이 브라우저(localStorage)에만 임시로 남긴다.
 (function () {
   var root = document.querySelector('[data-lineup]');
   var dataEl = document.getElementById('lineupData');
@@ -253,6 +253,55 @@
     tr.querySelector('[data-pos]').addEventListener('change', function (e) { state.slots[i].pos = e.target.value; render(); });
     tr.querySelector('[data-player]').addEventListener('change', function (e) { state.slots[i].name = e.target.value; render(); });
   });
+  // ---- 타순 옮기기: 손잡이(≡)를 잡고 위아래로 끌면 그 자리로 끼워 넣는다(포지션도 함께). 마우스·터치는 pointer 이벤트, 키보드는 ↑↓
+  var drag = null;
+  function moveSlot(from, to) {
+    if (to < 0 || to >= SLOTS || from === to) return false;
+    state.slots.splice(to, 0, state.slots.splice(from, 1)[0]);
+    return true;
+  }
+  function rowAt(y) {
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i].getBoundingClientRect();
+      if (y < r.bottom) return i;
+    }
+    return rows.length - 1;
+  }
+  function markDrag() {
+    rows.forEach(function (tr, j) { tr.classList.toggle('dragging', !!drag && drag.index === j); });
+    root.classList.toggle('is-dragging', !!drag);
+  }
+  rows.forEach(function (tr, i) {
+    var h = tr.querySelector('[data-drag]');
+    h.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      drag = { index: i, id: e.pointerId };
+      if (h.setPointerCapture) h.setPointerCapture(e.pointerId);    // 손가락이 손잡이 밖으로 나가도 계속 받는다
+      markDrag();
+    });
+    h.addEventListener('pointermove', function (e) {
+      if (!drag || drag.id !== e.pointerId) return;
+      var to = rowAt(e.clientY);
+      if (moveSlot(drag.index, to)) { drag.index = to; render(); markDrag(); }
+    });
+    function end(e) {
+      if (!drag || drag.id !== e.pointerId) return;
+      drag = null;
+      markDrag();
+    }
+    h.addEventListener('pointerup', end);
+    h.addEventListener('pointercancel', end);
+    h.addEventListener('keydown', function (e) {
+      var d = e.key === 'ArrowUp' ? -1 : (e.key === 'ArrowDown' ? 1 : 0);
+      if (d && moveSlot(i, i + d)) {
+        e.preventDefault();
+        render();
+        rows[i + d].querySelector('[data-drag]').focus();
+      }
+    });
+  });
+
   root.querySelector('[data-lineup-reset]').addEventListener('click', function () {
     state.slots.forEach(function (s) { s.pos = ''; s.name = ''; });
     render();

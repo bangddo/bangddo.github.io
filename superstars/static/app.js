@@ -5,6 +5,7 @@
 
   // 정적 사이트에서는 주소창을 루트에 고정한 채 내용만 바꿔 끼운다(아래 shell). 서버 모드에서는 보통 이동.
   function navigateTo(url) {
+    if (window.superstarsNavigate && window.superstarsNavigate(url)) return;   // GitHub 관리 화면 껍데기가 맡는 주소
     if (STATIC && window.__superstarsLoad) window.__superstarsLoad(url, true);
     else location.href = url;
   }
@@ -272,7 +273,7 @@
 
     // 동기화 진행 중이면 상태를 폴링하다가 끝나면 새로고침 (관리자)
     var poll = root.querySelector('[data-sync-poll]');
-    if (poll && !poll.dataset.polling) {
+    if (poll && !poll.dataset.polling && !window.superstarsRemote) {     // GitHub 관리 화면은 껍데기가 따로 새로 받는다
       poll.dataset.polling = '1';
       var base = poll.dataset.base || '';
       var timer = setInterval(function () {
@@ -323,6 +324,7 @@
       if (!href || href.charAt(0) === '#') return;
       var u = new URL(a.href, location.href);
       if (u.origin !== location.origin || u.pathname.indexOf(ROOT) !== 0 || /\.(ics|pdf|zip|png|jpg)$/i.test(u.pathname)) return;
+      if (u.pathname.indexOf(ROOT + 'admin') === 0) return;      // 관리 화면은 껍데기 페이지로 그냥 이동
       e.preventDefault();
       load(u.pathname + u.search, true);
     });
@@ -344,5 +346,6 @@
     }
   }
 
+  window.superstarsInit = init;     // GitHub 관리 화면 껍데기가 받아 넣은 화면에도 같은 동작을 붙인다
   init(document);
 })();
