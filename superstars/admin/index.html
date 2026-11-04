@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f2d5c">
+  <title>관리 · 슈퍼스타즈</title>
+  <link rel="icon" href="/superstars/static/favicon.ico?v=1793049504">
+  <link rel="stylesheet" href="/superstars/static/style.css?v=1793755316">
+  <link rel="alternate" type="text/calendar" title="슈퍼스타즈 일정" href="/superstars/calendar.ics">
+</head>
+<body>
+<header class="topbar">
+  <div class="container topbar-in">
+    <a class="brand" href="/superstars/"><span class="brand-ball">⚾</span> 슈퍼스타즈<span class="brand-sep">|</span><span class="brand-page">관리</span></a>
+    <nav class="nav" aria-label="주 메뉴">
+      <a href="/superstars/" class="">홈</a>
+      <a href="/superstars/schedule/" class="">일정</a>
+      <a href="/superstars/records/" class="">기록</a>
+      <a href="/superstars/team/" class="">전적</a>
+      <a href="/superstars/roster/" class="">선수단</a>
+      <a href="/superstars/notices/" class="">공지</a>
+      <a href="/superstars/admin/" class="nav-admin active">관리</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container page">
+  
+  
+  
+
+<div class="remote-admin" data-remote-admin data-relay="https://superstars-relay.bangddo.workers.dev" data-base="/superstars" data-lineup-src="/superstars/static/lineup.js?v=1793694655">
+  <section class="card narrow" data-ra-login hidden>
+    <h2>관리자 로그인</h2>
+    <p class="muted small">지급 받은 비밀번호를 입력하세요.</p>
+    <div class="flash flash-error" role="alert" data-ra-login-error hidden></div>
+    <form class="form" data-ra-login-form>
+      <label>비밀번호<input type="password" name="password" required autocomplete="current-password"></label>
+      <div class="actions"><button class="btn" type="submit">로그인</button></div>
+    </form>
+  </section>
+  <div class="ra-bar" data-ra-bar hidden>
+    <span data-ra-role></span><span class="ra-pi" data-ra-pi></span>
+    <button type="button" class="btn btn-secondary btn-sm" data-ra-logout>로그아웃</button>
+  </div>
+  <div class="ra-busy" role="status" data-ra-busy hidden></div>
+  <div class="flash flash-error" role="alert" data-ra-error hidden></div>
+  <div class="ra-view" data-ra-view></div>
+  <noscript><p class="empty">관리 화면은 자바스크립트를 켜야 쓸 수 있습니다.</p></noscript>
+</div>
+
+</main>
+
+<footer class="container footer">
+  <span>마지막 동기화: 2026.11.03(화) 17:00 · 게시 2026.11.04(수) 10:38</span>
+  <span><a href="/superstars/calendar.ics">📅 캘린더 구독(ics)</a></span>
+</footer>
+<script src="/superstars/static/app.js?v=1793755272" defer></script>
+<script src="/superstars/static/admin-remote.js?v=1793755316" defer></script>
+</body>
+</html>
