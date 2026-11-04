@@ -38,14 +38,27 @@
   // ---- 상태 표시
   function setBusy(text) { busy.textContent = text; busy.hidden = !text; view.classList.toggle('ra-dim', !!text); }
   function showError(msg) { setBusy(''); errBox.textContent = msg; errBox.hidden = !msg; }
-  function piStatus(seen) {
+  var proc = 'pi';           // 명령을 처리하는 쪽: 'pi'(몇 초) 또는 'actions'(GitHub Actions, 1~2분)
+  function piStatus(d) {
     var el = $('[data-ra-pi]');
-    if (seen === undefined) return;
+    if (!d) return;
+    if (d.processor) proc = d.processor;
+    if (proc === 'actions') {
+      el.classList.toggle('ra-pi-bad', !!d.dispatch_error);
+      el.textContent = d.dispatch_error || '저장하면 GitHub 에서 처리합니다 (보통 1~2분)';
+      return;
+    }
+    if (d.pi_last_seen === undefined) return;
+    var seen = d.pi_last_seen;
     var ago = seen ? Math.max(0, Math.round(Date.now() / 1000 - seen)) : null;
     el.classList.toggle('ra-pi-bad', ago === null || ago > 150);
     if (ago === null) el.textContent = '파이가 아직 연결된 적이 없습니다';
     else if (ago <= 150) el.textContent = '파이 연결됨';
     else el.textContent = '파이가 ' + Math.round(ago / 60) + '분째 응답이 없습니다 · 맡긴 일은 파이가 연결되면 처리됩니다';
+  }
+  function waitText(what, secs) {
+    if (proc === 'actions') return 'GitHub 에서 ' + what + ' 중… ' + secs + '초 (보통 1~2분)';
+    return '파이의 응답을 기다리는 중… ' + secs + '초';
   }
 
   // ---- 로그인
@@ -138,20 +151,24 @@
       syncTimer = setTimeout(function () { if (!dirty && busy.hidden) load(current, '', true); }, 8000);
     }
   }
-  function waitFor(id, stillWanted) {
+  function waitFor(id, stillWanted, what) {
     var started = Date.now();
     return new Promise(function (resolve, reject) {
       (function tick() {
         if (!stillWanted()) return resolve(null);
         api('GET', '/api/command/' + id).then(function (d) {
           if (d.status === 'done') return resolve(d.result || {});
-          piStatus(d.pi_last_seen);
+          piStatus(d);
           var waited = (Date.now() - started) / 1000;
-          if (waited > 90) {
+          if (proc === 'actions' && waited > 420) {
+            return reject(new Error((d.dispatch_error ? d.dispatch_error + ' ' : '') +
+              'GitHub 에서 아직 처리하지 않았습니다. superstars 저장소의 Actions 탭을 확인하세요. 맡긴 일은 남아 있어 다음 실행 때 처리됩니다.'));
+          }
+          if (proc !== 'actions' && waited > 90) {
             return reject(new Error('파이가 응답하지 않습니다. 파이가 켜져 있는지 확인하세요. 맡긴 일은 파이가 다시 연결되면 처리됩니다.'));
           }
-          if (waited > 6 && stillWanted()) setBusy('파이의 응답을 기다리는 중… ' + Math.round(waited) + '초');
-          setTimeout(tick, waited < 10 ? 700 : 2000);
+          if ((waited > 6 || proc === 'actions') && stillWanted()) setBusy(waitText(what, Math.round(waited)));
+          setTimeout(tick, waited < 10 ? 700 : (proc === 'actions' ? 3000 : 2000));
         }, reject);
       })();
     });
@@ -162,10 +179,10 @@
     if (!quiet) setBusy('불러오는 중…');
     api('GET', '/api/page?path=' + encodeURIComponent(path)).then(function (d) {
       if (my !== seq) return;
-      piStatus(d.pi_last_seen);
+      piStatus(d);
       if (d.page) return show(d.page, anchor, quiet);
-      if (!quiet) setBusy('파이가 화면을 만드는 중입니다…');
-      return waitFor(d.pending, function () { return my === seq; }).then(function (res) {
+      if (!quiet) setBusy(proc === 'actions' ? 'GitHub 에서 화면을 만드는 중입니다… (보통 1~2분)' : '파이가 화면을 만드는 중입니다…');
+      return waitFor(d.pending, function () { return my === seq; }, '화면을 만드는').then(function (res) {
         if (!res || my !== seq) return;
         if (!res.main) return showError(res.error || '화면을 받지 못했습니다.');
         show(res, anchor, quiet);
@@ -179,8 +196,9 @@
     Array.prototype.forEach.call(buttons, function (b) { b.disabled = true; });
     setBusy('저장하는 중…');
     api('POST', '/api/command', { path: path, form: pairs }).then(function (d) {
-      piStatus(d.pi_last_seen);
-      return waitFor(d.id, function () { return true; });           // 저장은 다른 화면으로 가도 끝까지 기다린다
+      piStatus(d);
+      if (proc === 'actions') setBusy(waitText('저장하는', 0));
+      return waitFor(d.id, function () { return true; }, '저장하는');   // 저장은 다른 화면으로 가도 끝까지 기다린다
     }).then(function (res) {
       if (my !== seq) return;
       if (!res.main) { showError(res.error || '처리 결과를 받지 못했습니다.'); return; }
@@ -227,7 +245,7 @@
 
   // ---- 보고 있는 동안 '사용 중' 알림 (파이가 확인 간격을 줄인다)
   function ping() {
-    if (token && document.visibilityState === 'visible') api('POST', '/api/ping').then(function (d) { piStatus(d.pi_last_seen); }, function () {});
+    if (token && document.visibilityState === 'visible') api('POST', '/api/ping').then(function (d) { piStatus(d); }, function () {});
   }
   setInterval(ping, 20000);
   document.addEventListener('visibilitychange', ping);
