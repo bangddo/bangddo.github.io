@@ -321,6 +321,26 @@ code { background: #f1f3f9; padding: 1px 5px; border-radius: 6px; font-size: 90%
 .opp-search { font: inherit; font-size: 14px; padding: 8px 12px; border: 1px solid #d8dbe6; border-radius: var(--radius-s); background: #fff; width: 200px; max-width: 100%; box-sizing: border-box; }
 @media (max-width: 560px) { .opp-search { width: 100%; } }
 .opp-search[hidden], .opp-table tbody tr[hidden], .table-wrap[hidden] { display: none; }
+/* 상대팀 전적: 리그 배지에 올리거나 누르면 그 리그 경기 목록 말풍선 (app.js 의 .float-tip) */
+.opp-league { display: inline-block; cursor: pointer; border-radius: 999px; }
+.opp-league .badge { text-decoration: underline dotted; text-underline-offset: 3px; }
+.opp-league:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.opp-league.tip-open .badge { box-shadow: inset 0 0 0 2px var(--accent); }
+.opp-tip-body[hidden] { display: none; }
+.float-tip { position: fixed; z-index: 1000; top: 0; left: 0; max-width: min(320px, calc(100vw - 16px)); max-height: 60vh; overflow-y: auto;
+  background: #fff; border: 1px solid var(--line-2); border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, .14);
+  padding: 10px 12px; font-size: 13px; line-height: 1.5; color: var(--text); }
+.float-tip[hidden] { display: none; }
+.float-tip .tip-head { font-size: 14px; }
+.float-tip .tip-sum { color: var(--muted); margin: 2px 0 6px; }
+.float-tip .tip-sum .win { color: var(--win); font-weight: 700; }
+.float-tip .tip-sum .lose { color: var(--lose); font-weight: 700; }
+.float-tip .tip-games { list-style: none; margin: 0; padding: 0; }
+.float-tip .tip-games li { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-top: 1px solid var(--line); white-space: nowrap; }
+.float-tip .tip-games li:first-child { border-top: 0; }
+.float-tip .res { margin-left: 0; }
+.float-tip .tip-date, .float-tip .tip-score { font-variant-numeric: tabular-nums; }
+.float-tip .tip-score { font-weight: 700; }
 .lineup-head { display: flex; justify-content: space-between; align-items: center; gap: 8px 12px; flex-wrap: wrap; margin-bottom: 8px; }
 .lineup-head h2 { margin: 0; }
 .lineup-head label { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }

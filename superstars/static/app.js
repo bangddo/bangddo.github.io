@@ -107,9 +107,73 @@
     });
   }   // 다른 날짜로 확인할 때 쓰는 도우미
 
+  // ---- 떠 있는 말풍선: [data-tip] 에 마우스를 올리면 보이고(떼면 닫힘), 누르면 고정(다른 곳을 누르거나 Esc 로 닫힘).
+  // 내용은 그 안의 숨은 [data-tip-body]. 표가 가로 스크롤 상자 안에 있어 잘리지 않도록 body 에 붙인 고정 위치 상자 하나를 쓴다
+  var tip = { box: null, el: null, pinned: false, timer: null };
+  function tipBox() {
+    if (!tip.box) {
+      tip.box = document.createElement('div');
+      tip.box.className = 'float-tip';
+      tip.box.hidden = true;
+      tip.box.addEventListener('mouseenter', function () { clearTimeout(tip.timer); });   // 말풍선 안으로 옮겨 가 스크롤할 수 있게
+      tip.box.addEventListener('mouseleave', function () { if (!tip.pinned) hideTipSoon(); });
+      document.body.appendChild(tip.box);
+    }
+    return tip.box;
+  }
+  function placeTip() {
+    var box = tip.box, r = tip.el.getBoundingClientRect(), gap = 6, edge = 8;
+    var vw = document.documentElement.clientWidth || window.innerWidth, vh = window.innerHeight;
+    var w = box.offsetWidth, h = box.offsetHeight;
+    var top = r.bottom + gap;
+    if (top + h > vh - edge && r.top - gap - h >= edge) top = r.top - gap - h;   // 아래 자리가 모자라면 위로
+    box.style.left = Math.max(edge, Math.min(r.left, vw - w - edge)) + 'px';
+    box.style.top = Math.max(edge, Math.min(top, vh - h - edge)) + 'px';
+  }
+  function showTip(el, pin) {
+    var body = el.querySelector('[data-tip-body]');
+    if (!body) return;
+    clearTimeout(tip.timer);
+    if (tip.el && tip.el !== el) tip.el.classList.remove('tip-open');
+    var box = tipBox();
+    box.innerHTML = body.innerHTML;
+    box.hidden = false;
+    box.scrollTop = 0;
+    tip.el = el;
+    tip.pinned = !!pin;
+    el.classList.toggle('tip-open', tip.pinned);
+    placeTip();
+  }
+  function hideTip() {
+    clearTimeout(tip.timer);
+    if (tip.el) tip.el.classList.remove('tip-open');
+    if (tip.box) tip.box.hidden = true;
+    tip.el = null;
+    tip.pinned = false;
+  }
+  function hideTipSoon() { clearTimeout(tip.timer); tip.timer = setTimeout(hideTip, 150); }
+  function bindTip(el) {
+    el.addEventListener('mouseenter', function () { if (!tip.pinned) showTip(el, false); });
+    el.addEventListener('mouseleave', function () { if (!tip.pinned && tip.el === el) hideTipSoon(); });
+    el.addEventListener('focus', function () { if (!tip.pinned) showTip(el, false); });
+    el.addEventListener('blur', function () { if (!tip.pinned && tip.el === el) hideTip(); });
+    el.addEventListener('click', function () { if (tip.el === el && tip.pinned) hideTip(); else showTip(el, true); });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (tip.el === el && tip.pinned) hideTip(); else showTip(el, true); }
+    });
+  }
+  document.addEventListener('click', function (e) {
+    if (tip.el && !tip.el.contains(e.target) && !(tip.box && tip.box.contains(e.target))) hideTip();
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && tip.el) hideTip(); });
+  window.addEventListener('scroll', function () { if (tip.el) placeTip(); }, true);   // 표 상자 가로 스크롤도 따라간다
+  window.addEventListener('resize', function () { if (tip.el) placeTip(); });
+
   function init(root) {
     root = root || document;
     applyDates(root);
+    hideTip();                                  // 정적 사이트에서 내용을 바꿔 끼울 때 예전 말풍선은 닫는다
+    root.querySelectorAll('[data-tip]').forEach(bindTip);
 
     // 기록 표 정렬: th[data-sort="num|text"] 클릭. 규정 충족/미충족 그룹(tbody)은 유지하고 각 그룹 안에서만 정렬
     root.querySelectorAll('table.sortable').forEach(function (table) {
