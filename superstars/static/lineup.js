@@ -307,14 +307,16 @@
     });
   });
 
-  // ---- 복사: "타순\t포지션\t이름" 표, 빈 줄, "대기 이름" 줄. 비어 있는 타순은 뺀다
+  // ---- 복사: "1. 김태균 (LF)" 줄들, 빈 줄, "대기 김선우" 줄들(대기가 없으면 생략).
+  // 선수를 고르지 않은 타순은 빼고(번호는 그대로), 두 글자 이름은 "조　민"처럼 가운데 전각 공백으로 세 글자 폭에 맞춘다
+  var COPY_POS = { P: 'SP' };                               // 투수는 선발 투수(SP)로
+  function copyName(n) { return /^[가-힣]{2}$/.test(n) ? n.charAt(0) + '　' + n.charAt(1) : n; }
   function lineupText() {
     var out = [];
     state.slots.forEach(function (s, i) {
-      if (s.pos || s.name) out.push((i + 1) + '\t' + (s.pos ? POS[s.pos].name : '') + '\t' + s.name);
+      if (s.name) out.push((i + 1) + '. ' + copyName(s.name) + (s.pos ? ' (' + (COPY_POS[s.pos] || s.pos) + ')' : ''));
     });
-    if (out.length) out.unshift('타순\t포지션\t이름');
-    var bench = benchOf(attendees());
+    var bench = benchOf(attendees()).map(copyName);
     if (bench.length && out.length) out.push('');
     bench.forEach(function (n) { out.push('대기 ' + n); });
     return out.join('\n');
