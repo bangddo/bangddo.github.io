@@ -9,8 +9,9 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import {
   parseAndHashNamedPhoneEntries, formatDateTime, toLocalInputValue, fromLocalInputValue,
-  voteStatus, statusLabel, generateInviteCode,
+  voteStatus, statusLabel, generateInviteCode, tallyChoices,
 } from './util.js';
+import { openRevealScreen } from './reveal.js';
 
 const loginSection = document.getElementById('login-section');
 const signupSection = document.getElementById('signup-section');
@@ -29,6 +30,8 @@ let votes = [];
 let selectedVoteId = null;
 let votesUnsubscribe = null;
 let resultsUnsubscribe = null;
+let latestBallots = null;          // 선택한 투표의 최신 ballots (null = 아직 집계 전)
+let resultsShownForVoteId = null;  // "한번에 보기"로 결과를 펼쳐둔 투표 id
 let adminWatchUnsubscribe = null;
 let inviteFromUrl = null;
 
@@ -266,6 +269,7 @@ function showLogin() {
   logoutBtn.classList.add('hidden');
   if (votesUnsubscribe) { votesUnsubscribe(); votesUnsubscribe = null; }
   if (resultsUnsubscribe) { resultsUnsubscribe(); resultsUnsubscribe = null; }
+  resultsShownForVoteId = null;
 }
 
 function showSignup() {
@@ -775,6 +779,7 @@ async function checkBallotsExist(voteId) {
 
 function renderDetail(vote) {
   if (resultsUnsubscribe) { resultsUnsubscribe(); resultsUnsubscribe = null; }
+  latestBallots = null;
 
   const status = voteStatus(vote);
   panelContent.innerHTML = `
@@ -798,8 +803,15 @@ function renderDetail(vote) {
       </div>
     </div>
     <div class="mt-4">
-      <h3 style="font-size:15px; margin-bottom:8px;">결과</h3>
-      <div id="results-area"><p class="text-muted">집계 중...</p></div>
+      <div class="results-header">
+        <h3 style="font-size:15px; margin:0;">결과</h3>
+        <div class="button-row">
+          <button class="btn-secondary btn-sm" id="show-results-btn" disabled>한번에 보기</button>
+          <button class="btn-primary btn-sm" id="reveal-results-btn" disabled>연출 보기</button>
+        </div>
+      </div>
+      <div id="results-summary" class="text-muted mt-2">집계 중...</div>
+      <div id="results-area" class="mt-4 hidden"></div>
     </div>
   `;
 
@@ -808,39 +820,75 @@ function renderDetail(vote) {
   if (status === 'active') {
     document.getElementById('end-now-btn').onclick = () => confirmEndNow(vote);
   }
+  document.getElementById('show-results-btn').onclick = () => {
+    resultsShownForVoteId = resultsShownForVoteId === vote.id ? null : vote.id;
+    applyResultsVisibility(vote);
+  };
+  document.getElementById('reveal-results-btn').onclick = () => {
+    if (!latestBallots || latestBallots.length === 0) return;
+    // 연출은 클릭 시점의 집계를 그대로 사용한다 (진행 중 새 투표가 들어와도 흔들리지 않도록).
+    openRevealScreen(vote, latestBallots);
+  };
+
+  applyResultsVisibility(vote);
 
   resultsUnsubscribe = onSnapshot(
     collection(db, 'votes', vote.id, 'ballots'),
-    snap => renderResults(vote, snap.docs.map(d => ({ id: d.id, ...d.data() }))),
+    snap => {
+      latestBallots = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      applyResultsVisibility(vote);
+    },
     err => {
       console.error(err);
-      document.getElementById('results-area').innerHTML =
-        `<div class="message error">결과 로드 실패: ${escapeHtml(err.message)}</div>`;
+      const summary = document.getElementById('results-summary');
+      if (summary) {
+        summary.innerHTML = `<div class="message error">결과 로드 실패: ${escapeHtml(err.message)}</div>`;
+      }
     }
   );
+}
+
+// 결과 영역의 노출 상태를 현재 집계/토글 상태에 맞춘다.
+// 참여 현황(명 수)은 항상 보이고, 항목별 득표는 "한번에 보기"를 눌렀을 때만 그린다.
+function applyResultsVisibility(vote) {
+  const summary = document.getElementById('results-summary');
+  const area = document.getElementById('results-area');
+  const showBtn = document.getElementById('show-results-btn');
+  const revealBtn = document.getElementById('reveal-results-btn');
+  if (!summary || !area || !showBtn || !revealBtn) return;
+
+  const loaded = Array.isArray(latestBallots);
+  const ballots = loaded ? latestBallots : [];
+  const visible = loaded && resultsShownForVoteId === vote.id;
+
+  showBtn.disabled = !loaded;
+  showBtn.textContent = visible ? '결과 숨기기' : '한번에 보기';
+  revealBtn.disabled = !loaded || ballots.length === 0;
+  revealBtn.title = loaded && ballots.length === 0 ? '아직 투표가 없습니다.' : '';
+
+  if (!loaded) {
+    summary.textContent = '집계 중...';
+  } else {
+    const totalChoices = tallyChoices(vote.items, ballots).reduce((a, b) => a + b, 0);
+    summary.textContent =
+      `${ballots.length}명 참여 / ${vote.allowedPhoneHashes?.length ?? 0}명 대상`
+      + ((vote.maxChoices ?? 1) > 1 ? ` · 총 선택 ${totalChoices}건` : '');
+  }
+
+  area.classList.toggle('hidden', !visible);
+  if (visible) renderResults(vote, ballots);
+  else area.innerHTML = '';
 }
 
 function renderResults(vote, ballots) {
   const area = document.getElementById('results-area');
   if (!area) return;
 
-  const counts = vote.items.map(() => 0);
-  ballots.forEach(b => {
-    (b.choices ?? []).forEach(idx => {
-      if (idx >= 0 && idx < counts.length) counts[idx]++;
-    });
-  });
+  const counts = tallyChoices(vote.items, ballots);
   const totalVoters = ballots.length;
-  const totalChoices = counts.reduce((a, b) => a + b, 0);
   const max = Math.max(1, ...counts);
 
-  let html = `
-    <div class="text-muted mb-4">
-      ${totalVoters}명 참여 / ${vote.allowedPhoneHashes?.length ?? 0}명 대상
-      ${(vote.maxChoices ?? 1) > 1 ? `· 총 선택 ${totalChoices}건` : ''}
-    </div>
-  `;
-  html += vote.items.map((label, idx) => {
+  let html = vote.items.map((label, idx) => {
     const c = counts[idx];
     const pct = totalVoters > 0 ? Math.round((c / max) * 100) : 0;
     const ratio = totalVoters > 0 ? ((c / totalVoters) * 100).toFixed(1) : '0.0';

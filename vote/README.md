@@ -4,6 +4,7 @@ GitHub Pages + Firebase Firestore 로 동작하는 정적 투표 시스템.
 
 - `index.html`: 유권자 — 진행 중인 투표 목록을 보고 인증번호로 투표
 - `manage.html`: 관리자 — 투표 등록/수정/삭제/결과 조회
+  - 결과는 투표를 선택해도 바로 보이지 않고(참여 인원만 표시), **한번에 보기**(관리 화면 안에 즉시 표시, 실시간 갱신) 또는 **연출 보기**(브라우저 풀스크린에서 클릭할 때마다 최저 득표부터 순위를 공개, 1위 발표 시 꽃가루)로 확인
 
 ## 동작 방식 요약
 
@@ -119,5 +120,6 @@ js/firebase-config.js    Firebase 초기화 (config 교체 필요)
 js/util.js               해시/시간/포맷 유틸
 js/index.js              유권자 화면 로직
 js/manage.js             관리자 화면 로직
+js/reveal.js             결과 연출 보기 (풀스크린 단계별 공개 + 꽃가루)
 firestore.rules          Firestore 보안 규칙 (콘솔에 배포)
 ```

@@ -124,3 +124,20 @@ export function formatRemaining(target, now = new Date()) {
   const days = Math.floor(hours / 24);
   return `${days}일 ${hours % 24}시간 남음`;
 }
+
+export function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[c]));
+}
+
+// 항목별 득표수 집계. ballots[].choices 는 항목 인덱스 배열.
+export function tallyChoices(items, ballots) {
+  const counts = (items ?? []).map(() => 0);
+  (ballots ?? []).forEach(b => {
+    (b.choices ?? []).forEach(idx => {
+      if (idx >= 0 && idx < counts.length) counts[idx]++;
+    });
+  });
+  return counts;
+}
