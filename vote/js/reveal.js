@@ -10,8 +10,10 @@ const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
  * 투표 결과 연출 보기.
  *
  * 풀스크린 오버레이에서 모든 항목의 막대가 0부터 동시에 올라가다가 최저 득표수에서 멈춘다.
- * 클릭(또는 Space / Enter / →)할 때마다 다음 득표수까지 올라가고, 그 득표수인 항목은 그 자리에서 확정된다.
- * 마지막 단계에서 1위가 확정되면 꽃가루가 터진다.
+ * 클릭(또는 Space / Enter / →)할 때마다 다음 득표수까지 올라간다.
+ * 멈춘 순간에는 어느 항목이 확정됐는지 드러내지 않고, 다음 클릭으로 연출이 이어질 때
+ * 직전 득표수에서 멈춘 항목에 순위 배지를 붙인다 (둘만 남았을 때 2위가 먼저 보이지 않도록).
+ * 마지막 단계에서 1위가 확정되면 바로 배지를 붙이고 꽃가루가 터진다.
  *
  * 득표 집계는 호출 시점의 ballots 로 고정된다 (연출 도중 새 투표가 들어와도 반영하지 않음).
  */
@@ -101,6 +103,9 @@ export function openRevealScreen(vote, ballots) {
     animating = true;
     setHint('');
 
+    // 직전 단계에서 멈춘 항목의 순위는 다음 연출이 시작되는 지금 공개한다.
+    if (step >= 0) revealSettled(from, false);
+
     const start = performance.now();
     const frame = now => {
       if (closed) return;
@@ -114,21 +119,28 @@ export function openRevealScreen(vote, ballots) {
       if (t < 1) { rafId = requestAnimationFrame(frame); return; }
 
       rafId = null;
-      // 이번 단계의 득표수인 항목을 확정한다. 순위 = 더 많이 득표한 항목 수 + 1 (동률은 같은 순위).
-      const rank = 1 + counts.filter(c => c > to).length;
-      counts.forEach((c, i) => {
-        if (c !== to) return;
-        paint(i, c);
-        rows[i].row.classList.add('settled');
-        if (isLast) rows[i].row.classList.add('winner');
-        rows[i].rank.innerHTML = `<span>${isLast ? '🏆 ' : ''}${rank}위</span>`;
-      });
       step = next;
       animating = false;
-      if (isLast) finish();
-      else setHint('클릭하면 다음 순위를 공개합니다');
+      if (isLast) {
+        revealSettled(to, true);
+        finish();
+      } else {
+        setHint('클릭하면 다음 순위를 공개합니다');
+      }
     };
     rafId = requestAnimationFrame(frame);
+  }
+
+  // 득표수가 value 인 항목을 확정 표시한다. 순위 = 더 많이 득표한 항목 수 + 1 (동률은 같은 순위).
+  function revealSettled(value, isWinner) {
+    const rank = 1 + counts.filter(c => c > value).length;
+    counts.forEach((c, i) => {
+      if (c !== value) return;
+      paint(i, c);
+      rows[i].row.classList.add('settled');
+      if (isWinner) rows[i].row.classList.add('winner');
+      rows[i].rank.innerHTML = `<span>${isWinner ? '🏆 ' : ''}${rank}위</span>`;
+    });
   }
 
   function finish() {
