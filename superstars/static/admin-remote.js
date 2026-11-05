@@ -1,5 +1,5 @@
-// GitHub 관리 화면 껍데기. 파이가 만들어 Cloudflare 중계(relay/)에 올려 둔 관리 화면을 받아 보여 주고,
-// 폼 제출은 중계에 명령으로 맡긴 뒤 파이가 처리한 결과 화면(안내 포함)을 보여 준다.
+// GitHub 관리 화면 껍데기. GitHub Actions 가 만들어 Cloudflare 중계(relay/)에 올려 둔 관리 화면을 받아 보여 주고,
+// 폼 제출은 중계에 명령으로 맡긴 뒤 Actions 가 처리한 결과 화면(안내 포함)을 보여 준다.
 // 보고 있는 관리 화면은 주소 뒤 #/admin/... 로 기억한다. 비밀번호는 로그인할 때 한 번 보내고, 브라우저에는 기한 있는 로그인 표만 둔다.
 (function () {
   var box = document.querySelector('[data-remote-admin]');
@@ -38,27 +38,27 @@
   // ---- 상태 표시
   function setBusy(text) { busy.textContent = text; busy.hidden = !text; view.classList.toggle('ra-dim', !!text); }
   function showError(msg) { setBusy(''); errBox.textContent = msg; errBox.hidden = !msg; }
-  var proc = 'pi';           // 명령을 처리하는 쪽: 'pi'(몇 초) 또는 'actions'(GitHub Actions, 1~2분)
+  // 명령을 처리하는 쪽(중계가 알려 줌): 'actions' = 저장할 때마다 GitHub Actions 실행을 요청한다.
+  // 'pi' 는 실행 요청 토큰이 없다는 뜻(그러면 매일 예약 실행 때만 처리), 'old' 는 중계 Worker 가 예전 버전이라 알려 주지 않는 경우
+  var proc = '';
+  var NO_TOKEN = 'GitHub 실행 요청 토큰(GITHUB_TOKEN)이 없어 저장은 다음 예약 실행(매일 05:10) 때 처리됩니다. ' +
+    'relay 폴더에서 .\\set-secrets.ps1 -SkipPasswords -GitHubToken 을 실행하세요.';
+  var OLD_WORKER = '중계 Worker 가 예전 버전입니다. relay 폴더에서 npx wrangler deploy 를 실행하세요.';
   function piStatus(d) {
     var el = $('[data-ra-pi]');
     if (!d) return;
-    if (d.processor) proc = d.processor;
-    if (proc === 'actions') {
-      el.classList.toggle('ra-pi-bad', !!d.dispatch_error);
-      el.textContent = d.dispatch_error || '저장하면 GitHub 에서 처리합니다 (보통 1~2분)';
-      return;
-    }
-    if (d.pi_last_seen === undefined) return;
-    var seen = d.pi_last_seen;
-    var ago = seen ? Math.max(0, Math.round(Date.now() / 1000 - seen)) : null;
-    el.classList.toggle('ra-pi-bad', ago === null || ago > 150);
-    if (ago === null) el.textContent = '파이가 아직 연결된 적이 없습니다';
-    else if (ago <= 150) el.textContent = '파이 연결됨';
-    else el.textContent = '파이가 ' + Math.round(ago / 60) + '분째 응답이 없습니다 · 맡긴 일은 파이가 연결되면 처리됩니다';
+    proc = d.processor || proc || 'old';
+    var bad = true, msg;
+    if (proc === 'actions') { bad = !!d.dispatch_error; msg = d.dispatch_error || '저장하면 GitHub 에서 처리합니다 (보통 1~2분)'; }
+    else if (proc === 'old') msg = OLD_WORKER;
+    else if (d.pi_last_seen && Date.now() / 1000 - d.pi_last_seen <= 150) { bad = false; msg = '처리기 연결됨'; }
+    else msg = NO_TOKEN;
+    el.classList.toggle('ra-pi-bad', bad);
+    el.textContent = msg;
   }
   function waitText(what, secs) {
     if (proc === 'actions') return 'GitHub 에서 ' + what + ' 중… ' + secs + '초 (보통 1~2분)';
-    return '파이의 응답을 기다리는 중… ' + secs + '초';
+    return '처리를 기다리는 중… ' + secs + '초';
   }
 
   // ---- 로그인
@@ -165,7 +165,7 @@
               'GitHub 에서 아직 처리하지 않았습니다. superstars 저장소의 Actions 탭을 확인하세요. 맡긴 일은 남아 있어 다음 실행 때 처리됩니다.'));
           }
           if (proc !== 'actions' && waited > 90) {
-            return reject(new Error('파이가 응답하지 않습니다. 파이가 켜져 있는지 확인하세요. 맡긴 일은 파이가 다시 연결되면 처리됩니다.'));
+            return reject(new Error((proc === 'old' ? OLD_WORKER : NO_TOKEN) + ' 맡긴 일은 남아 있어 다음 실행 때 처리됩니다.'));
           }
           if ((waited > 6 || proc === 'actions') && stillWanted()) setBusy(waitText(what, Math.round(waited)));
           setTimeout(tick, waited < 10 ? 700 : (proc === 'actions' ? 3000 : 2000));
@@ -181,7 +181,7 @@
       if (my !== seq) return;
       piStatus(d);
       if (d.page) return show(d.page, anchor, quiet);
-      if (!quiet) setBusy(proc === 'actions' ? 'GitHub 에서 화면을 만드는 중입니다… (보통 1~2분)' : '파이가 화면을 만드는 중입니다…');
+      if (!quiet) setBusy(proc === 'actions' ? 'GitHub 에서 화면을 만드는 중입니다… (보통 1~2분)' : '화면을 만드는 중입니다…');
       return waitFor(d.pending, function () { return my === seq; }, '화면을 만드는').then(function (res) {
         if (!res || my !== seq) return;
         if (!res.main) return showError(res.error || '화면을 받지 못했습니다.');
@@ -243,7 +243,7 @@
     view.addEventListener(t, function (e) { if (e.target.closest && e.target.closest('form[data-dirty-guard]')) dirty = true; });
   });
 
-  // ---- 보고 있는 동안 '사용 중' 알림 (파이가 확인 간격을 줄인다)
+  // ---- 보고 있는 동안 '사용 중' 알림 (상주 처리기가 있으면 확인 간격을 줄인다)
   function ping() {
     if (token && document.visibilityState === 'visible') api('POST', '/api/ping').then(function (d) { piStatus(d); }, function () {});
   }
