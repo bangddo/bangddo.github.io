@@ -1,5 +1,6 @@
 // 라인업 짜보기 (관리자). 참석자 → 1~9번 포지션·선수 선택(이미 고른 항목은 다른 칸에서 빠짐) → 남는 인원은 대기,
-// 손잡이로 끌어 타순을 바꾸고, 선발 9명의 타율·출루율·장타율을 꺾은선으로. 서버에 저장하지 않고 이 브라우저(localStorage)에만 임시로 남긴다.
+// 손잡이로 끌어 타순을 바꾸고, 선발 9명의 타율·출루율·장타율을 꺾은선으로, "라인업 복사"로 메신저용 글을 클립보드에.
+// 서버에 저장하지 않고 이 브라우저(localStorage)에만 임시로 남긴다.
 (function () {
   var root = document.querySelector('[data-lineup]');
   var dataEl = document.getElementById('lineupData');
@@ -79,6 +80,10 @@
     sel.value = current;
   }
   function setText(el, text) { if (el) el.textContent = text; }
+  function benchOf(names) {                                 // 참석자 중 타순에 없는 사람
+    var inLineup = state.slots.map(function (s) { return s.name; });
+    return names.filter(function (n) { return inLineup.indexOf(n) === -1; });
+  }
 
   function render() {
     var names = attendees();
@@ -105,9 +110,9 @@
       setText(tr.querySelector('[data-stat="pa"]'), slot.name ? (st ? String(st.pa || 0) : '기록 없음') : '-');
     });
 
-    var inLineup = state.slots.map(function (s) { return s.name; });
-    var bench = names.filter(function (n) { return inLineup.indexOf(n) === -1; });
+    var bench = benchOf(names);
     setText(root.querySelector('[data-bench-count]'), bench.length + '명');
+    copy.box.hidden = true;                                 // 바뀐 뒤에는 예전 복사 글을 감춘다
     var box = root.querySelector('[data-bench]');
     while (box.firstChild) box.removeChild(box.firstChild);
     if (!bench.length) {
@@ -300,6 +305,58 @@
         rows[i + d].querySelector('[data-drag]').focus();
       }
     });
+  });
+
+  // ---- 복사: "타순\t포지션\t이름" 표, 빈 줄, "대기 이름" 줄. 비어 있는 타순은 뺀다
+  function lineupText() {
+    var out = [];
+    state.slots.forEach(function (s, i) {
+      if (s.pos || s.name) out.push((i + 1) + '\t' + (s.pos ? POS[s.pos].name : '') + '\t' + s.name);
+    });
+    if (out.length) out.unshift('타순\t포지션\t이름');
+    var bench = benchOf(attendees());
+    if (bench.length && out.length) out.push('');
+    bench.forEach(function (n) { out.push('대기 ' + n); });
+    return out.join('\n');
+  }
+  var copy = { btn: root.querySelector('[data-lineup-copy]'), msg: root.querySelector('[data-copy-msg]'),
+               box: root.querySelector('[data-copy-text]'), timer: null };
+  function say(text, stay) {
+    if (copy.timer) window.clearTimeout(copy.timer);
+    copy.timer = null;
+    setText(copy.msg, text);
+    if (text && !stay) copy.timer = window.setTimeout(function () { copy.timer = null; setText(copy.msg, ''); }, 4000);
+  }
+  function oldCopy(text) {                                  // clipboard API 가 없거나 막힌 브라우저
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.left = '0'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = !!document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+  function copied(ok, text) {
+    if (ok) { copy.box.hidden = true; say('복사했습니다. 메신저에 붙여 넣으세요.'); return; }
+    copy.box.value = text;                                  // 그래도 안 되면 글을 보여 주고 직접 복사하게
+    copy.box.rows = Math.min(text.split('\n').length, 16);
+    copy.box.hidden = false;
+    say('자동 복사가 막혀 있습니다. 아래 글을 직접 복사하세요 (Ctrl+C, 휴대폰은 길게 눌러 복사).', true);
+    copy.box.focus();
+    copy.box.select();
+  }
+  copy.btn.addEventListener('click', function () {
+    var text = lineupText();
+    if (!text) { copy.box.hidden = true; say('복사할 라인업이 없습니다.'); return; }
+    var clip = typeof navigator !== 'undefined' && navigator.clipboard;
+    if (clip && clip.writeText) {
+      clip.writeText(text).then(function () { copied(true, text); }, function () { copied(oldCopy(text), text); });
+    } else {
+      copied(oldCopy(text), text);
+    }
   });
 
   root.querySelector('[data-lineup-reset]').addEventListener('click', function () {

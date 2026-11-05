@@ -327,6 +327,8 @@ code { background: #f1f3f9; padding: 1px 5px; border-radius: 6px; font-size: 90%
 .drag-handle:hover, .drag-handle:focus-visible { color: var(--accent); }
 .lineup.is-dragging, .lineup.is-dragging * { cursor: grabbing; user-select: none; -webkit-user-select: none; }
 .lineup-table tr.dragging td { background: #eef3ff; }
+.lineup-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+.lineup-copy-text { width: 100%; box-sizing: border-box; margin-top: 8px; font: inherit; font-size: 14px; line-height: 1.5; padding: 8px 10px; border: 1px solid #d8dbe6; border-radius: var(--radius-s); background: #f8f9fc; resize: vertical; tab-size: 8; }
 .bench { display: flex; flex-wrap: wrap; gap: 6px; }
 .bench-chip { display: inline-flex; align-items: baseline; gap: 6px; padding: 3px 10px; border-radius: 999px; background: #f1f3f8; font-size: 13px; }
 .bench-chip small { color: var(--muted); font-size: 11px; }
