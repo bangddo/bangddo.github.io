@@ -223,6 +223,36 @@
       apply();
     });
 
+    // 상대팀별 전적: 팀명 검색. 띄어쓰기·기호·대소문자는 무시하고 이름(다른 표기 포함)의 일부만 맞아도 보인다.
+    // 시즌·종류를 바꿔도 같은 팀을 계속 볼 수 있게 이 탭(sessionStorage)에 검색어를 남긴다
+    root.querySelectorAll('input[data-opp-search]').forEach(function (input) {
+      var card = input.closest('.card') || root;
+      var rows = Array.prototype.slice.call(card.querySelectorAll('tr[data-opp-name]'));
+      var counter = card.querySelector('[data-opp-count]');
+      var empty = card.querySelector('[data-opp-empty]');
+      var wrap = card.querySelector('.table-wrap');
+      var KEY = 'superstars-opp-search';
+      var norm = function (s) { return String(s || '').replace(/[\s\-_'’"()]+/g, '').toLowerCase(); };   // stats.norm_team 과 같은 규칙
+      var keys = rows.map(function (tr) { return tr.dataset.oppName.split('|').map(norm); });
+      input.hidden = false;
+      try { input.value = sessionStorage.getItem(KEY) || ''; } catch (e) { /* 저장소를 못 쓰면 빈 칸 */ }
+      var apply = function () {
+        var q = norm(input.value), shown = 0;
+        rows.forEach(function (tr, i) {
+          var ok = !q || keys[i].some(function (k) { return k.indexOf(q) !== -1; });
+          tr.hidden = !ok;
+          if (ok) shown++;
+        });
+        if (counter) counter.textContent = q ? shown + '팀 / 전체 ' + rows.length + '팀' : rows.length + '팀';
+        if (empty) empty.hidden = shown > 0;
+        if (wrap) wrap.hidden = shown === 0;
+        try { if (q) sessionStorage.setItem(KEY, input.value); else sessionStorage.removeItem(KEY); } catch (e) { /* 무시 */ }
+      };
+      input.addEventListener('input', apply);
+      input.addEventListener('keydown', function (e) { if (e.key === 'Escape' && input.value) { input.value = ''; apply(); } });
+      apply();
+    });
+
     // 표 전체를 한 번에 저장하는 폼(선수 명부): 고친 뒤 저장 없이 떠나려 하면 경고 (관리자)
     root.querySelectorAll('form[data-dirty-guard]').forEach(function (f) {
       var dirty = false;

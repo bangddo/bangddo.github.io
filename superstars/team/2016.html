@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0f2d5c">
   <title>전적 · 슈퍼스타즈</title>
-  <link rel="icon" href="/superstars/static/favicon.ico?v=1793848421">
-  <link rel="stylesheet" href="/superstars/static/style.css?v=1793848421">
+  <link rel="icon" href="/superstars/static/favicon.ico?v=1793852919">
+  <link rel="stylesheet" href="/superstars/static/style.css?v=1793852919">
   <link rel="alternate" type="text/calendar" title="슈퍼스타즈 일정" href="/superstars/calendar.ics">
 </head>
 <body data-static="1" data-base="/superstars">
@@ -82,7 +82,10 @@
 </section>
 
 <section class="card">
-  <h2>상대팀별 전적 <small class="muted">20팀 · 2016 시즌</small></h2>
+  <div class="card-head">
+    <h2>상대팀별 전적 <small class="muted"><span data-opp-count>20팀</span> · 2016 시즌</small></h2>
+    <input class="opp-search" type="search" placeholder="팀명 검색" aria-label="상대팀 이름으로 찾기" autocomplete="off" data-opp-search hidden>
+  </div>
   
   <div class="table-wrap">
     <table class="table sortable opp-table">
@@ -95,7 +98,7 @@
       </thead>
       <tbody class="sortable-body">
       
-        <tr>
+        <tr data-opp-name="몰핀">
           <td class="left"><strong>몰핀</strong></td>
           <td data-value="2">2</td>
           <td data-value="1" class="win">1</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
@@ -106,7 +109,7 @@
           <td class="left small">2016.11.26(토) 12:30 <span class="res res-L">패</span> 13:14</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="4:33 야신">
           <td class="left"><strong>4:33 야신</strong></td>
           <td data-value="1">1</td>
           <td data-value="1" class="win">1</td><td data-value="0" class="lose">0</td><td data-value="0">0</td>
@@ -117,7 +120,7 @@
           <td class="left small">2016.05.21(토) 13:00 <span class="res res-W">승</span> 10:6</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="DAEILTECH ROOKIES">
           <td class="left"><strong>DAEILTECH ROOKIES</strong></td>
           <td data-value="1">1</td>
           <td data-value="1" class="win">1</td><td data-value="0" class="lose">0</td><td data-value="0">0</td>
@@ -128,7 +131,7 @@
           <td class="left small">2016.08.13(토) 11:00 <span class="res res-W">승</span> 7:0</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="East Sky BaseBall Team">
           <td class="left"><strong>East Sky BaseBall Team</strong></td>
           <td data-value="1">1</td>
           <td data-value="1" class="win">1</td><td data-value="0" class="lose">0</td><td data-value="0">0</td>
@@ -139,7 +142,7 @@
           <td class="left small">2016.09.03(토) 10:30 <span class="res res-W">승</span> 18:9</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="Ravens">
           <td class="left"><strong>Ravens</strong></td>
           <td data-value="1">1</td>
           <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
@@ -150,7 +153,7 @@
           <td class="left small">2016.06.11(토) 15:00 <span class="res res-L">패</span> 6:9</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="TIGUS 야구단">
           <td class="left"><strong>TIGUS 야구단</strong></td>
           <td data-value="1">1</td>
           <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
@@ -161,7 +164,7 @@
           <td class="left small">2016.06.25(토) 09:00 <span class="res res-L">패</span> 10:11</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="교통안전공단 TS tangels">
           <td class="left"><strong>교통안전공단 TS tangels</strong></td>
           <td data-value="1">1</td>
           <td data-value="1" class="win">1</td><td data-value="0" class="lose">0</td><td data-value="0">0</td>
@@ -172,7 +175,7 @@
           <td class="left small">2016.02.27(토) 16:00 <span class="res res-W">승</span> 20:19</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="다가치베이스볼클럽">
           <td class="left"><strong>다가치베이스볼클럽</strong></td>
           <td data-value="1">1</td>
           <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
@@ -183,7 +186,7 @@
           <td class="left small">2016.08.06(토) 08:30 <span class="res res-L">패</span> 0:7</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="메가박스">
           <td class="left"><strong>메가박스</strong></td>
           <td data-value="1">1</td>
           <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
@@ -194,7 +197,7 @@
           <td class="left small">2016.09.24(토) 16:30 <span class="res res-L">패</span> 16:17</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="새콤달콤 오렌지 글러브스">
           <td class="left"><strong>새콤달콤 오렌지 글러브스</strong></td>
           <td data-value="1">1</td>
           <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
@@ -205,7 +208,7 @@
           <td class="left small">2016.09.10(토) 14:30 <span class="res res-L">패</span> 7:17</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="서초프랜드">
           <td class="left"><strong>서초프랜드</strong></td>
           <td data-value="1">1</td>
           <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
@@ -216,7 +219,7 @@
           <td class="left small">2016.11.19(토) 14:30 <span class="res res-L">패</span> 2:16</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="송파 원더스">
           <td class="left"><strong>송파 원더스</strong></td>
           <td data-value="1">1</td>
           <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
@@ -227,7 +230,7 @@
           <td class="left small">2016.10.01(토) 09:00 <span class="res res-L">패</span> 6:15</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="스윙스">
           <td class="left"><strong>스윙스</strong></td>
           <td data-value="1">1</td>
           <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
@@ -238,7 +241,7 @@
           <td class="left small">2016.10.15(토) 16:30 <span class="res res-L">패</span> 2:10</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="아디라이너스">
           <td class="left"><strong>아디라이너스</strong></td>
           <td data-value="1">1</td>
           <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
@@ -249,7 +252,7 @@
           <td class="left small">2016.08.27(토) 13:00 <span class="res res-L">패</span> 3:22</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="울트라트윈스">
           <td class="left"><strong>울트라트윈스</strong></td>
           <td data-value="1">1</td>
           <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
@@ -260,7 +263,7 @@
           <td class="left small">2016.04.23(토) 09:00 <span class="res res-L">패</span> 4:17</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="크레이지 프렌즈">
           <td class="left"><strong>크레이지 프렌즈</strong></td>
           <td data-value="1">1</td>
           <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
@@ -271,7 +274,7 @@
           <td class="left small">2016.08.20(토) 10:30 <span class="res res-L">패</span> 1:11</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="타이타너스 레인저스">
           <td class="left"><strong>타이타너스 레인저스</strong></td>
           <td data-value="1">1</td>
           <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
@@ -282,7 +285,7 @@
           <td class="left small">2016.03.19(토) 12:00 <span class="res res-L">패</span> 0:7</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="평화째즈바(peacejazzbar)">
           <td class="left"><strong>평화째즈바(peacejazzbar)</strong></td>
           <td data-value="1">1</td>
           <td data-value="1" class="win">1</td><td data-value="0" class="lose">0</td><td data-value="0">0</td>
@@ -293,7 +296,7 @@
           <td class="left small">2016.07.09(토) 07:00 <span class="res res-W">승</span> 16:2</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="플레이보이">
           <td class="left"><strong>플레이보이</strong></td>
           <td data-value="1">1</td>
           <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
@@ -304,7 +307,7 @@
           <td class="left small">2016.04.09(토) 15:00 <span class="res res-L">패</span> 3:19</td>
         </tr>
       
-        <tr>
+        <tr data-opp-name="화나이글스">
           <td class="left"><strong>화나이글스</strong></td>
           <td data-value="1">1</td>
           <td data-value="0" class="win">0</td><td data-value="1" class="lose">1</td><td data-value="0">0</td>
@@ -318,16 +321,17 @@
       </tbody>
     </table>
   </div>
+  <p class="empty" data-opp-empty hidden>찾는 이름의 상대팀이 없습니다.</p>
   
 </section>
 
 </main>
 
 <footer class="container footer">
-  <span>마지막 동기화: 2026.11.03(화) 17:00 · 게시 2026.11.05(목) 12:13</span>
+  <span>마지막 동기화: 2026.11.03(화) 17:00 · 게시 2026.11.05(목) 13:28</span>
   <span><a href="/superstars/calendar.ics">📅 캘린더 구독(ics)</a></span>
 </footer>
-<script src="/superstars/static/app.js?v=1793848421" defer></script>
+<script src="/superstars/static/app.js?v=1793852919" defer></script>
 
 </body>
 </html>
