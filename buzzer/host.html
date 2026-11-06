@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="icon.png">
+<title>부저 진행자</title>
+<style>
+/* 글자 외곽선: -webkit-text-stroke 는 Windows 한글 글꼴에서 획 안쪽에 선이 생겨서 8방향 그림자로 그린다 */
+:root {
+    --outline:
+        -1.5px -1.5px 0 #000, 0 -1.5px 0 #000, 1.5px -1.5px 0 #000,
+        -1.5px 0 0 #000, 1.5px 0 0 #000,
+        -1.5px 1.5px 0 #000, 0 1.5px 0 #000, 1.5px 1.5px 0 #000;
+}
+html, body {
+    margin: 0;
+    height: 100%;
+    font-family: sans-serif;
+    background: #1b1d22;
+    color: #fff;
+    -webkit-user-select: none;
+    user-select: none;
+}
+body {
+    display: flex;
+    flex-direction: column;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 18px;
+    background: #000;
+    font-size: 1.3em;
+}
+#connection .dot { color: #888; }
+#connection.ok .dot { color: #4cff6a; }
+#connection.fail .dot { color: #ff5a5a; }
+main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    padding: 16px;
+    min-height: 0;
+}
+#current {
+    border-radius: 18px;
+    background: #3a3d44;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 16px;
+    transition: background-color 0.15s;
+}
+#firstTeam {
+    font-size: 3.4em;
+    font-weight: bold;
+    text-shadow: var(--outline);
+}
+#firstMember {
+    font-size: 2.2em;
+    font-weight: bold;
+    text-shadow: var(--outline);
+    margin-top: 4px;
+}
+#lateList {
+    margin-top: 18px;
+    font-size: 1.3em;
+    line-height: 1.6;
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 10px;
+    padding: 6px 14px;
+}
+#lateList:empty { display: none; }
+#side {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+#points {
+    flex: 1;
+    overflow: auto;
+    background: #2a2d34;
+    border-radius: 14px;
+    padding: 12px 16px;
+    font-size: 1.3em;
+    line-height: 1.8;
+}
+#points .row { display: flex; justify-content: space-between; }
+#points .title { color: #aaa; font-size: 0.85em; }
+#judge {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 0 16px 12px;
+}
+#judge button, #endRound {
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    font-weight: bold;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+#judge button { font-size: 1.8em; padding: 26px 0; }
+#judge button small { display: block; font-size: 0.55em; font-weight: normal; opacity: 0.85; }
+.correct { background: #2e7d32; }
+.wrong   { background: #c62828; }
+.chance  { background: #ef8f00; }
+.cancel  { background: #616161; }
+button:disabled { opacity: 0.3; }
+button:active:not(:disabled) { filter: brightness(80%); }
+#endRound {
+    margin: 0 16px 16px;
+    padding: 16px;
+    font-size: 1.3em;
+    background: #37474f;
+}
+#message {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px;
+    background: rgba(0, 0, 0, 0.88);
+    font-size: 1.5em;
+    line-height: 1.6;
+    white-space: pre-line;
+}
+#toast {
+    position: fixed;
+    left: 50%;
+    bottom: 120px;
+    transform: translateX(-50%);
+    background: #000;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 1.2em;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+#toast.show { opacity: 0.9; }
+@media (max-width: 700px) {
+    main { grid-template-columns: 1fr; }
+    #firstTeam { font-size: 2.4em; }
+    #judge button { font-size: 1.3em; padding: 18px 0; }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div id="title">라운드 - · 문제 -</div>
+    <div id="connection"><span class="dot">●</span> <span id="connectionText">연결 중…</span></div>
+</header>
+
+<main>
+    <section id="current">
+        <div id="firstTeam">대기 중</div>
+        <div id="firstMember"></div>
+        <div id="lateList"></div>
+    </section>
+    <aside id="side">
+        <div id="points"></div>
+    </aside>
+</main>
+
+<div id="judge">
+    <button class="correct" data-verdict="correct">정답<small>+1</small></button>
+    <button class="wrong" data-verdict="wrong">오답<small>−1</small></button>
+    <button class="chance" data-verdict="chance">찬스<small>+2</small></button>
+    <button class="cancel" data-verdict="cancel">취소<small>0</small></button>
+</div>
+<button id="endRound">라운드 종료</button>
+
+<div id="message"></div>
+<div id="toast"></div>
+
+<script>
+// 진행자 기기는 PC 화면에서 H 키로 띄운 QR(host.html?server=터널주소&code=한 번용 코드)로 연결한다.
+// 연결하면 진행자 토큰을 받아 이 기기에 저장하고, 상태는 롱 폴링으로 실시간 갱신한다.
+const KEY = { server: "buzzer.host.server", token: "buzzer.host.token" };
+const POLL_TIMEOUT_MS = 35000;   // 서버는 최대 25초 기다렸다 응답한다
+const REQUEST_TIMEOUT_MS = 5000;
+
+const titleEl = document.getElementById("title");
+const connection = document.getElementById("connection");
+const connectionText = document.getElementById("connectionText");
+const current = document.getElementById("current");
+const firstTeam = document.getElementById("firstTeam");
+const firstMember = document.getElementById("firstMember");
+const lateList = document.getElementById("lateList");
+const points = document.getElementById("points");
+const judgeButtons = [...document.querySelectorAll("#judge button")];
+const endRoundBtn = document.getElementById("endRound");
+const message = document.getElementById("message");
+const toast = document.getElementById("toast");
+
+let state = null;
+let busy = false;
+let toastTimer = 0;
+
+function isAllowedServer(url) {
+    try {
+        const u = new URL(url);
+        return u.protocol === "https:" || u.hostname === "localhost" || u.hostname === "127.0.0.1";
+    } catch {
+        return false;
+    }
+}
+
+async function post(path, body, timeoutMs) {
+    const server = localStorage.getItem(KEY.server);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        // Content-Type 을 지정하지 않으면(text/plain) 사전 확인(OPTIONS) 요청 없이 바로 보낸다.
+        return await fetch(`${server}/${path}`, {
+            method: "POST",
+            body: JSON.stringify({ token: localStorage.getItem(KEY.token), ...body }),
+            signal: controller.signal,
+        });
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
+function showMessage(text) {
+    message.textContent = text;
+    message.style.display = "flex";
+}
+
+function showToast(text) {
+    toast.textContent = text;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 2000);
+}
+
+function setConnection(ok) {
+    connection.className = ok ? "ok" : "fail";
+    connectionText.textContent = ok ? "연결됨" : "연결 끊김 · 다시 연결 중…";
+}
+
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+// QR 로 들어왔으면 한 번용 코드로 진행자 토큰을 받는다.
+async function pairFromUrl() {
+    const params = new URLSearchParams(location.search);
+    const server = params.get("server");
+    const code = params.get("code");
+    if (location.search) {
+        history.replaceState(null, "", location.pathname);
+    }
+    if (!server || !code || !isAllowedServer(server)) {
+        return;
+    }
+
+    localStorage.setItem(KEY.server, server.replace(/\/+$/, ""));
+    localStorage.removeItem(KEY.token);
+    try {
+        const res = await post("host/pair", { code }, REQUEST_TIMEOUT_MS);
+        if (res.status === 403) {
+            showMessage("이미 사용됐거나 시간이 지난 QR입니다.\nPC에서 H 키를 눌러 새 진행자 QR을 찍어주세요.");
+            return;
+        }
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        localStorage.setItem(KEY.token, data.token);
+    } catch (err) {
+        console.error(err);
+        showMessage("PC에 연결하지 못했습니다.\nPC에서 H 키를 눌러 새 진행자 QR을 찍어주세요.");
+    }
+}
+
+// 상태 롱 폴링: 바뀌면 바로 응답이 오고, 응답을 그리면 바로 다시 기다린다.
+async function pollLoop() {
+    let version = null;
+    while (true) {
+        if (!localStorage.getItem(KEY.server) || !localStorage.getItem(KEY.token)) {
+            if (message.style.display !== "flex") {
+                showMessage("PC 화면에서 H 키를 눌러 나오는\n진행자용 QR을 이 기기로 찍어주세요.");
+            }
+            return;
+        }
+        try {
+            const res = await post("host/state", { version }, POLL_TIMEOUT_MS);
+            if (res.status === 401) {
+                localStorage.removeItem(KEY.token);
+                showMessage("진행자 권한이 없어졌습니다.\n(다른 기기가 진행자로 연결했거나 PC 프로그램을 다시 시작함)\n\nPC에서 H 키를 눌러 새 진행자 QR을 찍어주세요.");
+                return;
+            }
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            state = await res.json();
+            version = state.version;
+            setConnection(true);
+            render();
+        } catch (err) {
+            console.error(err);
+            setConnection(false);
+            await sleep(1500);
+        }
+    }
+}
+
+function render() {
+    titleEl.textContent = `라운드 ${state.round} · 문제 ${state.question}`;
+
+    if (state.first) {
+        current.style.backgroundColor = state.first.color || "#3a3d44";
+        firstTeam.textContent = state.first.team;
+        firstMember.textContent = state.first.member;
+    } else {
+        current.style.backgroundColor = "#3a3d44";
+        firstTeam.textContent = "대기 중";
+        firstMember.textContent = "";
+    }
+
+    lateList.replaceChildren(...state.late.map((p, i) => {
+        const div = document.createElement("div");
+        const who = p.member ? `${p.team} ${p.member}` : p.team;
+        div.textContent = `${i + 2}등 ${who}  +${(p.behindMs / 1000).toFixed(3)}초`;
+        return div;
+    }));
+
+    const rows = state.points.map(p => {
+        const row = document.createElement("div");
+        row.className = "row";
+        const name = document.createElement("span");
+        name.textContent = p.team;
+        const value = document.createElement("span");
+        value.textContent = p.points;
+        row.append(name, value);
+        return row;
+    });
+    const title = document.createElement("div");
+    title.className = "title";
+    title.textContent = `라운드 ${state.round} 팀 점수`;
+    points.replaceChildren(title, ...rows);
+
+    for (const button of judgeButtons) {
+        button.disabled = busy || !state.first;
+    }
+    endRoundBtn.disabled = busy;
+}
+
+async function send(path, body, okMessage) {
+    if (busy || !state) return;
+    busy = true;
+    render();
+    try {
+        const res = await post(path, body, REQUEST_TIMEOUT_MS);
+        if (res.status === 401) {
+            showToast("진행자 권한이 없습니다");
+        } else if (!res.ok) {
+            throw new Error("HTTP " + res.status);
+        } else {
+            const data = await res.json();
+            if (!data.ok) showToast("이미 다른 곳에서 판정한 문제입니다");
+            else if (okMessage) showToast(okMessage);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast("전송 실패 · 다시 눌러주세요");
+    } finally {
+        busy = false;
+        if (state) render();
+    }
+}
+
+for (const button of judgeButtons) {
+    button.addEventListener("click", () => {
+        // 보고 있던 문제 번호를 같이 보내서, 그 사이 PC에서 이미 판정했으면 무시되게 한다.
+        send("host/judge", { verdict: button.dataset.verdict, question: state.question });
+    });
+}
+
+endRoundBtn.addEventListener("click", () => {
+    if (!state) return;
+    if (confirm(`라운드 ${state.round}을(를) 종료하고 새 라운드를 시작할까요?\n모든 팀 점수가 10점으로 돌아갑니다.`)) {
+        send("host/end-round", {}, `라운드 ${state.round} 종료`);
+    }
+});
+
+(async () => {
+    await pairFromUrl();
+    if (message.style.display !== "flex") {
+        pollLoop();
+    }
+})();
+</script>
+</body>
+</html>
