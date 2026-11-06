@@ -317,7 +317,7 @@ async function buzz() {
 function describe(data) {
     if (data.result === "first") return "1등!";
     if (data.result === "late") return `${data.rank}등 (+${(data.behindMs / 1000).toFixed(3)}초)`;
-    return "우리 팀이 이미 눌렀어요";
+    return "이미 눌렀어요";
 }
 
 function showStatus(text) {

@@ -333,11 +333,12 @@ function render() {
         return div;
     }));
 
+    // 개인 점수 (팀 합계는 최종 결과에서만 보여준다)
     const rows = state.points.map(p => {
         const row = document.createElement("div");
         row.className = "row";
         const name = document.createElement("span");
-        name.textContent = p.team;
+        name.textContent = p.label;
         const value = document.createElement("span");
         value.textContent = p.points;
         row.append(name, value);
@@ -345,7 +346,7 @@ function render() {
     });
     const title = document.createElement("div");
     title.className = "title";
-    title.textContent = `라운드 ${state.round} 팀 점수`;
+    title.textContent = `라운드 ${state.round} 개인 점수`;
     points.replaceChildren(title, ...rows);
 
     for (const button of judgeButtons) {
@@ -387,7 +388,7 @@ for (const button of judgeButtons) {
 
 endRoundBtn.addEventListener("click", () => {
     if (!state) return;
-    if (confirm(`라운드 ${state.round}을(를) 종료하고 새 라운드를 시작할까요?\n모든 팀 점수가 10점으로 돌아갑니다.`)) {
+    if (confirm(`라운드 ${state.round}을(를) 종료하고 새 라운드를 시작할까요?\n모든 사람의 점수가 10점으로 돌아갑니다.`)) {
         send("host/end-round", {}, `라운드 ${state.round} 종료`);
     }
 });
