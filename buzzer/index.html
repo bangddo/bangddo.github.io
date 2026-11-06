@@ -17,50 +17,52 @@ html, body {
     font-family: sans-serif;
 }
 
-/* 이름 입력 화면 */
+/* 이름 + 팀 선택 화면 */
 #setupScreen {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 16px;
     height: 100%;
+    box-sizing: border-box;
+    padding: 16px;
 }
-#teamNameInput {
-    font-size: 2em;
+#nameInput {
+    font-size: 1.6em;
     padding: 10px;
-    width: 80%;
-    margin-bottom: 20px;
+    width: 90%;
+    max-width: 480px;
+    box-sizing: border-box;
 }
-/* 색상 선택 라벨 */
-#colorLabel {
-    font-size: 1.5em;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+#teamLabel {
+    font-size: 1.3em;
 }
-
-/* 색상 선택 input 커스터마이징 */
-#teamColorInput {
-    appearance: none;        /* 기본 스타일 제거 */
-    -webkit-appearance: none;
-    width: 120px;
-    height: 120px;
-    border: 2px solid black; /* 검정색 border */
-    cursor: pointer;
-    padding: 0;
+#palette {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    width: 90%;
+    max-width: 480px;
 }
-
-/* iOS Safari 전용: 색상 선택 input의 내부 채우기 */
-#teamColorInput::-webkit-color-swatch-wrapper {
-    padding: 0;
-}
-#teamColorInput::-webkit-color-swatch {
+.swatch {
+    aspect-ratio: 1;
     border: none;
+    border-radius: 12px;
+    font-size: 1em;
+    font-weight: bold;
+    color: white;
+    -webkit-text-stroke: 0.5px black;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+.swatch.selected {
+    box-shadow: 0 0 0 3px white, 0 0 0 7px black;
+    transform: scale(1.05);
 }
 #saveTeam {
-    font-size: 2em;
-    padding: 10px 20px;
+    font-size: 1.6em;
+    padding: 10px 24px;
 }
 
 /* BUZZER 화면 */
@@ -91,11 +93,12 @@ html, body {
 #buzzerButton:active {
     filter: brightness(80%);
 }
-#buzzerTeam   { font-size: 6vw; }
+#buzzerTeam   { font-size: 8vw; }
+#buzzerName   { font-size: 6vw; }
 #buzzerText   { font-size: 12vw; }
 #buzzerStatus { font-size: 6vw; min-height: 1.2em; }
 
-/* 이름 변경 버튼, 연결 상태 */
+/* 팀/이름 변경 버튼, 연결 상태 */
 #resetTeam, #connection {
     position: absolute;
     top: 10px;
@@ -114,15 +117,11 @@ html, body {
 </head>
 <body>
 
-<!-- 이름 + 색상 입력 화면 -->
+<!-- 이름 + 팀 선택 화면 -->
 <div id="setupScreen">
-    <input type="text" id="teamNameInput" placeholder="이름을 입력하세요" maxlength="20">
-
-    <label id="colorLabel">
-        색상선택
-        <input type="color" id="teamColorInput" value="#000000">
-    </label>
-
+    <input type="text" id="nameInput" placeholder="이름을 입력하세요" maxlength="20">
+    <div id="teamLabel">팀 선택</div>
+    <div id="palette"></div>
     <button id="saveTeam">저장하고 시작</button>
 </div>
 
@@ -130,31 +129,48 @@ html, body {
 <div id="buzzerScreen">
     <button id="buzzerButton">
         <div id="buzzerTeam"></div>
+        <div id="buzzerName"></div>
         <div id="buzzerText">도전!</div>
         <div id="buzzerStatus"></div>
     </button>
     <div id="connection"><span class="dot">●</span> <span id="connectionText"></span></div>
-    <button id="resetTeam">이름 변경</button>
+    <button id="resetTeam">팀/이름 변경</button>
 </div>
 
 <script>
+// 팀은 이 10가지 색 중에서 고른다. 팀 이름은 색 이름 + "팀" (예: 빨강팀).
+const TEAMS = [
+    { name: "빨강", color: "#E53935" },
+    { name: "주황", color: "#FB8C00" },
+    { name: "노랑", color: "#FDD835" },
+    { name: "초록", color: "#43A047" },
+    { name: "청록", color: "#00ACC1" },
+    { name: "파랑", color: "#1E88E5" },
+    { name: "남색", color: "#3949AB" },
+    { name: "보라", color: "#8E24AA" },
+    { name: "분홍", color: "#EC407A" },
+    { name: "갈색", color: "#795548" },
+];
+
 // 같은 bangddo.github.io 의 다른 앱과 localStorage 가 겹치지 않도록 키에 접두어를 붙인다.
-const KEY = { name: "buzzer.teamName", color: "buzzer.teamColor", server: "buzzer.serverUrl" };
+const KEY = { name: "buzzer.name", team: "buzzer.team", server: "buzzer.serverUrl" };
 const TIMEOUT_MS = 3000;
 const STATUS_MS = 2000;
 const PING_INTERVAL_MS = 20000; // 연결을 데워두어 첫 버저가 연결 맺느라 늦지 않게 한다
 
 const setupScreen = document.getElementById("setupScreen");
 const buzzerScreen = document.getElementById("buzzerScreen");
-const teamNameInput = document.getElementById("teamNameInput");
-const teamColorInput = document.getElementById("teamColorInput");
+const nameInput = document.getElementById("nameInput");
+const palette = document.getElementById("palette");
 const buzzerButton = document.getElementById("buzzerButton");
 const buzzerTeam = document.getElementById("buzzerTeam");
+const buzzerName = document.getElementById("buzzerName");
 const buzzerStatus = document.getElementById("buzzerStatus");
 const connection = document.getElementById("connection");
 const connectionText = document.getElementById("connectionText");
 const resetTeamBtn = document.getElementById("resetTeam");
 
+let selectedTeam = null;
 let sending = false;
 let statusTimer = 0;
 let pingTimer = 0;
@@ -171,6 +187,16 @@ let pingTimer = 0;
     }
 })();
 
+// 예전 버전(이름 + 자유 색상)에서 저장한 값은 이름만 가져오고 팀은 다시 고르게 한다.
+(function migrateOldSettings() {
+    const oldName = localStorage.getItem("buzzer.teamName");
+    if (oldName && !localStorage.getItem(KEY.name)) {
+        nameInput.value = oldName;
+    }
+    localStorage.removeItem("buzzer.teamName");
+    localStorage.removeItem("buzzer.teamColor");
+})();
+
 function isAllowedServer(url) {
     try {
         const u = new URL(url);
@@ -185,27 +211,47 @@ function serverUrl(path) {
     return server ? `${server}/${path}` : null;
 }
 
-// 저장된 팀 정보가 있으면 BUZZER 화면 표시
-if (localStorage.getItem(KEY.name) && localStorage.getItem(KEY.color)) {
+function findTeam(name) {
+    return TEAMS.find(t => t.name === name) || null;
+}
+
+// 팀 팔레트 버튼 만들기
+for (const team of TEAMS) {
+    const button = document.createElement("button");
+    button.className = "swatch";
+    button.textContent = team.name;
+    button.style.backgroundColor = team.color;
+    button.dataset.team = team.name;
+    button.onclick = () => selectTeam(team.name);
+    palette.appendChild(button);
+}
+
+function selectTeam(name) {
+    selectedTeam = findTeam(name);
+    for (const button of palette.children) {
+        button.classList.toggle("selected", button.dataset.team === name);
+    }
+}
+
+// 저장된 이름·팀이 있으면 BUZZER 화면 표시
+if (localStorage.getItem(KEY.name) && findTeam(localStorage.getItem(KEY.team))) {
     showBuzzerScreen();
 }
 
 // 저장 버튼 클릭
 document.getElementById("saveTeam").onclick = () => {
-    const name = teamNameInput.value.trim();
-    const color = teamColorInput.value;
+    const name = nameInput.value.trim();
     if (!name) {
         alert("이름을 입력하세요!");
         return;
     }
-
-    if (color === "#ffffff" || color === "#000000") {
-        alert("흰색과 검정색은 사용할 수 없습니다. 다른 색상을 선택하세요!");
+    if (!selectedTeam) {
+        alert("팀(색)을 고르세요!");
         return;
     }
 
     localStorage.setItem(KEY.name, name);
-    localStorage.setItem(KEY.color, color);
+    localStorage.setItem(KEY.team, selectedTeam.name);
     showBuzzerScreen();
 };
 
@@ -232,6 +278,7 @@ async function buzz() {
         showStatus("서버 주소 없음");
         return;
     }
+    const team = findTeam(localStorage.getItem(KEY.team));
 
     sending = true;
     const started = performance.now();
@@ -240,8 +287,9 @@ async function buzz() {
         const res = await fetchWithTimeout(url, {
             method: "POST",
             body: JSON.stringify({
-                team: localStorage.getItem(KEY.name),
-                color: localStorage.getItem(KEY.color)
+                team: `${team.name}팀`,
+                name: localStorage.getItem(KEY.name),
+                color: team.color
             })
         });
         if (!res.ok) throw new Error("HTTP " + res.status);
@@ -260,7 +308,7 @@ async function buzz() {
 function describe(data) {
     if (data.result === "first") return "1등!";
     if (data.result === "late") return `${data.rank}등 (+${(data.behindMs / 1000).toFixed(3)}초)`;
-    return "이미 눌렀어요";
+    return "우리 팀이 이미 눌렀어요";
 }
 
 function showStatus(text) {
@@ -311,13 +359,13 @@ document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible" && buzzerScreen.style.display === "block") ping();
 });
 
-// 이름 초기화 버튼 클릭
+// 팀/이름 변경 버튼 클릭
 resetTeamBtn.onclick = () => {
-    if (confirm("이름을 변경하시겠습니까?")) {
-        teamNameInput.value = localStorage.getItem(KEY.name) || "";
-        teamColorInput.value = localStorage.getItem(KEY.color) || "#000000";
+    if (confirm("팀이나 이름을 변경하시겠습니까?")) {
+        nameInput.value = localStorage.getItem(KEY.name) || "";
+        selectTeam(localStorage.getItem(KEY.team));
         localStorage.removeItem(KEY.name);
-        localStorage.removeItem(KEY.color);
+        localStorage.removeItem(KEY.team);
         clearInterval(pingTimer);
         setupScreen.style.display = "flex";
         buzzerScreen.style.display = "none";
@@ -325,12 +373,12 @@ resetTeamBtn.onclick = () => {
 };
 
 function showBuzzerScreen() {
-    const teamName = localStorage.getItem(KEY.name);
-    const teamColor = localStorage.getItem(KEY.color) || "#ff0000";
+    const team = findTeam(localStorage.getItem(KEY.team));
 
-    buzzerTeam.textContent = teamName; // innerHTML 대신 textContent: 이름에 HTML이 섞여도 안전
+    buzzerTeam.textContent = `${team.name}팀`;
+    buzzerName.textContent = localStorage.getItem(KEY.name); // textContent: 이름에 HTML이 섞여도 안전
     buzzerStatus.textContent = "";
-    buzzerButton.style.backgroundColor = teamColor;
+    buzzerButton.style.backgroundColor = team.color;
     setupScreen.style.display = "none";
     buzzerScreen.style.display = "block";
     startPinging();
