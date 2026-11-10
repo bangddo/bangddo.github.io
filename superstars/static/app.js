@@ -239,7 +239,6 @@
     }
     function apply(label, data) {
       clear();
-      var hit = 0;
       rows.forEach(function (tr) {
         var other = data[(tr.dataset.player || '').trim()];
         if (!other) {
@@ -249,7 +248,6 @@
           tr.cells[1].appendChild(tag);
           return;
         }
-        hit++;
         cols.forEach(function (c, i) {
           var td = c && tr.cells[i], theirs = c ? other[c.key] : null;
           if (!td || theirs === undefined || theirs === null) return;
@@ -265,9 +263,7 @@
           td.appendChild(s);
         });
       });
-      text.textContent = '비교 대상 ' + label + ' · 비교 기록이 있는 선수 ' + hit + '/' + rows.length + '명. ' +
-        '▲▼ 는 비교 대상보다 늘거나 준 값이고, 초록은 좋아진 쪽, 빨강은 나빠진 쪽입니다(회색은 경기·타석처럼 좋고 나쁨이 없는 항목). ' +
-        '칸에 마우스를 올리면 비교 대상의 값이 나옵니다.';
+      text.textContent = '';                  // 안내 글은 불러오는 중·실패할 때만
     }
     function choose(save) {
       var v = sel.value, my = ++seq;

@@ -123,6 +123,7 @@ tr.unq td.player { color: #6b7684; }
 .compare-note { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: 12px; color: var(--muted); line-height: 1.6;
   background: #f6f8fc; border-radius: 10px; padding: 8px 10px; margin: 0 0 10px; }
 .compare-note .check { font-size: 12px; color: var(--text); }
+.compare-note [data-compare-text]:empty { display: none; }   /* 글은 불러오는 중·실패할 때만 */
 .stat-table td .delta { display: block; font-size: 11px; line-height: 1.2; font-weight: 700; white-space: nowrap; margin-top: 1px; }
 .delta.good { color: var(--win); }
 .delta.bad { color: var(--lose); }
