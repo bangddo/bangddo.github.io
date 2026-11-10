@@ -117,6 +117,17 @@ a.venue:hover { text-decoration: underline; }
 .sep-row td span { position: sticky; left: 8px; display: inline-block; }   /* 표를 옆으로 넘겨도 구분 문구가 보이게 */
 tr.unq td { color: #8a94a0; }
 tr.unq td.player { color: #6b7684; }
+/* 기록 비교: 칸 아래 증감(▲▼). 초록 좋아짐 / 빨강 나빠짐 / 회색 좋고 나쁨 없음·같음 */
+.filters .compare-box[hidden], .compare-note[hidden] { display: none; }   /* 비교 칸은 관리자(로그인한 브라우저)만 */
+.filters .compare-box select { max-width: 260px; }
+.compare-note { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: 12px; color: var(--muted); line-height: 1.6;
+  background: #f6f8fc; border-radius: 10px; padding: 8px 10px; margin: 0 0 10px; }
+.compare-note .check { font-size: 12px; color: var(--text); }
+.stat-table td .delta { display: block; font-size: 11px; line-height: 1.2; font-weight: 700; white-space: nowrap; margin-top: 1px; }
+.delta.good { color: var(--win); }
+.delta.bad { color: var(--lose); }
+.delta.neutral, .delta.flat { color: #8a93a0; font-weight: 600; }
+.tag-cmp { display: inline-block; font-size: 10px; line-height: 1.4; color: #5b6472; background: #eef0f4; border-radius: 4px; padding: 0 5px; margin-left: 4px; vertical-align: middle; }
 .tag-unq { display: inline-block; font-size: 10px; line-height: 1.4; color: #9a5b00; background: #fff3dc; border-radius: 4px; padding: 0 5px; margin-left: 4px; vertical-align: middle; }
 h3.sub { font-size: 14px; margin: 16px 0 8px; }
 pre.raw { background: #f6f7fb; padding: 8px; border-radius: 8px; font-size: 12px; overflow-x: auto; max-height: 260px; margin: 4px 0 0; white-space: pre-wrap; word-break: break-all; }
@@ -321,6 +332,7 @@ code { background: #f1f3f9; padding: 1px 5px; border-radius: 6px; font-size: 90%
 .opp-search { font: inherit; font-size: 14px; padding: 8px 12px; border: 1px solid #d8dbe6; border-radius: var(--radius-s); background: #fff; width: 200px; max-width: 100%; box-sizing: border-box; }
 @media (max-width: 560px) { .opp-search { width: 100%; } }
 .opp-search[hidden], .opp-table tbody tr[hidden], .table-wrap[hidden] { display: none; }
+[data-admin-perm][hidden] { display: none !important; }   /* 정적 사이트의 관리자 전용 링크: 로그인한 브라우저에서만 app.js 가 보인다 */
 /* 상대팀 전적: 리그 배지에 올리거나 누르면 그 리그 경기 목록 말풍선 (app.js 의 .float-tip) */
 .opp-league { display: inline-block; cursor: pointer; border-radius: 999px; }
 .opp-league .badge { text-decoration: underline dotted; text-underline-offset: 3px; }

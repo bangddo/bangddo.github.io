@@ -169,49 +169,217 @@
   window.addEventListener('scroll', function () { if (tip.el) placeTip(); }, true);   // 표 상자 가로 스크롤도 따라간다
   window.addEventListener('resize', function () { if (tip.el) placeTip(); });
 
+  // ---- 기록 비교: 고른 시즌·리그(비교 대상)의 같은 선수 기록과 견줘 칸마다 증감(▲▼)을 붙인다.
+  // 값은 그 시즌의 compare.json(통합·리그별 선수 기록)에서 받아 온다. 고른 대상은 이 탭에 남겨 다른 시즌·리그 화면에서도 이어 쓴다.
+  // 관리자 전용 기능: 비교 칸(.compare-box)은 서버 모드는 로그인한 역할에게만, 정적 사이트는 showAdminBits 가 로그인한 브라우저에서만 보인다
+  var RATE3 = ['avg', 'obp', 'slg', 'ops', 'wpct'], RATE2 = ['era', 'whip', 'bbk'];
+  var compareCache = {};
+  function loadCompare(url) {
+    if (!compareCache[url]) {
+      compareCache[url] = fetch(url, { credentials: 'same-origin' })
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .catch(function (e) { delete compareCache[url]; throw e; });
+    }
+    return compareCache[url];
+  }
+  function fmtStat(key, v) {                 // stats.fmt_stat 과 같은 모양
+    if (v === null || v === undefined) return '-';
+    if (RATE3.indexOf(key) !== -1) return Number(v).toFixed(3);
+    if (RATE2.indexOf(key) !== -1) return Number(v).toFixed(2);
+    if (key === 'sb_pct') return Math.round(v * 100) + '%';
+    if (key === 'ip') return Math.floor(v / 3) + '.' + (v % 3);
+    return String(Number.isInteger(v) ? v : +Number(v).toFixed(2));
+  }
+  function roundDelta(key, d) {              // 화면 자릿수로 맞춰 0.1+0.2 같은 찌꺼기를 없앤다
+    var digits = RATE3.indexOf(key) !== -1 ? 3 : (RATE2.indexOf(key) !== -1 || key === 'sb_pct' ? 2 : (key === 'ip' ? 0 : 2));
+    var r = Number(d.toFixed(digits));
+    return r === 0 ? 0 : r;
+  }
+  function fmtDelta(key, d) {
+    if (!d) return '±0';
+    var a = Math.abs(d), s;
+    if (RATE3.indexOf(key) !== -1) s = a.toFixed(3);
+    else if (RATE2.indexOf(key) !== -1) s = a.toFixed(2);
+    else if (key === 'sb_pct') s = Math.round(a * 100) + '%p';
+    else if (key === 'ip') s = Math.floor(a / 3) + '.' + (a % 3);
+    else s = String(+a.toFixed(2));
+    return (d > 0 ? '▲' : '▼') + s;
+  }
+  function deltaTone(better, d) {            // better: up 늘면 좋음 / down 줄면 좋음 / '' 좋고 나쁨 없음
+    if (!d) return 'flat';
+    if (!better) return 'neutral';
+    return (d > 0) === (better === 'up') ? 'good' : 'bad';
+  }
+  function bindCompare(root, sel) {
+    var table = root.querySelector('table.stat-table');
+    var note = root.querySelector('[data-compare-note]');
+    if (!table || !note) return;
+    var box = sel.closest('.compare-box');
+    if (box && box.hidden) return;              // 관리자 전용: 로그인하지 않은 브라우저에서는 이 탭에 남은 비교도 되살리지 않는다
+    var text = note.querySelector('[data-compare-text]'), sortBox = note.querySelector('[data-compare-sort]');
+    var urls = {};
+    try { urls = JSON.parse(sel.dataset.compareUrls || '{}'); } catch (e) { return; }
+    var cols = Array.prototype.map.call(table.tHead.rows[0].cells, function (th) {
+      return th.dataset.col ? { key: th.dataset.col, better: th.dataset.better || '' } : null;
+    });
+    var rows = Array.prototype.slice.call(table.querySelectorAll('tbody tr[data-player]'));
+    var KEY = 'superstars-records-compare', seq = 0;
+
+    function clear() {
+      rows.forEach(function (tr) {
+        Array.prototype.forEach.call(tr.cells, function (td) {
+          var d = td.querySelector('.delta');
+          if (d) td.removeChild(d);
+          if (td.dataset.delta !== undefined) delete td.dataset.delta;
+          if (td.hasAttribute('data-cmp')) { td.removeAttribute('title'); td.removeAttribute('data-cmp'); }
+        });
+        var tag = tr.querySelector('.tag-cmp');
+        if (tag) tag.parentNode.removeChild(tag);
+      });
+    }
+    function apply(label, data) {
+      clear();
+      var hit = 0;
+      rows.forEach(function (tr) {
+        var other = data[(tr.dataset.player || '').trim()];
+        if (!other) {
+          var tag = document.createElement('span');
+          tag.className = 'tag-cmp';
+          tag.textContent = '비교 기록 없음';
+          tr.cells[1].appendChild(tag);
+          return;
+        }
+        hit++;
+        cols.forEach(function (c, i) {
+          var td = c && tr.cells[i], theirs = c ? other[c.key] : null;
+          if (!td || theirs === undefined || theirs === null) return;
+          td.setAttribute('data-cmp', '');
+          td.title = label + ': ' + fmtStat(c.key, theirs);
+          var mine = td.dataset.value === '' || td.dataset.value === undefined ? null : parseFloat(td.dataset.value);
+          if (mine === null || isNaN(mine)) return;
+          var d = roundDelta(c.key, mine - theirs);
+          td.dataset.delta = String(d);
+          var s = document.createElement('small');
+          s.className = 'delta ' + deltaTone(c.better, d);
+          s.textContent = fmtDelta(c.key, d);
+          td.appendChild(s);
+        });
+      });
+      text.textContent = '비교 대상 ' + label + ' · 비교 기록이 있는 선수 ' + hit + '/' + rows.length + '명. ' +
+        '▲▼ 는 비교 대상보다 늘거나 준 값이고, 초록은 좋아진 쪽, 빨강은 나빠진 쪽입니다(회색은 경기·타석처럼 좋고 나쁨이 없는 항목). ' +
+        '칸에 마우스를 올리면 비교 대상의 값이 나옵니다.';
+    }
+    function choose(save) {
+      var v = sel.value, my = ++seq;
+      if (save) { try { if (v) sessionStorage.setItem(KEY, v); else sessionStorage.removeItem(KEY); } catch (e) { /* 무시 */ } }
+      if (!v) {
+        clear();
+        note.hidden = true;
+        if (sortBox.checked) { sortBox.checked = false; table.classList.remove('sort-delta'); table.superstarsResort(); }
+        return;
+      }
+      var i = v.indexOf(':'), season = v.slice(0, i), unit = v.slice(i + 1);
+      var label = sel.options[sel.selectedIndex].textContent.trim();
+      note.hidden = false;
+      text.textContent = label + ' 기록을 불러오는 중…';
+      loadCompare(urls[season]).then(function (d) {
+        if (my !== seq) return;               // 그 사이 다른 대상을 고름
+        apply(label, (d && d.units && d.units[unit]) || {});
+        if (table.classList.contains('sort-delta')) table.superstarsResort();
+      }, function () {
+        if (my !== seq) return;
+        clear();
+        text.textContent = '비교 기록을 불러오지 못했습니다. 잠시 뒤 다시 골라 보세요.';
+      });
+    }
+    sel.addEventListener('change', function () { choose(true); });
+    sortBox.addEventListener('change', function () {
+      table.classList.toggle('sort-delta', sortBox.checked);
+      table.superstarsResort();
+    });
+    var saved = null;
+    try { saved = sessionStorage.getItem(KEY); } catch (e) { /* 무시 */ }
+    if (saved && Array.prototype.some.call(sel.options, function (o) { return o.value === saved; })) {
+      sel.value = saved;
+      choose(false);
+    }
+  }
+
+  // ---- 정적 사이트: 관리 화면에 로그인한 브라우저에서만 [data-admin-perm] 링크·버튼을 보인다.
+  // 로그인 표(관리 화면이 이 사이트 localStorage 에 둔 것)의 앞부분에 역할(r)과 만료 시각(e)이 들어 있다. 서명 확인은 하지 않는다:
+  // 여기서는 보이기만 하고, 실제 저장은 관리 화면이 중계(Worker)에서 표를 다시 확인한다
+  function adminPerms() {
+    var el = document.getElementById('adminPerms'), tok = null;
+    if (!el) return null;
+    try { tok = localStorage.getItem('superstars.adminToken'); } catch (e) { return null; }
+    if (!tok) return null;
+    try {
+      var b = tok.split('.')[0].replace(/-/g, '+').replace(/_/g, '/');
+      var p = JSON.parse(atob(b + '==='.slice((b.length + 3) % 4)));
+      if (!p || !p.r || !(p.e > Date.now() / 1000)) return null;     // 만료된 표
+      return JSON.parse(el.textContent)[p.r] || null;
+    } catch (e) { return null; }
+  }
+  function showAdminBits(root) {
+    var perms = adminPerms();
+    root.querySelectorAll('[data-admin-perm]').forEach(function (el) {
+      var need = el.dataset.adminPerm;
+      el.hidden = !(perms && (need === 'any' || perms.indexOf(need) !== -1));
+    });
+  }
+
   function init(root) {
     root = root || document;
     applyDates(root);
+    showAdminBits(root);
     hideTip();                                  // 정적 사이트에서 내용을 바꿔 끼울 때 예전 말풍선은 닫는다
     root.querySelectorAll('[data-tip]').forEach(bindTip);
 
     // 기록 표 정렬: th[data-sort="num|text"] 클릭. 규정 충족/미충족 그룹(tbody)은 유지하고 각 그룹 안에서만 정렬
+    // 기록 비교 중 '증감 크기로 정렬'을 켜면(table.sort-delta) 숫자 열은 칸의 값 대신 증감(data-delta)으로 정렬한다
     root.querySelectorAll('table.sortable').forEach(function (table) {
       var ths = table.querySelectorAll('th[data-sort]');
-      ths.forEach(function (th) {
-        th.addEventListener('click', function () {
-          var type = th.dataset.sort;
-          var col = Array.prototype.indexOf.call(th.parentNode.children, th);
-          var dir = th.classList.contains('desc') ? 'asc' : 'desc';
-          ths.forEach(function (t) { t.classList.remove('asc', 'desc'); });
-          th.classList.add(dir);
-          function compare(a, b) {
-            var ca = a.cells[col], cb = b.cells[col];
-            if (type === 'num') {
-              var va = ca.dataset.value === undefined || ca.dataset.value === '' ? null : parseFloat(ca.dataset.value);
-              var vb = cb.dataset.value === undefined || cb.dataset.value === '' ? null : parseFloat(cb.dataset.value);
-              if (va === null && vb === null) return 0;
-              if (va === null) return 1;      // 값 없는 선수는 항상 아래로
-              if (vb === null) return -1;
-              return dir === 'desc' ? vb - va : va - vb;
-            }
-            var ta = ca.textContent.trim(), tb = cb.textContent.trim();
-            return dir === 'desc' ? tb.localeCompare(ta, 'ko') : ta.localeCompare(tb, 'ko');
+      function sortBy(th, dir) {
+        var type = th.dataset.sort;
+        var col = Array.prototype.indexOf.call(th.parentNode.children, th);
+        var field = type === 'num' && table.classList.contains('sort-delta') ? 'delta' : 'value';
+        ths.forEach(function (t) { t.classList.remove('asc', 'desc'); });
+        th.classList.add(dir);
+        function num(td) { var v = td.dataset[field]; return v === undefined || v === '' ? null : parseFloat(v); }
+        function compare(a, b) {
+          var ca = a.cells[col], cb = b.cells[col];
+          if (type === 'num') {
+            var va = num(ca), vb = num(cb);
+            if (va === null && vb === null) return 0;
+            if (va === null) return 1;      // 값 없는 선수는 항상 아래로
+            if (vb === null) return -1;
+            return dir === 'desc' ? vb - va : va - vb;
           }
-          var n = 0;
-          Array.prototype.forEach.call(table.tBodies, function (tbody) {
-            if (!tbody.classList.contains('sortable-body')) return;
-            var rows = Array.prototype.slice.call(tbody.rows);
-            rows.sort(compare);
-            rows.forEach(function (r) {
-              tbody.appendChild(r);
-              var rk = r.querySelector('td.rank');
-              if (rk) rk.textContent = ++n;
-            });
+          var ta = ca.textContent.trim(), tb = cb.textContent.trim();
+          return dir === 'desc' ? tb.localeCompare(ta, 'ko') : ta.localeCompare(tb, 'ko');
+        }
+        var n = 0;
+        Array.prototype.forEach.call(table.tBodies, function (tbody) {
+          if (!tbody.classList.contains('sortable-body')) return;
+          var rows = Array.prototype.slice.call(tbody.rows);
+          rows.sort(compare);
+          rows.forEach(function (r) {
+            tbody.appendChild(r);
+            var rk = r.querySelector('td.rank');
+            if (rk) rk.textContent = ++n;
           });
         });
+      }
+      table.superstarsResort = function () {         // 지금 정렬된 열을 같은 방향으로 다시 (증감 정렬을 켜고 끌 때)
+        var th = table.querySelector('th.asc, th.desc');
+        if (th) sortBy(th, th.classList.contains('asc') ? 'asc' : 'desc');
+      };
+      ths.forEach(function (th) {
+        th.addEventListener('click', function () { sortBy(th, th.classList.contains('desc') ? 'asc' : 'desc'); });
       });
     });
+
+    root.querySelectorAll('select[data-compare]').forEach(function (sel) { bindCompare(root, sel); });
 
     // 정적 사이트: 시즌·보기 같은 select 는 고른 페이지로 이동
     root.querySelectorAll('select[data-nav]').forEach(function (sel) {

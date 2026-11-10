@@ -84,7 +84,7 @@
     api('POST', '/api/login', { password: pw }).then(function (d) {
       token = d.token; store(KEY, token); store(ROLE_KEY, d.role_name);
       loggedIn(d.role_name);
-      load(routeFromHash(), '');
+      load(routeFromHash(), anchorFromHash());
     }, function (err) {
       var el = $('[data-ra-login-error]');
       el.textContent = err.message; el.hidden = false;
@@ -96,7 +96,14 @@
   function routeFromHash() {
     var h = '';
     try { h = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
+    h = h.split('#')[0];
     return h === '/admin' || h.indexOf('/admin/') === 0 || h.indexOf('/admin?') === 0 ? h : '/admin';
+  }
+  function anchorFromHash() {    // 공개 페이지의 '#/admin#qual' 같은 링크: 경로 뒤 앵커
+    var h = '';
+    try { h = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
+    var i = h.indexOf('#');
+    return i === -1 ? '' : h.slice(i + 1);
   }
   function toRel(href) {         // 화면 안 링크·폼 주소 → 관리 경로. 관리 화면이 아니면 null
     var u;
@@ -118,7 +125,7 @@
   }
   window.addEventListener('hashchange', function () {
     if (!token) return;
-    var a = pendingAnchor; pendingAnchor = '';
+    var a = pendingAnchor || anchorFromHash(); pendingAnchor = '';
     load(routeFromHash(), a);
   });
   window.superstarsNavigate = function (url) {     // app.js 의 select[data-nav] 같은 이동
@@ -251,6 +258,6 @@
   document.addEventListener('visibilitychange', ping);
 
   if (!RELAY) { showError('중계 서버 주소가 설정되지 않았습니다.'); return; }
-  if (token) { loggedIn(stored(ROLE_KEY)); load(routeFromHash(), ''); }
+  if (token) { loggedIn(stored(ROLE_KEY)); load(routeFromHash(), anchorFromHash()); }
   else showLogin();
 })();

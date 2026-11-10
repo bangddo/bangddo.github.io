@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0f2d5c">
   <title>기록 · 슈퍼스타즈</title>
-  <link rel="icon" href="/superstars/static/favicon.ico?v=1794181259">
-  <link rel="stylesheet" href="/superstars/static/style.css?v=1794181259">
+  <link rel="icon" href="/superstars/static/favicon.ico?v=1794269271">
+  <link rel="stylesheet" href="/superstars/static/style.css?v=1794269271">
   <link rel="alternate" type="text/calendar" title="슈퍼스타즈 일정" href="/superstars/calendar.ics">
 </head>
 <body data-static="1" data-base="/superstars">
@@ -53,6 +53,14 @@
 </label>
 
   
+  <label class="compare-box" data-admin-perm="any" hidden>비교 대상
+    <select data-compare data-compare-urls='{"2015": "/superstars/records/2015/batting/compare.json", "2016": "/superstars/records/2016/batting/compare.json", "2017": "/superstars/records/2017/batting/compare.json", "2018": "/superstars/records/2018/batting/compare.json", "2019": "/superstars/records/2019/batting/compare.json", "2020": "/superstars/records/2020/batting/compare.json", "2021": "/superstars/records/2021/batting/compare.json", "2022": "/superstars/records/2022/batting/compare.json", "2023": "/superstars/records/2023/batting/compare.json", "2024": "/superstars/records/2024/batting/compare.json", "2025": "/superstars/records/2025/batting/compare.json", "2026": "/superstars/records/2026/batting/compare.json"}'>
+      <option value="">비교 안 함</option>
+      <optgroup label="2026 시즌"><option value="2026:all">2026 통합 (모든 리그)</option><option value="2026:league:3">2026 · 광주 · 게임원</option><option value="2026:league:2">2026 · 경희 · 유니크플레이</option><option value="2026:league:1">2026 · 성남 · 야구스</option></optgroup><optgroup label="2025 시즌"><option value="2025:all">2025 통합 (모든 리그)</option><option value="2025:league:9">2025 · 팀업 · 게임원</option><option value="2025:league:10">2025 · 성남 · 게임원</option></optgroup><optgroup label="2024 시즌"><option value="2024:all">2024 통합 (모든 리그)</option><option value="2024:league:12">2024 · 에버 · 게임원</option><option value="2024:league:14">2024 · 성남 · 게임원</option></optgroup><optgroup label="2023 시즌"><option value="2023:all">2023 통합 (모든 리그)</option><option value="2023:league:16">2023 · 에버 · 게임원</option><option value="2023:league:17">2023 · 성남 · 게임원</option><option value="2023:league:18">2023 · 에버(후) · 게임원</option></optgroup><optgroup label="2022 시즌"><option value="2022:all">2022 통합 (모든 리그)</option><option value="2022:league:20">2022 · 에버 · 게임원</option></optgroup><optgroup label="2021 시즌"><option value="2021:all">2021 통합 (모든 리그)</option><option value="2021:league:21">2021 · 에버 · 게임원</option><option value="2021:league:22">2021 · 성남 · 게임원</option></optgroup><optgroup label="2020 시즌"><option value="2020:all">2020 통합 (모든 리그)</option><option value="2020:league:24">2020 · 에버 · 게임원</option><option value="2020:league:25">2020 · 성남 · 게임원</option><option value="2020:league:26">2020 · 센트럴(후) · 게임원</option></optgroup><optgroup label="2019 시즌"><option value="2019:all">2019 통합 (모든 리그)</option><option value="2019:league:28">2019 · 팀업 · 게임원</option><option value="2019:league:29">2019 · 에버 · 게임원</option></optgroup><optgroup label="2018 시즌"><option value="2018:all">2018 통합 (모든 리그)</option><option value="2018:league:31">2018 · 에버 · 게임원</option><option value="2018:league:32">2018 · 야탑 · 게임원</option><option value="2018:league:33">2018 · 에버(후) · 게임원</option></optgroup><optgroup label="2017 시즌"><option value="2017:all">2017 통합 (모든 리그)</option><option value="2017:league:35">2017 · 야탑(후) · 게임원</option><option value="2017:league:40">2017 · 🏆 토너먼트 · 게임원</option><option value="2017:league:37">2017 · 야탑 · 게임원</option><option value="2017:league:38">2017 · 윈 · 게임원</option></optgroup><optgroup label="2016 시즌"><option value="2016:all">2016 통합 (모든 리그)</option><option value="2016:league:43">2016 · 대원 · 게임원</option><option value="2016:league:44">2016 · 힐링 · 게임원</option></optgroup><optgroup label="2015 시즌"><option value="2015:all">2015 통합 (모든 리그)</option><option value="2015:league:46">2015 · 백두 · 게임원</option><option value="2015:league:47">2015 · 제주직장인 · 게임원</option></optgroup>
+    </select>
+  </label>
+  
+  
   <details class="unit-picker" >
     <summary>합산에 포함할 리그 (3/3)</summary>
     <div class="unit-list" data-subset-base="/superstars/records/2023/batting/all-{ids}/1.html">
@@ -73,7 +81,11 @@
 <section class="card">
   <h2>통합 기록 · 타자 <small class="muted">22명</small></h2>
   <p class="qual-info">규정타석 50타석 (팀 경기 33 × 경기당 1.5) · 충족 7명 · 미충족 15명
-    </p>
+    <span data-admin-perm="qual" hidden><a href="/superstars/admin/#/admin#qual">기준 변경</a></span></p>
+  <div class="compare-note" data-compare-note hidden>
+    <span data-compare-text></span>
+    <label class="check"><input type="checkbox" data-compare-sort> 표 머리를 누르면 증감 크기로 정렬</label>
+  </div>
   
   <div class="table-wrap">
     <table class="table stat-table sortable" data-kind="batting">
@@ -81,14 +93,14 @@
         <tr>
           <th class="rank">#</th>
           <th class="player left" data-sort="text">선수</th>
-          <th data-sort="num" title="경기"><span class="abbr">G</span><span class="label">경기</span></th><th data-sort="num" title="타율"><span class="abbr">AVG</span><span class="label">타율</span></th><th data-sort="num" title="타석"><span class="abbr">PA</span><span class="label">타석</span></th><th data-sort="num" title="타수"><span class="abbr">AB</span><span class="label">타수</span></th><th data-sort="num" title="득점"><span class="abbr">R</span><span class="label">득점</span></th><th data-sort="num" title="안타"><span class="abbr">H</span><span class="label">안타</span></th><th data-sort="num" title="1루타"><span class="abbr">1B</span><span class="label">1루타</span></th><th data-sort="num" title="2루타"><span class="abbr">2B</span><span class="label">2루타</span></th><th data-sort="num" title="3루타"><span class="abbr">3B</span><span class="label">3루타</span></th><th data-sort="num" title="홈런"><span class="abbr">HR</span><span class="label">홈런</span></th><th data-sort="num" title="루타"><span class="abbr">TB</span><span class="label">루타</span></th><th data-sort="num" title="타점"><span class="abbr">RBI</span><span class="label">타점</span></th><th data-sort="num" title="도루"><span class="abbr">SB</span><span class="label">도루</span></th><th data-sort="num" title="도루자"><span class="abbr">CS</span><span class="label">도루자</span></th><th data-sort="num" title="도루성공률"><span class="abbr">SB%</span><span class="label">도루성공률</span></th><th data-sort="num" title="볼넷"><span class="abbr">BB</span><span class="label">볼넷</span></th><th data-sort="num" title="사구"><span class="abbr">HBP</span><span class="label">사구</span></th><th data-sort="num" title="삼진"><span class="abbr">SO</span><span class="label">삼진</span></th><th data-sort="num" title="희타"><span class="abbr">SH</span><span class="label">희타</span></th><th data-sort="num" title="희비"><span class="abbr">SF</span><span class="label">희비</span></th><th data-sort="num" title="병살"><span class="abbr">GDP</span><span class="label">병살</span></th><th data-sort="num" title="멀티히트"><span class="abbr">MH</span><span class="label">멀티히트</span></th><th data-sort="num" title="출루율"><span class="abbr">OBP</span><span class="label">출루율</span></th><th data-sort="num" title="장타율"><span class="abbr">SLG</span><span class="label">장타율</span></th><th data-sort="num" title="OPS"><span class="abbr">OPS</span><span class="label">OPS</span></th><th data-sort="num" title="볼넷/삼진"><span class="abbr">BB/K</span><span class="label">볼넷/삼진</span></th>
+          <th data-sort="num" data-col="g" data-better="" title="경기"><span class="abbr">G</span><span class="label">경기</span></th><th data-sort="num" data-col="avg" data-better="up" title="타율"><span class="abbr">AVG</span><span class="label">타율</span></th><th data-sort="num" data-col="pa" data-better="" title="타석"><span class="abbr">PA</span><span class="label">타석</span></th><th data-sort="num" data-col="ab" data-better="" title="타수"><span class="abbr">AB</span><span class="label">타수</span></th><th data-sort="num" data-col="r" data-better="up" title="득점"><span class="abbr">R</span><span class="label">득점</span></th><th data-sort="num" data-col="h" data-better="up" title="안타"><span class="abbr">H</span><span class="label">안타</span></th><th data-sort="num" data-col="h1" data-better="up" title="1루타"><span class="abbr">1B</span><span class="label">1루타</span></th><th data-sort="num" data-col="h2" data-better="up" title="2루타"><span class="abbr">2B</span><span class="label">2루타</span></th><th data-sort="num" data-col="h3" data-better="up" title="3루타"><span class="abbr">3B</span><span class="label">3루타</span></th><th data-sort="num" data-col="hr" data-better="up" title="홈런"><span class="abbr">HR</span><span class="label">홈런</span></th><th data-sort="num" data-col="tb" data-better="up" title="루타"><span class="abbr">TB</span><span class="label">루타</span></th><th data-sort="num" data-col="rbi" data-better="up" title="타점"><span class="abbr">RBI</span><span class="label">타점</span></th><th data-sort="num" data-col="sb" data-better="up" title="도루"><span class="abbr">SB</span><span class="label">도루</span></th><th data-sort="num" data-col="cs" data-better="down" title="도루자"><span class="abbr">CS</span><span class="label">도루자</span></th><th data-sort="num" data-col="sb_pct" data-better="up" title="도루성공률"><span class="abbr">SB%</span><span class="label">도루성공률</span></th><th data-sort="num" data-col="bb" data-better="up" title="볼넷"><span class="abbr">BB</span><span class="label">볼넷</span></th><th data-sort="num" data-col="hbp" data-better="up" title="사구"><span class="abbr">HBP</span><span class="label">사구</span></th><th data-sort="num" data-col="so" data-better="down" title="삼진"><span class="abbr">SO</span><span class="label">삼진</span></th><th data-sort="num" data-col="sh" data-better="" title="희타"><span class="abbr">SH</span><span class="label">희타</span></th><th data-sort="num" data-col="sf" data-better="" title="희비"><span class="abbr">SF</span><span class="label">희비</span></th><th data-sort="num" data-col="gdp" data-better="down" title="병살"><span class="abbr">GDP</span><span class="label">병살</span></th><th data-sort="num" data-col="mh" data-better="up" title="멀티히트"><span class="abbr">MH</span><span class="label">멀티히트</span></th><th data-sort="num" data-col="obp" data-better="up" title="출루율"><span class="abbr">OBP</span><span class="label">출루율</span></th><th data-sort="num" data-col="slg" data-better="up" title="장타율"><span class="abbr">SLG</span><span class="label">장타율</span></th><th data-sort="num" data-col="ops" data-better="up" title="OPS"><span class="abbr">OPS</span><span class="label">OPS</span></th><th data-sort="num" data-col="bbk" data-better="up" title="볼넷/삼진"><span class="abbr">BB/K</span><span class="label">볼넷/삼진</span></th>
           <th data-sort="text" class="left">리그</th>
         </tr>
       </thead>
       
       <tbody class="sortable-body">
         
-        <tr class="unq">
+        <tr class="unq" data-player="장은석">
           <td class="rank">1</td>
           <td class="player left"><a href="/superstars/player/9.html" title="장은석 통산 기록">장은석</a> <small class="muted">#47</small> <span class="tag-unq" title="규정 미충족">미달</span></td>
           
@@ -173,7 +185,7 @@
           <td class="left small"><span class="badge lg-12" >에버</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="unq">
+        <tr class="unq" data-player="유정환">
           <td class="rank">2</td>
           <td class="player left"><a href="/superstars/player/5.html" title="유정환 통산 기록">유정환</a> <small class="muted">#18</small> <span class="tag-unq" title="규정 미충족">미달</span></td>
           
@@ -258,7 +270,7 @@
           <td class="left small"><span class="badge lg-5" >성남</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="unq">
+        <tr class="unq" data-player="김춘경">
           <td class="rank">3</td>
           <td class="player left"><a href="/superstars/player/1079.html" title="김춘경 통산 기록">김춘경</a> <small class="muted">#45</small> <span class="tag-unq" title="규정 미충족">미달</span></td>
           
@@ -343,7 +355,7 @@
           <td class="left small"><span class="badge lg-5" >성남</span><span class="badge lg-12" >에버</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="unq">
+        <tr class="unq" data-player="안석조">
           <td class="rank">4</td>
           <td class="player left"><a href="/superstars/player/14.html" title="안석조 통산 기록">안석조</a> <small class="muted">#26</small> <span class="tag-unq" title="규정 미충족">미달</span></td>
           
@@ -428,7 +440,7 @@
           <td class="left small"><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="q">
+        <tr class="q" data-player="이동훈">
           <td class="rank">5</td>
           <td class="player left"><a href="/superstars/player/15.html" title="이동훈 통산 기록">이동훈</a> <small class="muted">#53</small></td>
           
@@ -513,7 +525,7 @@
           <td class="left small"><span class="badge lg-5" >성남</span><span class="badge lg-12" >에버</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="q">
+        <tr class="q" data-player="최정윤">
           <td class="rank">6</td>
           <td class="player left"><a href="/superstars/player/4.html" title="최정윤 통산 기록">최정윤</a> <small class="muted">#35</small></td>
           
@@ -598,7 +610,7 @@
           <td class="left small"><span class="badge lg-5" >성남</span><span class="badge lg-12" >에버</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="unq">
+        <tr class="unq" data-player="임정훈">
           <td class="rank">7</td>
           <td class="player left"><a href="/superstars/player/17.html" title="임정훈 통산 기록">임정훈</a> <small class="muted">#78</small> <span class="tag-unq" title="규정 미충족">미달</span></td>
           
@@ -683,7 +695,7 @@
           <td class="left small"><span class="badge lg-5" >성남</span><span class="badge lg-12" >에버</span></td>
         </tr>
 
-        <tr class="q">
+        <tr class="q" data-player="이상진">
           <td class="rank">8</td>
           <td class="player left"><a href="/superstars/player/183.html" title="이상진 통산 기록">이상진</a> <small class="muted">#33</small></td>
           
@@ -768,7 +780,7 @@
           <td class="left small"><span class="badge lg-5" >성남</span><span class="badge lg-12" >에버</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="q">
+        <tr class="q" data-player="김영호">
           <td class="rank">9</td>
           <td class="player left"><a href="/superstars/player/8.html" title="김영호 통산 기록">김영호</a> <small class="muted">#7</small></td>
           
@@ -853,7 +865,7 @@
           <td class="left small"><span class="badge lg-5" >성남</span><span class="badge lg-12" >에버</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="unq">
+        <tr class="unq" data-player="김사현">
           <td class="rank">10</td>
           <td class="player left"><a href="/superstars/player/7.html" title="김사현 통산 기록">김사현</a> <small class="muted">#55</small> <span class="tag-unq" title="규정 미충족">미달</span></td>
           
@@ -938,7 +950,7 @@
           <td class="left small"><span class="badge lg-5" >성남</span><span class="badge lg-12" >에버</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="q">
+        <tr class="q" data-player="조민">
           <td class="rank">11</td>
           <td class="player left"><a href="/superstars/player/16.html" title="조민 통산 기록">조민</a> <small class="muted">#46</small></td>
           
@@ -1023,7 +1035,7 @@
           <td class="left small"><span class="badge lg-5" >성남</span><span class="badge lg-12" >에버</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="unq">
+        <tr class="unq" data-player="우제민">
           <td class="rank">12</td>
           <td class="player left"><a href="/superstars/player/22.html" title="우제민 통산 기록">우제민</a> <small class="muted">#20</small> <span class="tag-unq" title="규정 미충족">미달</span></td>
           
@@ -1108,7 +1120,7 @@
           <td class="left small"><span class="badge lg-5" >성남</span></td>
         </tr>
 
-        <tr class="unq">
+        <tr class="unq" data-player="최진우">
           <td class="rank">13</td>
           <td class="player left"><a href="/superstars/player/12.html" title="최진우 통산 기록">최진우</a> <small class="muted">#48</small> <span class="tag-unq" title="규정 미충족">미달</span></td>
           
@@ -1193,7 +1205,7 @@
           <td class="left small"><span class="badge lg-5" >성남</span><span class="badge lg-12" >에버</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="unq">
+        <tr class="unq" data-player="강동욱">
           <td class="rank">14</td>
           <td class="player left"><a href="/superstars/player/292.html" title="강동욱 통산 기록">강동욱</a> <small class="muted">#99</small> <span class="tag-unq" title="규정 미충족">미달</span></td>
           
@@ -1278,7 +1290,7 @@
           <td class="left small"><span class="badge lg-12" >에버</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="q">
+        <tr class="q" data-player="유재현">
           <td class="rank">15</td>
           <td class="player left"><a href="/superstars/player/20.html" title="유재현 통산 기록">유재현</a> <small class="muted">#82</small></td>
           
@@ -1363,7 +1375,7 @@
           <td class="left small"><span class="badge lg-5" >성남</span><span class="badge lg-12" >에버</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="unq">
+        <tr class="unq" data-player="김태균">
           <td class="rank">16</td>
           <td class="player left"><a href="/superstars/player/13.html" title="김태균 통산 기록">김태균</a> <small class="muted">#12</small> <span class="tag-unq" title="규정 미충족">미달</span></td>
           
@@ -1448,7 +1460,7 @@
           <td class="left small"><span class="badge lg-12" >에버</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="q">
+        <tr class="q" data-player="여지수">
           <td class="rank">17</td>
           <td class="player left"><a href="/superstars/player/1.html" title="여지수 통산 기록">여지수</a> <small class="muted">#27</small></td>
           
@@ -1533,7 +1545,7 @@
           <td class="left small"><span class="badge lg-5" >성남</span><span class="badge lg-12" >에버</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="unq">
+        <tr class="unq" data-player="권경민">
           <td class="rank">18</td>
           <td class="player left"><a href="/superstars/player/2.html" title="권경민 통산 기록">권경민</a> <small class="muted">#19</small> <span class="tag-unq" title="규정 미충족">미달</span></td>
           
@@ -1618,7 +1630,7 @@
           <td class="left small"><span class="badge lg-12" >에버</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="unq">
+        <tr class="unq" data-player="이정호">
           <td class="rank">19</td>
           <td class="player left"><a href="/superstars/player/1110.html" title="이정호 통산 기록">이정호</a> <small class="muted">#62</small> <span class="tag-unq" title="규정 미충족">미달</span></td>
           
@@ -1703,7 +1715,7 @@
           <td class="left small"><span class="badge lg-5" >성남</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="unq">
+        <tr class="unq" data-player="양원녕">
           <td class="rank">20</td>
           <td class="player left"><a href="/superstars/player/18.html" title="양원녕 통산 기록">양원녕</a> <small class="muted">#25</small> <span class="tag-unq" title="규정 미충족">미달</span></td>
           
@@ -1788,7 +1800,7 @@
           <td class="left small"><span class="badge lg-5" >성남</span><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="unq">
+        <tr class="unq" data-player="김건민">
           <td class="rank">21</td>
           <td class="player left"><a href="/superstars/player/25.html" title="김건민 통산 기록">김건민</a> <small class="muted">#52</small> <span class="tag-unq" title="규정 미충족">미달</span></td>
           
@@ -1873,7 +1885,7 @@
           <td class="left small"><span class="badge lg-2" >에버(후)</span></td>
         </tr>
 
-        <tr class="unq">
+        <tr class="unq" data-player="진용우">
           <td class="rank">22</td>
           <td class="player left"><a href="/superstars/player/26.html" title="진용우 통산 기록">진용우</a> <small class="muted">#38</small> <span class="tag-unq" title="규정 미충족">미달</span></td>
           
@@ -1968,10 +1980,11 @@
 </main>
 
 <footer class="container footer">
-  <span>마지막 동기화: 2026.11.09(월) 08:41 · 게시 2026.11.09(월) 08:41</span>
+  <span>마지막 동기화: 2026.11.09(월) 08:41 · 게시 2026.11.10(화) 09:08</span>
   <span><a href="/superstars/calendar.ics">📅 캘린더 구독(ics)</a></span>
 </footer>
-<script src="/superstars/static/app.js?v=1794181259" defer></script>
+<script type="application/json" id="adminPerms">{"coach": ["events", "lineup", "notices", "players"], "gm": ["events", "leagues", "lineup", "notices", "players"], "manager": ["events", "lineup", "notices", "players"], "master": ["columns", "events", "leagues", "lineup", "notices", "players", "publish", "qual", "raw", "sync", "team_names"], "treasurer": ["events", "notices", "players"]}</script>
+<script src="/superstars/static/app.js?v=1794269271" defer></script>
 
 </body>
 </html>
