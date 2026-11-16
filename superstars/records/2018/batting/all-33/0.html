@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0f2d5c">
   <title>기록 · 슈퍼스타즈</title>
-  <link rel="icon" href="/superstars/static/favicon.ico?v=1794787033">
-  <link rel="stylesheet" href="/superstars/static/style.css?v=1794787033">
+  <link rel="icon" href="/superstars/static/favicon.ico?v=1794806804">
+  <link rel="stylesheet" href="/superstars/static/style.css?v=1794806804">
   <link rel="alternate" type="text/calendar" title="슈퍼스타즈 일정" href="/superstars/calendar.ics">
 </head>
 <body data-static="1" data-base="/superstars">
@@ -82,6 +82,12 @@
   <h2>통합 기록 · 타자 <small class="muted">10명</small></h2>
   <p class="qual-info">규정타석 11타석 (팀 경기 7 × 경기당 1.5) · 충족 6명 · 미충족 4명
     <span data-admin-perm="qual" hidden><a href="/superstars/admin/#/admin#qual">기준 변경</a></span></p>
+  
+  <p class="team-sum">
+    <span>팀 타율 <strong>0.338</strong></span><span>출루율 <strong>0.495</strong></span><span>장타율 <strong>0.525</strong></span><span>OPS <strong>1.020</strong></span>
+    <span class="muted">27안타 · 3홈런 · 44득점</span>
+  </p>
+  
   <div class="compare-note" data-compare-note hidden>
     <span data-compare-text></span>
     <label class="check"><input type="checkbox" data-compare-sort> 증감으로 정렬</label>
@@ -958,6 +964,16 @@
       </tbody>
       
       
+      
+      <tfoot>
+        <tr class="team-row" data-player="@team">
+          <td class="rank"></td>
+          <td class="player left">팀 합계</td>
+          <td data-value="7" class="">7</td><td data-value="0.3375" class="">0.338</td><td data-value="109" class="">109</td><td data-value="80" class="">80</td><td data-value="44" class="">44</td><td data-value="27" class="">27</td><td data-value="18" class="">18</td><td data-value="6" class="">6</td><td data-value="0" class="">0</td><td data-value="3" class="">3</td><td data-value="42" class="">42</td><td data-value="36" class="">36</td><td data-value="22" class="">22</td><td data-value="1" class="">1</td><td data-value="0.9565217391304348" class="">96%</td><td data-value="24" class="">24</td><td data-value="3" class="">3</td><td data-value="12" class="">12</td><td data-value="0" class="">0</td><td data-value="2" class="">2</td><td data-value="0" class="">0</td><td data-value="8" class="">8</td><td data-value="0.4954128440366973" class="">0.495</td><td data-value="0.525" class="">0.525</td><td data-value="1.0204128440366973" class="">1.020</td><td data-value="2.0" class="">2.00</td>
+          <td></td>
+        </tr>
+      </tfoot>
+      
     </table>
   </div>
   
@@ -966,11 +982,11 @@
 </main>
 
 <footer class="container footer">
-  <span>마지막 동기화: 2026.11.16(월) 08:57 · 게시 2026.11.16(월) 08:57</span>
+  <span>마지막 동기화: 2026.11.16(월) 08:57 · 게시 2026.11.16(월) 14:26</span>
   <span><a href="/superstars/calendar.ics">📅 캘린더 구독(ics)</a></span>
 </footer>
 <script type="application/json" id="adminPerms">{"coach": ["events", "lineup", "notices", "players"], "gm": ["events", "leagues", "lineup", "notices", "players"], "manager": ["events", "lineup", "notices", "players"], "master": ["columns", "events", "leagues", "lineup", "notices", "players", "publish", "qual", "raw", "sync", "team_names"], "treasurer": ["events", "notices", "players"]}</script>
-<script src="/superstars/static/app.js?v=1794787033" defer></script>
+<script src="/superstars/static/app.js?v=1794806804" defer></script>
 
 </body>
 </html>

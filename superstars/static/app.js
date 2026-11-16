@@ -222,7 +222,7 @@
     var cols = Array.prototype.map.call(table.tHead.rows[0].cells, function (th) {
       return th.dataset.col ? { key: th.dataset.col, better: th.dataset.better || '' } : null;
     });
-    var rows = Array.prototype.slice.call(table.querySelectorAll('tbody tr[data-player]'));
+    var rows = Array.prototype.slice.call(table.querySelectorAll('tr[data-player]'));   // 선수 줄 + 맨 아래 팀 합계 줄(@team)
     var KEY = 'superstars-records-compare', seq = 0;
 
     function clear() {

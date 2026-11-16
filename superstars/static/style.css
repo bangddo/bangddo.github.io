@@ -129,6 +129,11 @@ tr.unq td.player { color: #6b7684; }
 .delta.bad { color: var(--lose); }
 .delta.neutral, .delta.flat { color: #8a93a0; font-weight: 600; }
 .tag-cmp { display: inline-block; font-size: 10px; line-height: 1.4; color: #5b6472; background: #eef0f4; border-radius: 4px; padding: 0 5px; margin-left: 4px; vertical-align: middle; }
+/* 기록: 보고 있는 시즌·리그의 팀 합계 (위 요약 + 표 맨 아래 줄) */
+.team-sum { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; margin: -2px 0 10px; font-size: 13px; color: var(--muted); }
+.team-sum strong { color: var(--text); font-size: 16px; margin-left: 2px; font-variant-numeric: tabular-nums; }
+.team-sum .muted { font-size: 12px; }
+.stat-table tfoot .team-row td { font-weight: 700; background: #f6f8fc; border-top: 2px solid var(--line-2); }
 .tag-unq { display: inline-block; font-size: 10px; line-height: 1.4; color: #9a5b00; background: #fff3dc; border-radius: 4px; padding: 0 5px; margin-left: 4px; vertical-align: middle; }
 h3.sub { font-size: 14px; margin: 16px 0 8px; }
 pre.raw { background: #f6f7fb; padding: 8px; border-radius: 8px; font-size: 12px; overflow-x: auto; max-height: 260px; margin: 4px 0 0; white-space: pre-wrap; word-break: break-all; }

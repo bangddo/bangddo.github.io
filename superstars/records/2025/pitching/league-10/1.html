@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0f2d5c">
   <title>기록 · 슈퍼스타즈</title>
-  <link rel="icon" href="/superstars/static/favicon.ico?v=1794787033">
-  <link rel="stylesheet" href="/superstars/static/style.css?v=1794787033">
+  <link rel="icon" href="/superstars/static/favicon.ico?v=1794806804">
+  <link rel="stylesheet" href="/superstars/static/style.css?v=1794806804">
   <link rel="alternate" type="text/calendar" title="슈퍼스타즈 일정" href="/superstars/calendar.ics">
 </head>
 <body data-static="1" data-base="/superstars">
@@ -69,6 +69,12 @@
   <h2>성남 (게임원) · 투수 <small class="muted">8명</small></h2>
   <p class="qual-info">규정이닝 14.0이닝 (팀 경기 14 × 경기당 1) · 충족 1명 · 미충족 7명
     <span data-admin-perm="qual" hidden><a href="/superstars/admin/#/admin#qual">기준 변경</a></span></p>
+  
+  <p class="team-sum">
+    <span>팀 평균자책 <strong>13.75</strong></span><span>WHIP <strong>3.56</strong></span>
+    <span class="muted">57.0이닝 · 47탈삼진 · 147실점</span>
+  </p>
+  
   <div class="compare-note" data-compare-note hidden>
     <span data-compare-text></span>
     <label class="check"><input type="checkbox" data-compare-sort> 증감으로 정렬</label>
@@ -625,6 +631,16 @@
 
       </tbody>
       
+      
+      <tfoot>
+        <tr class="team-row" data-player="@team">
+          <td class="rank"></td>
+          <td class="player left">팀 합계</td>
+          <td data-value="14" class="">14</td><td data-value="13.75438596491228" class="">13.75</td><td data-value="3" class="">3</td><td data-value="9" class="">9</td><td data-value="0" class="">0</td><td data-value="0" class="">0</td><td data-value="0.25" class="">0.250</td><td data-value="171" class="">57.0</td><td data-value="414" class="">414</td><td data-value="280" class="">280</td><td data-value="102" class="">102</td><td data-value="3" class="">3</td><td data-value="101" class="">101</td><td data-value="28" class="">28</td><td data-value="47" class="">47</td><td data-value="7" class="">7</td><td data-value="1" class="">1</td><td data-value="147" class="">147</td><td data-value="112" class="">112</td><td data-value="3.56140350877193" class="">3.56</td>
+          
+        </tr>
+      </tfoot>
+      
     </table>
   </div>
   
@@ -633,11 +649,11 @@
 </main>
 
 <footer class="container footer">
-  <span>마지막 동기화: 2026.11.16(월) 08:57 · 게시 2026.11.16(월) 08:57</span>
+  <span>마지막 동기화: 2026.11.16(월) 08:57 · 게시 2026.11.16(월) 14:26</span>
   <span><a href="/superstars/calendar.ics">📅 캘린더 구독(ics)</a></span>
 </footer>
 <script type="application/json" id="adminPerms">{"coach": ["events", "lineup", "notices", "players"], "gm": ["events", "leagues", "lineup", "notices", "players"], "manager": ["events", "lineup", "notices", "players"], "master": ["columns", "events", "leagues", "lineup", "notices", "players", "publish", "qual", "raw", "sync", "team_names"], "treasurer": ["events", "notices", "players"]}</script>
-<script src="/superstars/static/app.js?v=1794787033" defer></script>
+<script src="/superstars/static/app.js?v=1794806804" defer></script>
 
 </body>
 </html>
