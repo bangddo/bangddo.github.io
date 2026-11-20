@@ -35,6 +35,14 @@ let resultsShownForVoteId = null;  // "한번에 보기"로 결과를 펼쳐둔 
 let adminWatchUnsubscribe = null;
 let inviteFromUrl = null;
 
+// 투표인단 (voterGroups) — 관리 화면 진입 시 구독, 투표 등록/수정 화면과 투표인단 관리 화면이 함께 사용
+let voterGroups = [];
+let voterGroupsLoaded = false;
+let voterGroupsError = null;
+let voterGroupsUnsubscribe = null;
+// 현재 패널이 투표인단 목록 변경에 반응해야 할 때 등록하는 콜백 (해당 DOM 이 없으면 스스로 무시)
+let onVoterGroupsChanged = null;
+
 function showMessage(text, type = 'info', timeout = 3000) {
   messageArea.innerHTML = `<div class="message ${type}">${escapeHtml(text)}</div>`;
   if (timeout) setTimeout(() => { messageArea.innerHTML = ''; }, timeout);
@@ -270,6 +278,11 @@ function showLogin() {
   if (votesUnsubscribe) { votesUnsubscribe(); votesUnsubscribe = null; }
   if (resultsUnsubscribe) { resultsUnsubscribe(); resultsUnsubscribe = null; }
   resultsShownForVoteId = null;
+  if (voterGroupsUnsubscribe) { voterGroupsUnsubscribe(); voterGroupsUnsubscribe = null; }
+  voterGroups = [];
+  voterGroupsLoaded = false;
+  voterGroupsError = null;
+  onVoterGroupsChanged = null;
 }
 
 function showSignup() {
@@ -320,6 +333,7 @@ function showManage(user) {
   logoutBtn.classList.remove('hidden');
   userInfo.textContent = user.email;
   subscribeVotes();
+  subscribeVoterGroups();
 }
 
 let phoneHashIndexBackfillRan = false;
@@ -447,6 +461,12 @@ document.getElementById('new-vote-btn').onclick = () => {
   renderForm(null);
 };
 
+document.getElementById('open-groups-panel').onclick = () => {
+  selectedVoteId = null;
+  renderSidebar();
+  renderGroupsPanel();
+};
+
 document.getElementById('open-admin-panel').onclick = () => {
   selectedVoteId = null;
   renderSidebar();
@@ -511,6 +531,11 @@ function renderForm(vote) {
     </div>
     ` : ''}
     <div class="form-group">
+      <label>투표인단 불러오기</label>
+      <div id="group-picker" class="group-picker"></div>
+      <div id="group-picker-summary" class="text-muted mt-2 hidden"></div>
+    </div>
+    <div class="form-group">
       <label>${isEdit ? '추가할 인증번호' : '투표 대상자'} (이름 인증번호 형식, 한 줄에 한 명)</label>
       <textarea id="f-phones" placeholder="홍길동 인증번호1&#10;김철수 인증번호2" rows="6"></textarea>
       ${isEdit ? '<div class="text-muted mt-2">기존 목록에 추가됩니다. 같은 인증번호나 이름이 이미 등록되어 있으면 거부됩니다.</div>' : ''}
@@ -529,6 +554,63 @@ function renderForm(vote) {
   const removalSet = new Set();
   const votedHashes = new Set();
   const phoneNames = new Map();
+
+  // 투표인단 선택 — 선택한 투표인단의 구성원은 저장 시점에 대상자로 복사된다.
+  function selectedGroups() {
+    const ids = [...document.querySelectorAll('#group-picker input:checked')].map(i => i.value);
+    return ids.map(id => voterGroups.find(g => g.id === id)).filter(Boolean);
+  }
+
+  function renderGroupPicker() {
+    const el = document.getElementById('group-picker');
+    if (!el) return;
+    const checked = new Set([...el.querySelectorAll('input:checked')].map(i => i.value));
+    if (voterGroupsError) {
+      el.innerHTML = `<div class="text-muted">투표인단을 불러오지 못했습니다: ${escapeHtml(voterGroupsError)}</div>`;
+    } else if (!voterGroupsLoaded) {
+      el.innerHTML = '<div class="text-muted">불러오는 중...</div>';
+    } else if (voterGroups.length === 0) {
+      el.innerHTML = '<div class="text-muted">저장된 투표인단이 없습니다. 왼쪽 "투표인단 관리"에서 만들 수 있습니다.</div>';
+    } else {
+      el.innerHTML = voterGroups.map(g => `
+        <label class="group-chip ${checked.has(g.id) ? 'selected' : ''}">
+          <input type="checkbox" value="${escapeHtml(g.id)}" ${checked.has(g.id) ? 'checked' : ''}>
+          <span>${escapeHtml(g.name)}</span>
+          <span class="group-chip-count">${g.members?.length ?? 0}명</span>
+        </label>
+      `).join('');
+      el.querySelectorAll('input').forEach(input => {
+        input.onchange = () => {
+          input.closest('.group-chip').classList.toggle('selected', input.checked);
+          updateGroupPickerSummary();
+        };
+      });
+    }
+    updateGroupPickerSummary();
+  }
+
+  function updateGroupPickerSummary() {
+    const el = document.getElementById('group-picker-summary');
+    if (!el) return;
+    const groups = selectedGroups();
+    if (groups.length === 0) { el.classList.add('hidden'); el.textContent = ''; return; }
+    const registered = new Set((vote?.allowedPhoneHashes ?? []).filter(h => !removalSet.has(h)));
+    const adding = new Set();
+    let skipped = 0;
+    for (const g of groups) {
+      for (const m of g.members ?? []) {
+        if (!m?.hash) continue;
+        if (registered.has(m.hash) || removalSet.has(m.hash) || adding.has(m.hash)) { skipped++; continue; }
+        adding.add(m.hash);
+      }
+    }
+    el.textContent = `${adding.size}명이 대상자로 추가됩니다`
+      + (skipped > 0 ? ` (이미 등록됐거나 겹치는 ${skipped}명 제외)` : '') + '.';
+    el.classList.remove('hidden');
+  }
+
+  onVoterGroupsChanged = renderGroupPicker;
+  renderGroupPicker();
 
   function renderPhonesList() {
     const phonesListEl = document.getElementById('phones-list');
@@ -560,6 +642,7 @@ function renderForm(vote) {
         const row = btn.closest('.phones-row');
         if (removalSet.has(h)) { removalSet.delete(h); row.classList.remove('removed'); }
         else { removalSet.add(h); row.classList.add('removed'); }
+        updateGroupPickerSummary();
       };
     });
   }
@@ -645,35 +728,14 @@ function renderForm(vote) {
       if (endAt <= startAt) return showError('종료 시간이 시작 시간보다 뒤여야 합니다.');
     }
 
-    let entries;
+    let parsed;
     try {
-      entries = await parseAndHashNamedPhoneEntries(phonesText);
+      parsed = await parseEntryLines(phonesText);
     } catch (err) {
       console.error(err);
       return showError('인증번호 처리 중 오류가 발생했습니다.');
     }
-
-    const violations = [];
-    for (const e of entries) {
-      if (e.error === 'parse_failed') violations.push(`${e.lineNo}번째 줄을 인식할 수 없습니다: "${e.original}"`);
-      if (e.error === 'empty_phone')  violations.push(`${e.lineNo}번째 줄: 인증번호가 비어 있습니다.`);
-    }
-    const valid = entries.filter(e => !e.error);
-
-    const hashFirstSeen = new Map();
-    for (const e of valid) {
-      const prev = hashFirstSeen.get(e.hash);
-      if (prev != null) violations.push(`${prev}번째 줄과 ${e.lineNo}번째 줄의 인증번호가 같습니다.`);
-      else hashFirstSeen.set(e.hash, e.lineNo);
-    }
-
-    const nameFirstSeen = new Map();
-    for (const e of valid) {
-      if (!e.name) continue;
-      const prev = nameFirstSeen.get(e.name);
-      if (prev != null) violations.push(`${prev}번째 줄과 ${e.lineNo}번째 줄의 이름 "${e.name}"이 같습니다.`);
-      else nameFirstSeen.set(e.name, e.lineNo);
-    }
+    const { valid, violations } = parsed;
 
     // 안전 가드: 이미 투표한 hash는 어떤 경로로도 제거되지 않음
     const safeRemoval = new Set([...removalSet].filter(h => !votedHashes.has(h)));
@@ -697,11 +759,52 @@ function renderForm(vote) {
       }
     }
 
+    // 선택한 투표인단의 구성원 — 이미 등록됐거나 이번에 제거 표시한 사람, 투표인단끼리 겹치는 사람은 조용히 건너뛴다.
+    const groupAdds = new Map(); // hash → { name, hash, groupName }
+    for (const g of selectedGroups()) {
+      for (const m of g.members ?? []) {
+        if (!m?.hash || remainingHashes.has(m.hash) || safeRemoval.has(m.hash)) continue;
+        const prev = groupAdds.get(m.hash);
+        if (prev) {
+          if (!prev.name && m.name) prev.name = m.name;
+          continue;
+        }
+        groupAdds.set(m.hash, { name: m.name ?? '', hash: m.hash, groupName: g.name });
+      }
+    }
+    const groupNameOwner = new Map(); // 이름 → 그 이름을 가진 투표인단 구성원
+    for (const a of groupAdds.values()) {
+      if (!a.name) continue;
+      if (remainingNames.has(a.name)) {
+        violations.push(`투표인단 "${a.groupName}"의 "${a.name}"은 이미 등록된 다른 대상자와 이름이 같습니다.`);
+        continue;
+      }
+      const other = groupNameOwner.get(a.name);
+      if (other) {
+        violations.push(`투표인단 "${other.groupName}", "${a.groupName}"에 이름이 "${a.name}"인 서로 다른 대상자가 있습니다.`);
+        continue;
+      }
+      groupNameOwner.set(a.name, a);
+    }
+    for (const e of valid) {
+      const g = groupAdds.get(e.hash);
+      if (g) {
+        violations.push(`${e.lineNo}번째 줄의 인증번호는 선택한 투표인단 "${g.groupName}"에 이미 있습니다${g.name ? ` (${g.name})` : ''}.`);
+        continue;
+      }
+      if (e.name && groupNameOwner.has(e.name)) {
+        violations.push(`${e.lineNo}번째 줄의 이름 "${e.name}"은 선택한 투표인단 "${groupNameOwner.get(e.name).groupName}"에 이미 있습니다.`);
+      }
+    }
+
     if (violations.length > 0) {
       return showError(violations);
     }
 
-    const additions = valid.map(e => ({ name: e.name, hash: e.hash }));
+    const additions = [
+      ...[...groupAdds.values()].map(a => ({ name: a.name, hash: a.hash })),
+      ...valid.map(e => ({ name: e.name, hash: e.hash })),
+    ];
     const finalHashes = [...remainingHashes, ...additions.map(a => a.hash)];
 
     if (finalHashes.length === 0) {
@@ -770,6 +873,299 @@ function renderForm(vote) {
     }
     errorEl.classList.remove('hidden');
   }
+}
+
+// "이름 인증번호" 줄 목록을 해시하고, 줄 단위 오류(인식 불가, 빈 번호, 줄끼리 같은 번호/이름)를 모은다.
+async function parseEntryLines(text) {
+  const entries = await parseAndHashNamedPhoneEntries(text);
+  const violations = [];
+  for (const e of entries) {
+    if (e.error === 'parse_failed') violations.push(`${e.lineNo}번째 줄을 인식할 수 없습니다: "${e.original}"`);
+    if (e.error === 'empty_phone')  violations.push(`${e.lineNo}번째 줄: 인증번호가 비어 있습니다.`);
+  }
+  const valid = entries.filter(e => !e.error);
+
+  const hashFirstSeen = new Map();
+  for (const e of valid) {
+    const prev = hashFirstSeen.get(e.hash);
+    if (prev != null) violations.push(`${prev}번째 줄과 ${e.lineNo}번째 줄의 인증번호가 같습니다.`);
+    else hashFirstSeen.set(e.hash, e.lineNo);
+  }
+
+  const nameFirstSeen = new Map();
+  for (const e of valid) {
+    if (!e.name) continue;
+    const prev = nameFirstSeen.get(e.name);
+    if (prev != null) violations.push(`${prev}번째 줄과 ${e.lineNo}번째 줄의 이름 "${e.name}"이 같습니다.`);
+    else nameFirstSeen.set(e.name, e.lineNo);
+  }
+  return { valid, violations };
+}
+
+// ========== 투표인단 ==========
+// voterGroups/{id}: { name, members: [{ name, hash }], createdAt, createdBy, createdByEmail, updatedAt, updatedByEmail }
+// 인증번호는 투표와 마찬가지로 해시로만 저장한다.
+
+function subscribeVoterGroups() {
+  if (voterGroupsUnsubscribe) voterGroupsUnsubscribe();
+  voterGroupsLoaded = false;
+  voterGroupsError = null;
+  voterGroupsUnsubscribe = onSnapshot(collection(db, 'voterGroups'), snap => {
+    voterGroups = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => String(a.name ?? '').localeCompare(String(b.name ?? ''), 'ko'));
+    voterGroupsLoaded = true;
+    voterGroupsError = null;
+    onVoterGroupsChanged?.();
+  }, err => {
+    console.error(err);
+    voterGroupsLoaded = true;
+    voterGroupsError = err.code === 'permission-denied'
+      ? '권한이 없습니다. firestore.rules 에 voterGroups 규칙이 배포되었는지 확인하세요.'
+      : err.message;
+    onVoterGroupsChanged?.();
+  });
+}
+
+function formatGroupTimestamp(ts) {
+  const d = ts?.toDate?.();
+  return d ? formatDateTime(d) : '';
+}
+
+function renderGroupsPanel() {
+  unsubscribeAdminPanel();
+  if (resultsUnsubscribe) { resultsUnsubscribe(); resultsUnsubscribe = null; }
+
+  panelContent.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+      <h2 style="margin:0;">투표인단</h2>
+      <button class="btn-primary btn-sm" id="new-group-btn">+ 새 투표인단</button>
+    </div>
+    <p class="text-muted mb-4">자주 쓰는 투표 대상자를 이름을 붙여 묶어 두면 투표 등록·수정 화면에서 한 번에 불러올 수 있습니다.</p>
+    <div id="group-list"></div>
+  `;
+  document.getElementById('new-group-btn').onclick = () => renderGroupEditor(null);
+  onVoterGroupsChanged = renderGroupList;
+  renderGroupList();
+}
+
+function renderGroupList() {
+  const el = document.getElementById('group-list');
+  if (!el) return;
+  if (voterGroupsError) {
+    el.innerHTML = `<div class="message error">투표인단을 불러오지 못했습니다: ${escapeHtml(voterGroupsError)}</div>`;
+    return;
+  }
+  if (!voterGroupsLoaded) {
+    el.innerHTML = '<p class="text-muted">불러오는 중...</p>';
+    return;
+  }
+  if (voterGroups.length === 0) {
+    el.innerHTML = '<div class="empty-state">아직 만든 투표인단이 없습니다.</div>';
+    return;
+  }
+  el.innerHTML = `<div class="vote-list">${voterGroups.map(g => {
+    const when = formatGroupTimestamp(g.updatedAt ?? g.createdAt);
+    const who = g.updatedByEmail ?? g.createdByEmail ?? '';
+    return `
+      <div class="vote-card" data-id="${escapeHtml(g.id)}">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+          <strong style="font-size:14px;">${escapeHtml(g.name)}</strong>
+          <span class="text-muted">${g.members?.length ?? 0}명</span>
+        </div>
+        ${when || who ? `<div class="text-muted" style="font-size:12px; margin-top:4px;">수정 ${escapeHtml([when, who].filter(Boolean).join(' · '))}</div>` : ''}
+      </div>
+    `;
+  }).join('')}</div>`;
+  el.querySelectorAll('.vote-card').forEach(card => {
+    card.onclick = () => {
+      const g = voterGroups.find(x => x.id === card.dataset.id);
+      if (g) renderGroupEditor(g);
+    };
+  });
+}
+
+function renderGroupEditor(group) {
+  const isEdit = !!group;
+  const members = isEdit
+    ? (group.members ?? []).filter(m => m?.hash).map(m => ({ name: m.name ?? '', hash: m.hash, removed: false }))
+    : [];
+
+  panelContent.innerHTML = `
+    <h2>${isEdit ? '투표인단 수정' : '새 투표인단'}</h2>
+    <div class="form-group">
+      <label>투표인단 이름</label>
+      <input type="text" id="g-name" value="${escapeHtml(isEdit ? group.name : '')}" placeholder="예: 개발팀, 운영위원회">
+    </div>
+    ${isEdit ? `
+    <div class="form-group">
+      <label id="g-members-label"></label>
+      <div id="g-members" class="phones-list"></div>
+      <div class="text-muted mt-2">이름은 바로 고칠 수 있습니다. 인증번호는 해시로만 저장되어 다시 볼 수 없으니, 번호가 바뀐 구성원은 제거한 뒤 다시 추가하세요.</div>
+    </div>
+    ` : ''}
+    <div class="form-group">
+      <label>${isEdit ? '추가할 구성원' : '구성원'} (이름 인증번호 형식, 한 줄에 한 명)</label>
+      <textarea id="g-phones" placeholder="홍길동 인증번호1&#10;김철수 인증번호2" rows="6"></textarea>
+    </div>
+    <p class="text-muted">투표 등록·수정 화면에서 이 투표인단을 불러오면 그 시점의 구성원이 대상자로 복사됩니다. 나중에 투표인단을 고쳐도 이미 등록된 투표는 바뀌지 않습니다.</p>
+    <div id="g-error" class="message error hidden"></div>
+    <div class="button-row">
+      ${isEdit ? '<button class="btn-danger" id="g-delete" style="margin-right:auto;">삭제</button>' : ''}
+      <button class="btn-secondary" id="g-cancel">취소</button>
+      <button class="btn-primary" id="g-save">${isEdit ? '저장' : '만들기'}</button>
+    </div>
+  `;
+  onVoterGroupsChanged = null;
+
+  const errorEl = document.getElementById('g-error');
+
+  function renderMembers() {
+    const listEl = document.getElementById('g-members');
+    if (!listEl) return;
+    const keptCount = members.filter(m => !m.removed).length;
+    document.getElementById('g-members-label').textContent = `구성원 (${keptCount}명)`;
+    if (members.length === 0) {
+      listEl.innerHTML = '<div class="text-muted" style="padding: 12px; text-align: center;">구성원이 없습니다.</div>';
+      return;
+    }
+    listEl.innerHTML = members.map((m, idx) => `
+      <div class="phones-row ${m.removed ? 'removed' : ''}">
+        <input type="text" class="phones-name-input" data-idx="${idx}" value="${escapeHtml(m.name)}" placeholder="이름 미등록" ${m.removed ? 'disabled' : ''}>
+        <button class="btn-secondary btn-sm phones-remove" data-idx="${idx}" title="${m.removed ? '되돌리기' : '제거'}">${m.removed ? '↺' : '×'}</button>
+      </div>
+    `).join('');
+    listEl.querySelectorAll('.phones-name-input').forEach(input => {
+      input.oninput = () => { members[Number(input.dataset.idx)].name = input.value; };
+    });
+    listEl.querySelectorAll('.phones-remove').forEach(btn => {
+      btn.onclick = () => {
+        const m = members[Number(btn.dataset.idx)];
+        m.removed = !m.removed;
+        renderMembers();
+      };
+    });
+  }
+  renderMembers();
+
+  document.getElementById('g-cancel').onclick = renderGroupsPanel;
+  if (isEdit) document.getElementById('g-delete').onclick = () => confirmDeleteGroup(group);
+
+  document.getElementById('g-save').onclick = async () => {
+    errorEl.classList.add('hidden');
+    const name = document.getElementById('g-name').value.trim();
+    if (!name) return showError('투표인단 이름을 입력하세요.');
+    if (voterGroups.some(g => g.id !== group?.id && g.name === name)) {
+      return showError(`"${name}" 이름의 투표인단이 이미 있습니다.`);
+    }
+
+    let parsed;
+    try {
+      parsed = await parseEntryLines(document.getElementById('g-phones').value);
+    } catch (err) {
+      console.error(err);
+      return showError('인증번호 처리 중 오류가 발생했습니다.');
+    }
+    const { valid, violations } = parsed;
+
+    const kept = members.filter(m => !m.removed).map(m => ({ name: m.name.trim(), hash: m.hash }));
+    const keptByHash = new Map(kept.map(m => [m.hash, m]));
+    const keptNames = new Set();
+    const reportedNames = new Set();
+    for (const m of kept) {
+      if (!m.name) continue;
+      if (keptNames.has(m.name) && !reportedNames.has(m.name)) {
+        violations.push(`구성원 중에 이름이 "${m.name}"인 사람이 두 명 이상입니다.`);
+        reportedNames.add(m.name);
+      }
+      keptNames.add(m.name);
+    }
+    for (const e of valid) {
+      const existing = keptByHash.get(e.hash);
+      if (existing) {
+        violations.push(`${e.lineNo}번째 줄의 인증번호는 이미 구성원입니다${existing.name ? ` (${existing.name})` : ''}.`);
+        continue;
+      }
+      if (e.name && keptNames.has(e.name)) {
+        violations.push(`${e.lineNo}번째 줄의 이름 "${e.name}"은 이미 구성원에 있습니다.`);
+      }
+    }
+    if (violations.length > 0) return showError(violations);
+
+    const finalMembers = [...kept, ...valid.map(e => ({ name: e.name, hash: e.hash }))];
+    if (finalMembers.length === 0) return showError('구성원을 1명 이상 등록해야 합니다.');
+
+    const saveBtn = document.getElementById('g-save');
+    saveBtn.disabled = true;
+    try {
+      const me = auth.currentUser;
+      if (isEdit) {
+        await updateDoc(doc(db, 'voterGroups', group.id), {
+          name,
+          members: finalMembers,
+          updatedAt: serverTimestamp(),
+          updatedByEmail: me?.email ?? null,
+        });
+      } else {
+        await setDoc(doc(collection(db, 'voterGroups')), {
+          name,
+          members: finalMembers,
+          createdAt: serverTimestamp(),
+          createdBy: me?.uid ?? null,
+          createdByEmail: me?.email ?? null,
+          updatedAt: serverTimestamp(),
+          updatedByEmail: me?.email ?? null,
+        });
+      }
+      showMessage(isEdit ? '투표인단을 저장했습니다.' : '투표인단을 만들었습니다.', 'success');
+      renderGroupsPanel();
+    } catch (err) {
+      console.error(err);
+      showError('저장 실패: ' + (err.code === 'permission-denied'
+        ? '권한이 없습니다. firestore.rules 에 voterGroups 규칙이 배포되었는지 확인하세요.'
+        : err.message));
+      saveBtn.disabled = false;
+    }
+  };
+
+  function showError(text) {
+    if (Array.isArray(text)) {
+      errorEl.innerHTML = '<ul style="margin: 0; padding-left: 20px;">'
+        + text.map(t => `<li>${escapeHtml(t)}</li>`).join('')
+        + '</ul>';
+    } else {
+      errorEl.textContent = text;
+    }
+    errorEl.classList.remove('hidden');
+  }
+}
+
+function confirmDeleteGroup(group) {
+  const modal = document.getElementById('modal-root');
+  modal.innerHTML = `
+    <div class="modal-backdrop">
+      <div class="modal">
+        <h2>투표인단 삭제</h2>
+        <p>"${escapeHtml(group.name)}" 투표인단(${group.members?.length ?? 0}명)을 삭제합니다. 이미 이 투표인단으로 등록한 투표의 대상자는 그대로 유지됩니다.</p>
+        <div class="button-row">
+          <button class="btn-secondary" id="group-delete-cancel">취소</button>
+          <button class="btn-danger" id="group-delete-confirm">삭제</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('group-delete-cancel').onclick = () => { modal.innerHTML = ''; };
+  document.getElementById('group-delete-confirm').onclick = async () => {
+    modal.innerHTML = '';
+    try {
+      await deleteDoc(doc(db, 'voterGroups', group.id));
+      showMessage('투표인단을 삭제했습니다.', 'success');
+      renderGroupsPanel();
+    } catch (err) {
+      console.error(err);
+      showMessage('삭제 실패: ' + err.message, 'error', 0);
+    }
+  };
 }
 
 async function checkBallotsExist(voteId) {

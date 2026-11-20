@@ -324,6 +324,41 @@ button:not(:disabled):active { transform: translateY(1px); }
   border-color: var(--danger);
 }
 
+/* Editable member names (voter group editor) */
+.phones-row input.phones-name-input {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 8px;
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+}
+.phones-row.removed input.phones-name-input { text-decoration: line-through; }
+
+/* Voter group picker (vote form) */
+.group-picker { display: flex; flex-wrap: wrap; gap: 8px; }
+.group-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  font-size: 13.5px;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color var(--transition), background var(--transition);
+}
+.group-chip:hover { border-color: var(--primary-soft-border); background: var(--surface-soft); }
+.group-chip.selected { border-color: var(--primary); background: var(--primary-soft); }
+.group-chip input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+.group-chip-count { color: var(--muted); font-size: 12px; }
+
 /* Items input rows */
 .item-input-row {
   display: flex;
