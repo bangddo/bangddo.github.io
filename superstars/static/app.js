@@ -316,6 +316,193 @@
       return JSON.parse(el.textContent)[p.r] || null;
     } catch (e) { return null; }
   }
+  // ---- 공지 마크다운 미리보기: mdlite.py 와 같은 규칙을 브라우저에서 (관리 화면은 저장이 GitHub 에서 1~2분 걸려 서버로 미리 볼 수 없다).
+  // 정규식은 처음 쓸 때 만든다: 뒤보기(?<!) 를 모르는 옛 브라우저에서도 공개 페이지 스크립트 전체가 멈추지 않게 하고, 그때는 미리보기만 빠진다
+  var mdRx = null;
+  function mdRegex() {
+    if (mdRx !== null) return mdRx;
+    try {
+      var W = '\\p{L}\\p{N}_';                     // 파이썬 \w (유니코드) 와 같게
+      mdRx = {
+        fence: /^\s*```/,
+        head: /^\s{0,3}(#{1,6})\s+(.*?)\s*#*\s*$/,
+        hr: /^\s{0,3}([-*_])(?:\s*\1){2,}\s*$/,
+        ul: /^(\s*)[-*+]\s+(.*)$/,
+        ol: /^(\s*)(\d{1,9})[.)]\s+(.*)$/,
+        quote: /^\s{0,3}>\s?(.*)$/,
+        tableSep: /^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)*\|?\s*$/,
+        escaped: /\\([\\`*_{}\[\]()#+\-.!|~>])/g,
+        code: /`([^`\n]+)`/g,
+        link: new RegExp('\\[([^\\]\\n]+)\\]\\(\\s*((?:https?://|mailto:)[^\\s()]+(?:\\([^\\s()]*\\))?[^\\s()]*)\\s*\\)' +
+                         '|(?<![' + W + '/])(https?://[^\\s<>"\']*[^\\s<>"\'.,;:!?)\\]])', 'gu'),
+        bold: new RegExp('\\*\\*(?=\\S)(.+?)(?<=\\S)\\*\\*', 'g'),
+        italic: new RegExp('(?<![*' + W + '])\\*(?=[^\\s*])(.+?)(?<=[^\\s*])\\*(?![*' + W + '])', 'gu'),
+        strike: new RegExp('~~(?=\\S)(.+?)(?<=\\S)~~', 'g'),
+        cellSplit: new RegExp('(?<!\\\\)\\|'),
+        slot: /\x00(\d+)\x00/g,
+      };
+    } catch (e) { mdRx = false; }
+    return mdRx;
+  }
+  function mdEsc(s) {                              // markupsafe.escape 와 같게
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&#34;').replace(/'/g, '&#39;');
+  }
+  function mdInline(text, R) {
+    var slots = [];
+    function keep(html) { slots.push(html); return '\x00' + (slots.length - 1) + '\x00'; }
+    function anchor(url) { return '<a href="' + mdEsc(url) + '" target="_blank" rel="noopener noreferrer">'; }
+    text = text.replace(/\x00/g, '');
+    text = text.replace(R.escaped, function (m, c) { return keep(mdEsc(c)); });
+    text = text.replace(R.code, function (m, c) { return keep('<code>' + mdEsc(c) + '</code>'); });
+    text = text.replace(R.link, function (m, label, url, bare) {
+      if (bare) return keep(anchor(bare) + mdEsc(bare) + '</a>');
+      return keep(anchor(url)) + label + keep('</a>');
+    });
+    var out = mdEsc(text);
+    out = out.replace(R.bold, '<strong>$1</strong>').replace(R.italic, '<em>$1</em>').replace(R.strike, '<del>$1</del>');
+    for (var k = 0; k < 3; k++) out = out.replace(R.slot, function (m, n) { return slots[Number(n)]; });
+    return out;
+  }
+  function mdCells(line, R) {
+    var s = line.trim();
+    if (s.charAt(0) === '|') s = s.slice(1);
+    if (s.slice(-1) === '|' && s.slice(-2) !== '\\|') s = s.slice(0, -1);
+    return s.split(R.cellSplit).map(function (c) { return c.trim(); });
+  }
+  function mdIndent(ws) {                          // 파이썬 expandtabs(4) 한 길이
+    var col = 0;
+    for (var k = 0; k < ws.length; k++) col = ws.charAt(k) === '\t' ? (Math.floor(col / 4) + 1) * 4 : col + 1;
+    return col;
+  }
+  function mdTable(head, sep, rows, R) {
+    var aligns = mdCells(sep, R).map(function (c) {
+      c = c.trim();
+      var l = c.charAt(0) === ':', r = c.slice(-1) === ':';
+      return l && r ? 'center' : (r ? 'right' : (l ? 'left' : ''));
+    });
+    function cell(tag, i, txt) {
+      var a = i < aligns.length ? aligns[i] : '';
+      return '<' + tag + (a ? ' style="text-align:' + a + '"' : '') + '>' + mdInline(txt, R) + '</' + tag + '>';
+    }
+    var html = '<div class="md-table"><table><thead><tr>' + head.map(function (t, i) { return cell('th', i, t); }).join('') + '</tr></thead><tbody>';
+    rows.forEach(function (r) {
+      r = r.concat(new Array(head.length).fill('')).slice(0, head.length);
+      html += '<tr>' + r.map(function (t, i) { return cell('td', i, t); }).join('') + '</tr>';
+    });
+    return html + '</tbody></table></div>';
+  }
+  function mdListItems(lines, i, R) {
+    var items = [];
+    while (i < lines.length) {
+      var line = lines[i], mo = R.ol.exec(line), mu = R.ul.exec(line);
+      if (mo) items.push({ indent: mdIndent(mo[1]), tag: 'ol', start: parseInt(mo[2], 10), parts: [mo[3]] });
+      else if (mu && !R.hr.test(line)) items.push({ indent: mdIndent(mu[1]), tag: 'ul', start: 1, parts: [mu[2]] });
+      else if (items.length && line.trim() && (line.charAt(0) === ' ' || line.charAt(0) === '\t')) items[items.length - 1].parts.push(line.trim());
+      else break;
+      i++;
+    }
+    return { items: items, next: i };
+  }
+  function mdList(items, R) {
+    var html = '', stack = [];
+    function open(tag, start) { return tag === 'ol' && start !== 1 ? '<ol start="' + start + '">' : '<' + tag + '>'; }
+    items.forEach(function (it) {
+      if (stack.length && it.indent > stack[stack.length - 1].indent) {
+        html += open(it.tag, it.start);
+        stack.push(it);
+      } else {
+        while (stack.length && it.indent < stack[stack.length - 1].indent) html += '</li></' + stack.pop().tag + '>';
+        if (stack.length && stack[stack.length - 1].tag !== it.tag) html += '</li></' + stack.pop().tag + '>';
+        if (!stack.length) { html += open(it.tag, it.start); stack.push(it); }
+        else html += '</li>';
+      }
+      html += '<li>' + it.parts.map(function (p) { return mdInline(p, R); }).join('<br>');
+    });
+    while (stack.length) html += '</li></' + stack.pop().tag + '>';
+    return html;
+  }
+  function mdBlocks(lines, R) {
+    var out = [], para = [], i = 0, n = lines.length, m;
+    function flush() {
+      if (para.length) { out.push('<p>' + para.map(function (l) { return mdInline(l.trim(), R); }).join('<br>') + '</p>'); para = []; }
+    }
+    while (i < n) {
+      var line = lines[i];
+      if (!line.trim()) { flush(); i++; continue; }
+      if (R.fence.test(line)) {
+        flush();
+        var j = i + 1, code = [];
+        while (j < n && !R.fence.test(lines[j])) { code.push(lines[j]); j++; }
+        out.push('<pre><code>' + mdEsc(code.join('\n')) + '</code></pre>');
+        i = j + 1;
+        continue;
+      }
+      if ((m = R.head.exec(line))) {
+        flush();
+        var level = Math.min(m[1].length + 2, 6);
+        out.push('<h' + level + '>' + mdInline(m[2], R) + '</h' + level + '>');
+        i++;
+        continue;
+      }
+      if (R.hr.test(line)) { flush(); out.push('<hr>'); i++; continue; }
+      if (R.quote.test(line)) {
+        flush();
+        var q = [];
+        while (i < n && R.quote.test(lines[i])) { q.push(R.quote.exec(lines[i])[1]); i++; }
+        out.push('<blockquote>' + mdBlocks(q, R).join('') + '</blockquote>');
+        continue;
+      }
+      if (line.indexOf('|') !== -1 && i + 1 < n && R.tableSep.test(lines[i + 1])) {
+        flush();
+        var head = mdCells(line, R), sep = lines[i + 1], rows = [];
+        j = i + 2;
+        while (j < n && lines[j].trim() && lines[j].indexOf('|') !== -1) { rows.push(mdCells(lines[j], R)); j++; }
+        out.push(mdTable(head, sep, rows, R));
+        i = j;
+        continue;
+      }
+      if (R.ol.test(line) || (R.ul.test(line) && !R.hr.test(line))) {
+        flush();
+        var got = mdListItems(lines, i, R);
+        out.push(mdList(got.items, R));
+        i = got.next;
+        continue;
+      }
+      para.push(line);
+      i++;
+    }
+    flush();
+    return out;
+  }
+  function renderMarkdown(text) {                  // 정규식을 못 만드는 브라우저면 null
+    var R = mdRegex();
+    if (!R) return null;
+    if (!text) return '';
+    return mdBlocks(String(text).replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n'), R).join('');
+  }
+  window.superstarsMarkdown = renderMarkdown;
+
+  // 공지 작성 칸 아래 미리보기: 쓰는 대로(잠깐 멈출 때) 공지 화면과 같은 모양으로 그린다
+  function bindMdPreview(box) {
+    var form = box.closest('form');
+    var src = form && form.querySelector('[data-md-source]');
+    if (!src || renderMarkdown('') === null) return;
+    var title = form.querySelector('[data-md-title]'), pin = form.querySelector('[data-md-pin]');
+    var tEl = box.querySelector('[data-md-preview-title]'), bEl = box.querySelector('[data-md-preview-body]');
+    var timer = null;
+    function update() {
+      var t = title ? title.value.trim() : '';
+      box.hidden = !src.value.trim() && !t;
+      tEl.textContent = (pin && pin.checked ? '📌 ' : '') + (t || '(제목 없음)');
+      bEl.innerHTML = renderMarkdown(src.value);    // 글자는 모두 이스케이프하고 정해진 태그만 만든다(mdlite.py 와 같음)
+    }
+    function later() { clearTimeout(timer); timer = setTimeout(update, 120); }
+    src.addEventListener('input', later);
+    if (title) title.addEventListener('input', later);
+    if (pin) pin.addEventListener('change', update);
+    update();
+  }
+
   function showAdminBits(root) {
     var perms = adminPerms();
     root.querySelectorAll('[data-admin-perm]').forEach(function (el) {
@@ -328,6 +515,7 @@
     root = root || document;
     applyDates(root);
     showAdminBits(root);
+    root.querySelectorAll('[data-md-preview]').forEach(bindMdPreview);
     hideTip();                                  // 정적 사이트에서 내용을 바꿔 끼울 때 예전 말풍선은 닫는다
     root.querySelectorAll('[data-tip]').forEach(bindTip);
 

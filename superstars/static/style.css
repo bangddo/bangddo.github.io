@@ -114,6 +114,10 @@ a.venue:hover { text-decoration: underline; }
 .md table { border-collapse: collapse; font-size: 14px; }
 .md th, .md td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; }
 .md th { background: #f6f8fc; font-weight: 700; }
+.md-preview { border: 1px dashed var(--line-2); border-radius: 12px; padding: 12px 14px; background: #fcfdff; }
+.md-preview[hidden] { display: none; }
+.md-preview-label { font-size: 12px; font-weight: 700; color: var(--accent-2); margin-bottom: 6px; }
+.md-preview h2 { font-size: 17px; margin: 0 0 10px; }
 .md-help { font-size: 13px; }
 .md-help summary { cursor: pointer; color: var(--accent-2); font-weight: 600; }
 .md-help table { margin-top: 8px; }
