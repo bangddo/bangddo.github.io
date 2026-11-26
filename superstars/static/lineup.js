@@ -1,13 +1,17 @@
-// 라인업 짜보기 (관리자). 참석자 → 1~9번 포지션·선수 선택(이미 고른 항목은 다른 칸에서 빠짐) → 남는 인원은 대기,
+// 라인업 짜보기·공식 경기 라인업 (관리자). 참석자 → 1~9번 포지션·선수 선택(이미 고른 항목은 다른 칸에서 빠짐) → 남는 인원은 대기,
 // 손잡이로 끌어 타순을 바꾸고, 선발 9명의 타율·출루율·장타율을 꺾은선으로, "라인업 복사"로 메신저용 글을 클립보드에.
-// 서버에 저장하지 않고 이 브라우저(localStorage)에만 임시로 남긴다.
+// 짜보기는 서버에 저장하지 않고 이 브라우저(localStorage)에만 임시로 남긴다.
+// 공식 경기(DATA.game)는 "라인업 저장"을 눌러야 서버에 저장되고(관리자끼리 공유), 그 전 변경은 경기마다 이 브라우저에 남긴다.
+// 브라우저에 남긴 변경은 어느 저장본에서 시작했는지(base = 저장 번호, 저장할 때마다 1씩 늘어남)를 함께 둔다. 그 뒤 다른 곳에서 새로 저장됐으면
+// 새 저장본을 보여 주고, 남은 변경은 버튼으로 다시 불러오게 한다.
 (function () {
   var root = document.querySelector('[data-lineup]');
   var dataEl = document.getElementById('lineupData');
   if (!root || !dataEl) return;
 
   var DATA = JSON.parse(dataEl.textContent);
-  var KEY = 'superstars.lineup';
+  var GAME = DATA.game || null;
+  var KEY = GAME ? 'superstars.lineup.game.' + GAME.id : 'superstars.lineup';
   var SLOTS = 9;
   var SERIES = [{ key: 'avg', label: '타율', cls: 's1' }, { key: 'obp', label: '출루율', cls: 's2' }, { key: 'slg', label: '장타율', cls: 's3' }];
   var SVGNS = 'http://www.w3.org/2000/svg';
@@ -17,19 +21,60 @@
   DATA.players.forEach(function (p) { ROSTER[p.name] = p; });
   DATA.sets.forEach(function (s) { SETS[s.key] = s; });
 
-  var state = { attendees: '', set: DATA.sets.length ? DATA.sets[0].key : '', slots: [] };
-  for (var i = 0; i < SLOTS; i++) state.slots.push({ pos: '', name: '' });
-  try {
-    var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
-    if (saved) {
-      state.attendees = typeof saved.attendees === 'string' ? saved.attendees : '';
-      if (SETS[saved.set]) state.set = saved.set;
-      (saved.slots || []).slice(0, SLOTS).forEach(function (s, i) {
-        state.slots[i] = { pos: POS[s && s.pos] ? s.pos : '', name: (s && typeof s.name === 'string') ? s.name : '' };
-      });
+  // 저장본·브라우저 사본을 화면 상태 모양으로 (모르는 포지션·성적 기준은 버린다)
+  function stateOf(src, setKey) {
+    var st = { attendees: '', set: SETS[setKey] ? setKey : (DATA.sets.length ? DATA.sets[0].key : ''), slots: [] };
+    for (var i = 0; i < SLOTS; i++) st.slots.push({ pos: '', name: '' });
+    if (!src) return st;
+    st.attendees = typeof src.attendees === 'string' ? src.attendees : '';
+    if (SETS[src.set]) st.set = src.set;
+    (src.slots || []).slice(0, SLOTS).forEach(function (s, i) {
+      st.slots[i] = { pos: POS[s && s.pos] ? s.pos : '', name: (s && typeof s.name === 'string') ? s.name : '' };
+    });
+    tidy(st);
+    return st;
+  }
+  function stored() { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } }
+  function snap(st) {
+    return JSON.stringify({ attendees: st.attendees, set: st.set, slots: st.slots.map(function (s) { return { pos: s.pos, name: s.name }; }) });
+  }
+
+  var state, server = '', base = '', stale = null;
+  if (!GAME) {
+    state = stateOf(stored(), '');
+  } else {
+    base = GAME.rev || 0;
+    server = snap(stateOf(GAME.saved, GAME.default_set));
+    var draft = stored(), mine = draft ? stateOf(draft, GAME.default_set) : null;
+    state = stateOf(GAME.saved, GAME.default_set);
+    if (mine && snap(mine) !== server) {
+      if ((draft.base || 0) === base) state = mine;      // 지금 저장본에서 시작한 변경: 이어서 짠다
+      else stale = mine;                                   // 그 뒤 다른 곳에서 새로 저장됨: 새 저장본을 보이고 버튼으로 불러오게
     }
-  } catch (e) {}
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  }
+  function changed() { return !!GAME && snap(state) !== server; }
+  function save() {
+    try {
+      if (!GAME) localStorage.setItem(KEY, JSON.stringify(state));
+      else if (changed()) localStorage.setItem(KEY, JSON.stringify({ attendees: state.attendees, set: state.set, slots: state.slots, base: base }));
+      else if (!stale) localStorage.removeItem(KEY);       // 저장본과 같아지면 브라우저 사본은 지운다
+    } catch (e) {}
+    draftStatus();
+  }
+  var draftUi = { msg: root.querySelector('[data-draft-msg]'), discard: root.querySelector('[data-draft-discard]'),
+                  restore: root.querySelector('[data-draft-restore]') };
+  function draftStatus() {
+    if (!GAME || !draftUi.msg) return;
+    var dirty = changed(), text;
+    if (stale) text = '다른 곳에서 더 새로 저장된 라인업을 불러왔습니다. 이 브라우저에서 그 전에 짜다 만 변경은 옆 버튼으로 다시 불러올 수 있습니다.' +
+      (dirty ? ' (지금 화면의 변경은 아직 저장하지 않았습니다.)' : '');
+    else if (dirty) text = '저장하지 않은 변경이 있습니다. 이 브라우저에만 남아 있으니 공유하려면 저장하세요.';
+    else text = GAME.saved ? '저장된 라인업과 같습니다.' : '아직 저장하지 않았습니다.';
+    draftUi.msg.textContent = text;
+    draftUi.msg.classList.toggle('is-dirty', dirty || !!stale);
+    draftUi.discard.hidden = !dirty;
+    draftUi.restore.hidden = !stale;
+  }
 
   var area = root.querySelector('[data-attendees]');
   var setSel = root.querySelector('[data-stat-set]');
@@ -41,13 +86,18 @@
   function cleanName(line) {
     return line.replace(/^\s*(?:\d+\s*[.)]|[-•*·])\s*/, '').replace(/\s*\(\s*#?\d+\s*\)\s*$/, '').replace(/\s+/g, ' ').trim();
   }
-  function attendees() {
+  function attendeesOf(st) {
     var seen = {}, out = [];
-    state.attendees.split(/\r?\n/).forEach(function (l) {
+    st.attendees.split(/\r?\n/).forEach(function (l) {
       var n = cleanName(l);
       if (n && !seen[n]) { seen[n] = true; out.push(n); }
     });
     return out;
+  }
+  function attendees() { return attendeesOf(state); }
+  function tidy(st) {                                       // 참석자에서 빠진 선수는 타순에서도 뺀다
+    var names = attendeesOf(st);
+    st.slots.forEach(function (s) { if (s.name && names.indexOf(s.name) === -1) s.name = ''; });
   }
   function statOf(name) {
     var s = SETS[state.set];
@@ -86,8 +136,8 @@
   }
 
   function render() {
+    tidy(state);
     var names = attendees();
-    state.slots.forEach(function (s) { if (s.name && names.indexOf(s.name) === -1) s.name = ''; });   // 참석자에서 빠진 선수는 타순에서도 뺀다
 
     setText(root.querySelector('[data-att-count]'), names.length + '명');
     var unknown = names.filter(function (n) { return !knownName(n); });
@@ -365,6 +415,34 @@
     state.slots.forEach(function (s) { s.pos = ''; s.name = ''; });
     render();
   });
+
+  // ---- 공식 경기: 저장 버튼(폼 제출). GitHub 관리 화면이면 처리까지 시간이 걸린다고 먼저 알린다
+  var saveForm = root.querySelector('[data-lineup-save]');
+  if (saveForm) {
+    saveForm.addEventListener('submit', function (e) {
+      if (window.superstarsRemote && !window.confirm('라인업을 저장할까요?\n\n' +
+          '저장은 GitHub 에서 처리되므로, 이 화면과 다른 관리자 화면에 반영되기까지 보통 20초 안팎(길면 1~2분) 걸립니다.\n' +
+          '그동안 화면 위쪽에 진행 상황이 나오고, 다 될 때까지 지금 짠 내용은 이 브라우저에도 그대로 남아 있습니다.')) {
+        e.preventDefault();
+        return;
+      }
+      saveForm.querySelector('input[name="data"]').value = snap(state);
+    });
+    draftUi.discard.addEventListener('click', function () {
+      if (!window.confirm('저장하지 않은 변경을 버리고 저장된 라인업으로 되돌릴까요?')) return;
+      state = stateOf(GAME.saved, GAME.default_set);
+      area.value = state.attendees;
+      setSel.value = state.set;
+      render();
+    });
+    draftUi.restore.addEventListener('click', function () {
+      state = stale;
+      stale = null;
+      area.value = state.attendees;
+      setSel.value = state.set;
+      render();
+    });
+  }
   var pending = false;
   window.addEventListener('resize', function () {
     if (pending) return;

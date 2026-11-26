@@ -316,7 +316,7 @@
       return JSON.parse(el.textContent)[p.r] || null;
     } catch (e) { return null; }
   }
-  // ---- 공지 마크다운 미리보기: mdlite.py 와 같은 규칙을 브라우저에서 (관리 화면은 저장이 GitHub 에서 1~2분 걸려 서버로 미리 볼 수 없다).
+  // ---- 공지 마크다운 미리보기: mdlite.py 와 같은 규칙을 브라우저에서 (관리 화면은 저장이 GitHub 에서 처리돼 서버로 바로 미리 볼 수 없다).
   // 정규식은 처음 쓸 때 만든다: 뒤보기(?<!) 를 모르는 옛 브라우저에서도 공개 페이지 스크립트 전체가 멈추지 않게 하고, 그때는 미리보기만 빠진다
   var mdRx = null;
   function mdRegex() {

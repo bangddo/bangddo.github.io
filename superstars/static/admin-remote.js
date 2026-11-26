@@ -49,7 +49,7 @@
     if (!d) return;
     proc = d.processor || proc || 'old';
     var bad = true, msg;
-    if (proc === 'actions') { bad = !!d.dispatch_error; msg = d.dispatch_error || '저장하면 GitHub 에서 처리합니다 (보통 1~2분)'; }
+    if (proc === 'actions') { bad = !!d.dispatch_error; msg = d.dispatch_error || '저장하면 GitHub 에서 처리합니다 (보통 20초 안팎)'; }
     else if (proc === 'old') msg = OLD_WORKER;
     else if (d.pi_last_seen && Date.now() / 1000 - d.pi_last_seen <= 150) { bad = false; msg = '처리기 연결됨'; }
     else msg = NO_TOKEN;
@@ -57,7 +57,7 @@
     el.textContent = msg;
   }
   function waitText(what, secs) {
-    if (proc === 'actions') return 'GitHub 에서 ' + what + ' 중… ' + secs + '초 (보통 1~2분)';
+    if (proc === 'actions') return 'GitHub 에서 ' + what + ' 중… ' + secs + '초 (보통 20초 안팎)';
     return '처리를 기다리는 중… ' + secs + '초';
   }
 
@@ -147,7 +147,7 @@
     if (page.title) document.title = page.title;
     dirty = false;
     if (window.superstarsInit) window.superstarsInit(view);
-    if (view.querySelector('[data-lineup]')) {      // 라인업 짜보기 스크립트는 화면을 넣을 때마다 다시 붙인다
+    if (view.querySelector('[data-lineup]')) {      // 라인업 스크립트는 화면을 넣을 때마다 다시 붙인다
       var s = document.createElement('script');
       s.src = box.dataset.lineupSrc;
       document.body.appendChild(s);
@@ -175,7 +175,7 @@
             return reject(new Error((proc === 'old' ? OLD_WORKER : NO_TOKEN) + ' 맡긴 일은 남아 있어 다음 실행 때 처리됩니다.'));
           }
           if ((waited > 6 || proc === 'actions') && stillWanted()) setBusy(waitText(what, Math.round(waited)));
-          setTimeout(tick, waited < 10 ? 700 : (proc === 'actions' ? 3000 : 2000));
+          setTimeout(tick, waited < 10 ? 700 : (proc === 'actions' ? 1000 : 2000));
         }, reject);
       })();
     });
@@ -188,7 +188,7 @@
       if (my !== seq) return;
       piStatus(d);
       if (d.page) return show(d.page, anchor, quiet);
-      if (!quiet) setBusy(proc === 'actions' ? 'GitHub 에서 화면을 만드는 중입니다… (보통 1~2분)' : '화면을 만드는 중입니다…');
+      if (!quiet) setBusy(proc === 'actions' ? 'GitHub 에서 화면을 만드는 중입니다… (보통 20초 안팎)' : '화면을 만드는 중입니다…');
       return waitFor(d.pending, function () { return my === seq; }, '화면을 만드는').then(function (res) {
         if (!res || my !== seq) return;
         if (!res.main) return showError(res.error || '화면을 받지 못했습니다.');

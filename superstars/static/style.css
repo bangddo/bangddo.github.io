@@ -400,6 +400,15 @@ code { background: #f1f3f9; padding: 1px 5px; border-radius: 6px; font-size: 90%
 .lineup.is-dragging, .lineup.is-dragging * { cursor: grabbing; user-select: none; -webkit-user-select: none; }
 .lineup-table tr.dragging td { background: #eef3ff; }
 .lineup-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+/* 공식 경기 라인업: 저장 줄(저장 버튼 + 저장 안 한 변경 안내), 경기 목록의 저장됨 표시 */
+.lineup-save { display: flex; gap: 8px 12px; align-items: center; flex-wrap: wrap; margin-top: 12px; padding: 10px 12px; border-radius: var(--radius-s); background: #f6f8fc; }
+.lineup-draft { flex: 1 1 220px; color: var(--muted); }
+.lineup-draft.is-dirty { color: #9a5200; font-weight: 600; }
+.lineup-save [hidden] { display: none; }
+.badge-saved { background: #e8f5e9; color: #1b5e20; }
+.lineup-game h2 { margin-bottom: 4px; }
+.lineup-game .sched-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 0 0 6px; }
+.lineup-section-title { margin: 24px 0 10px; font-size: 18px; }
 .lineup-copy-text { width: 100%; box-sizing: border-box; margin-top: 8px; font: inherit; font-size: 14px; line-height: 1.5; padding: 8px 10px; border: 1px solid #d8dbe6; border-radius: var(--radius-s); background: #f8f9fc; resize: vertical; tab-size: 8; }
 .bench { display: flex; flex-wrap: wrap; gap: 6px; }
 .bench-chip { display: inline-flex; align-items: baseline; gap: 6px; padding: 3px 10px; border-radius: 999px; background: #f1f3f8; font-size: 13px; }
