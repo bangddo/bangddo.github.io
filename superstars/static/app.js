@@ -338,6 +338,7 @@
         bold: new RegExp('\\*\\*(?=\\S)(.+?)(?<=\\S)\\*\\*', 'g'),
         italic: new RegExp('(?<![*' + W + '])\\*(?=[^\\s*])(.+?)(?<=[^\\s*])\\*(?![*' + W + '])', 'gu'),
         strike: new RegExp('~~(?=\\S)(.+?)(?<=\\S)~~', 'g'),
+        br: /<br\s*\/?>/gi,
         cellSplit: new RegExp('(?<!\\\\)\\|'),
         slot: /\x00(\d+)\x00/g,
       };
@@ -358,6 +359,7 @@
       if (bare) return keep(anchor(bare) + mdEsc(bare) + '</a>');
       return keep(anchor(url)) + label + keep('</a>');
     });
+    text = text.replace(R.br, function () { return keep('<br>'); });   // 줄 안 줄바꿈 (mdlite.py 와 같음)
     var out = mdEsc(text);
     out = out.replace(R.bold, '<strong>$1</strong>').replace(R.italic, '<em>$1</em>').replace(R.strike, '<del>$1</del>');
     for (var k = 0; k < 3; k++) out = out.replace(R.slot, function (m, n) { return slots[Number(n)]; });
