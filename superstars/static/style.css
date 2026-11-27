@@ -329,6 +329,9 @@ tr.open .season-btn .caret { transform: rotate(90deg); }
 code { background: #f1f3f9; padding: 1px 5px; border-radius: 6px; font-size: 90%; }
 
 .footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; color: var(--muted); font-size: 12px; padding: 10px 16px 28px; }
+.footer .cal-links a, .footer .cal-copy { color: var(--accent); }
+.footer .cal-copy { font: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+.footer .cal-copy:hover { text-decoration: underline; }
 .visitor-footer { text-align: center; margin: 20px 0 4px; font-size: 12px; color: var(--muted); }
 .visitor-footer img { vertical-align: middle; }
 

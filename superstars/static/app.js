@@ -682,6 +682,18 @@
       b.addEventListener('click', function (e) { if (!window.confirm(b.dataset.confirm)) e.preventDefault(); });
     });
 
+    // 캘린더 구독 링크 (아래쪽): 이 페이지 주소로 절대 주소를 만든다. 아이폰·맥은 webcal:// 로 열면 '구독'이 되고
+    // (https 로 열면 그 순간의 일정을 한 번 가져오기만 함), 구글은 'URL로 추가' 화면으로, 복사는 https 주소를 그대로
+    root.querySelectorAll('[data-calendar]').forEach(function (box) {
+      var abs = new URL(box.dataset.calendar, location.href);
+      var webcal = 'webcal://' + abs.host + abs.pathname;
+      var ios = box.querySelector('[data-cal="webcal"]'), google = box.querySelector('[data-cal="google"]'),
+          copyBtn = box.querySelector('[data-cal="copy"]');
+      if (ios) ios.href = webcal;
+      if (google) google.href = 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent(webcal);
+      if (copyBtn) copyBtn.dataset.copy = abs.href;          // 아래 복사 버튼 동작을 같이 쓴다
+    });
+
     // 참불투표 제목 복사 (관리자 일정 화면). 파이는 http 주소라 navigator.clipboard 가 막히므로 예전 방식으로도 시도한다
     root.querySelectorAll('button[data-copy]').forEach(function (btn) {
       if (btn.dataset.bound) return;
